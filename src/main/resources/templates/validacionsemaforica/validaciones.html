@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="es">
+<head>
+<title>Validaciones | Laboratorio</title>
+
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/source-sans-3@5.0.12/index.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/overlayscrollbars@2.11.0/styles/overlayscrollbars.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+<link rel="stylesheet" href="./css/adminlte.css">
+<style>
+  .metric-card .icon { font-size: 2rem; opacity: .75; }
+  .table-actions .btn { margin-right: .25rem; }
+  .status-dot { width: .65rem; height: .65rem; display:inline-block; border-radius:50%; margin-right:.35rem; }
+  .page-help { font-size:.92rem; }
+</style>
+
+</head>
+<body class="layout-fixed sidebar-expand-lg bg-body-tertiary">
+<div class="app-wrapper">
+  <nav class="app-header navbar navbar-expand bg-body">
+    <div class="container-fluid">
+      <ul class="navbar-nav">
+        <li class="nav-item"><a class="nav-link" data-lte-toggle="sidebar" href="#"><i class="bi bi-list"></i></a></li>
+        <li class="nav-item d-none d-md-block"><span class="nav-link fw-semibold">Sistema de Laboratorio</span></li>
+      </ul>
+      <ul class="navbar-nav ms-auto">
+        <li class="nav-item"><a class="nav-link" href="./alertas.html"><i class="bi bi-bell-fill"></i><span class="navbar-badge badge text-bg-danger">2</span></a></li>
+        <li class="nav-item"><span class="nav-link"><i class="bi bi-person-circle me-1"></i>Administrador</span></li>
+      </ul>
+    </div>
+  </nav>
+
+  <aside class="app-sidebar bg-body-secondary shadow" data-bs-theme="dark">
+    <div class="sidebar-brand">
+      <a href="./index.html" class="brand-link">
+        <i class="bi bi-flask brand-image fs-3 ms-2"></i>
+        <span class="brand-text fw-light">Laboratorio</span>
+      </a>
+    </div>
+    <div class="sidebar-wrapper">
+      <nav class="mt-2">
+        <ul class="nav sidebar-menu flex-column" data-lte-toggle="treeview" data-accordion="false">
+          
+<li class="nav-item"><a href="./index.html" class="nav-link "><i class="nav-icon bi bi-speedometer2"></i><p>Dashboard</p></a></li>
+<li class="nav-item"><a href="./ensayos.html" class="nav-link "><i class="nav-icon bi bi-clipboard2-pulse"></i><p>Ensayos</p></a></li>
+<li class="nav-item"><a href="./nuevo-ensayo.html" class="nav-link "><i class="nav-icon bi bi-plus-circle"></i><p>Nuevo ensayo</p></a></li>
+<li class="nav-item"><a href="./variables.html" class="nav-link "><i class="nav-icon bi bi-sliders"></i><p>Variables</p></a></li>
+<li class="nav-item"><a href="./parametros.html" class="nav-link "><i class="nav-icon bi bi-rulers"></i><p>Parámetros</p></a></li>
+<li class="nav-item"><a href="./validaciones.html" class="nav-link active"><i class="nav-icon bi bi-traffic-light"></i><p>Validaciones</p></a></li>
+<li class="nav-item"><a href="./alertas.html" class="nav-link "><i class="nav-icon bi bi-bell"></i><p>Alertas</p></a></li>
+
+        </ul>
+      </nav>
+    </div>
+  </aside>
+
+  <main class="app-main">
+    <div class="app-content-header">
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-sm-6"><h1 class="mb-0 fs-3">Validación semafórica</h1></div>
+          <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-end">
+              <li class="breadcrumb-item"><a href="./index.html">Inicio</a></li>
+              <li class="breadcrumb-item active">Validación semafórica</li>
+            </ol>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="app-content">
+      <div class="container-fluid">
+        
+<div class="card mb-3">
+  <div class="card-body d-flex flex-wrap gap-4">
+    <div><strong>Ensayo:</strong> ENS-025</div><div><strong>Producto:</strong> Paracetamol</div><div><strong>Resultado general:</strong> <span class="badge text-bg-warning">ADVERTENCIA</span></div>
+  </div>
+</div>
+<div class="card">
+  <div class="card-header"><h3 class="card-title">Resultado de variables</h3></div>
+  <div class="card-body table-responsive">
+    <table class="table align-middle">
+      <thead><tr><th>Variable</th><th>Valor obtenido</th><th>Rango permitido</th><th>Resultado</th><th>Mensaje</th></tr></thead>
+      <tbody>
+        <tr><td>pH</td><td>6.50 pH</td><td>6.00 - 8.00</td><td><span class="status-dot bg-success"></span><span class="badge text-bg-success">OK</span></td><td>Valor dentro del rango permitido.</td></tr>
+        <tr><td>Temperatura</td><td>24.00 °C</td><td>20.00 - 25.00</td><td><span class="status-dot bg-success"></span><span class="badge text-bg-success">OK</span></td><td>Valor dentro del rango permitido.</td></tr>
+        <tr><td>Humedad</td><td>15.20 %</td><td>10.00 - 15.00</td><td><span class="status-dot bg-warning"></span><span class="badge text-bg-warning">ADVERTENCIA</span></td><td>Valor muy cercano o ligeramente superior al límite.</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="card-footer d-flex gap-2"><a href="./detalle-ensayo.html" class="btn btn-primary">Ver detalle completo</a><a href="./ensayos.html" class="btn btn-outline-secondary">Volver al listado</a></div>
+</div>
+
+      </div>
+    </div>
+  </main>
+
+  <footer class="app-footer">
+    <div class="float-end d-none d-sm-inline">Sprint 3</div>
+    <strong>Sistema de Control de Laboratorio</strong>
+  </footer>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/overlayscrollbars@2.11.0/browser/overlayscrollbars.browser.es6.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.min.js"></script>
+<script src="./js/adminlte.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const sidebarWrapper = document.querySelector('.sidebar-wrapper');
+  if (sidebarWrapper && window.innerWidth > 992 && window.OverlayScrollbarsGlobal?.OverlayScrollbars) {
+    OverlayScrollbarsGlobal.OverlayScrollbars(sidebarWrapper, {
+      scrollbars: { theme: 'os-theme-light', autoHide: 'leave', clickScroll: true }
+    });
+  }
+});
+</script>
+
+
+</body>
+</html>
