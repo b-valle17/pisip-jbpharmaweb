@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+<title>Plan de Producción | JB Pharma</title>
+
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/source-sans-3@5.0.12/index.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/overlayscrollbars@2.11.0/styles/overlayscrollbars.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+<link rel="stylesheet" th:href="@{/css/adminlte.css}">
+<style>
+  .metric-card .icon { font-size: 2rem; opacity: .75; }
+  .table-actions .btn { margin-right: .25rem; }
+  .status-dot { width: .65rem; height: .65rem; display:inline-block; border-radius:50%; margin-right:.35rem; }
+  .page-help { font-size:.92rem; }
+</style>
+
+</head>
+<body class="layout-fixed sidebar-expand-lg bg-body-tertiary">
+<div class="app-wrapper">
+  <nav class="app-header navbar navbar-expand bg-body">
+    <div class="container-fluid">
+      <ul class="navbar-nav">
+        <li class="nav-item"><a class="nav-link" data-lte-toggle="sidebar" href="#"><i class="bi bi-list"></i></a></li>
+        <li class="nav-item d-none d-md-block"><span class="nav-link fw-semibold">Área de Producción</span></li>
+      </ul>
+      <ul class="navbar-nav ms-auto">
+        <li class="nav-item"><a class="nav-link"><i class="bi bi-bell-fill"></i><span class="navbar-badge badge text-bg-danger">2</span></a></li>
+        <li class="nav-item"><span class="nav-link"><i class="bi bi-person-circle me-1"></i>Gerente</span></li>
+      </ul>
+    </div>
+  </nav>
+
+  <aside class="app-sidebar bg-body-secondary shadow" data-bs-theme="dark">
+    <div class="sidebar-brand">
+  <a th:href="@{/index.html}" class="brand-link">
+    <img th:src="@{/assets/img/logo.png}" 
+         alt="Logo JB Pharma" 
+         class="brand-image me-2" 
+         style="max-height: 33px; width: auto;">
+  </a>
+</div>
+    <div class="sidebar-wrapper">
+      <nav class="mt-2">
+        <ul class="nav sidebar-menu flex-column" data-lte-toggle="treeview" data-accordion="false">
+          
+<li class="nav-item"><a th:href="@{/planproduccion}"
+									href="./listarplan.html" class="nav-link "><i class="nav-icon bi bi-file-earmark"></i><p>Planes de Producción</p></a></li>
+<li class="nav-item"><a th:href="@{/ordenproduccion}"
+									href="./listarorden.html" class="nav-link "><i class="nav-icon bi bi-file-earmark"></i><p>Órdenes de Fabricación</p></a></li>
+        </ul>
+      </nav>
+    </div>
+  </aside>
+
+  <main class="app-main">
+    <div class="app-content-header">
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-sm-6"><h1 class="mb-0 fs-3">Editar Plan de Producción</h1></div>
+          <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-end">
+              <li class="breadcrumb-item"><a href="./index.html">Inicio</a></li>
+              <li class="breadcrumb-item"><a th:href="@{/planproduccion}"href="./listarplan.html">PlanDeProduccion</a></li>									
+              <li class="breadcrumb-item active">EditarPlan</li>
+            </ol>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="app-content">
+      <div class="container-fluid">
+        
+<div class="row">
+  <div class="col-lg-8">
+    <div class="card card-primary card-outline">
+      <div class="card-header"><h3 class="card-title">Editar Plan Mensual</h3></div>
+      <form id="formPlan">
+        <div class="card-body">
+          <div class="row g-3">
+            <div class="col-md-6"><label class="form-label">Código del Plan</label><input type="text" class="form-control" id="codigoPlan" placeholder="Ej: PLAN-2026-06" required></div>
+            <div class="col-md-6"><label class="form-label">Mes</label><input type="number" class="form-control" id="mes" min="1" max="12" placeholder="6" required></div>
+            <div class="col-md-6"><label class="form-label">Año</label><input type="number" class="form-control" id="anio"  min="2025" max="2027" placeholder="2026" required></div>
+            <div class="col-md-6"><label class="form-label">Fecha de Emisión</label><input type="date" class="form-control" id="fechaEmision" required></div>
+            <div class="col-12"><label class="form-label">Descripción Operativa</label><textarea class="form-control" id="descripcion" rows="3" placeholder="Línea de producción asignada..."></textarea></div>
+          </div>
+        </div>
+        <div class="card-footer d-flex gap-2">
+          <button class="btn btn-primary" type="submit"><i class="bi bi-save me-1"></i>Editar y continuar</button>
+          <a class="btn btn-outline-secondary" th:href="@{/planproduccion}"href="./listarplan.html">Cancelar</a>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+      </div>
+    </div>
+  </main>
+
+  <footer class="app-footer">
+    <strong>Gestión de Planes de Producción</strong>
+  </footer>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/overlayscrollbars@2.11.0/browser/overlayscrollbars.browser.es6.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.min.js"></script>
+<script th:src="@{/js/adminlte.js}"></script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const sidebarWrapper = document.querySelector('.sidebar-wrapper');
+  if (sidebarWrapper && window.innerWidth > 992 && window.OverlayScrollbarsGlobal?.OverlayScrollbars) {
+    OverlayScrollbarsGlobal.OverlayScrollbars(sidebarWrapper, {
+      scrollbars: { theme: 'os-theme-light', autoHide: 'leave', clickScroll: true }
+    });
+  }
+});
+</script>
+
+
+<script>
+document.getElementById('formEnsayo').addEventListener('submit', e => {
+  e.preventDefault();
+  window.location.href = './variables.html';
+});
+</script>
+
+</body>
+</html>
