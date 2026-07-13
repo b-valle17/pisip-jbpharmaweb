@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="es">
+<head>
+<title>Crear Historial Lote | JBpharma</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/source-sans-3@5.0.12/index.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/overlayscrollbars@2.11.0/styles/overlayscrollbars.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+<link rel="stylesheet" href="./css/adminlte.css">
+</head>
+<body class="layout-fixed sidebar-expand-lg bg-body-tertiary">
+<div class="app-wrapper">
+  <nav class="app-header navbar navbar-expand bg-body">
+    <div class="container-fluid">
+      <ul class="navbar-nav">
+        <li class="nav-item"><a class="nav-link" data-lte-toggle="sidebar" href="#"><i class="bi bi-list"></i></a></li>
+        <li class="nav-item d-none d-md-block"><span class="nav-link fw-semibold">Pisip-JBpharmaWeb</span></li>
+      </ul>
+      <ul class="navbar-nav ms-auto">
+        <li class="nav-item"><a class="nav-link" href="./alertas.html"><i class="bi bi-bell-fill"></i></a></li>
+        <li class="nav-item"><span class="nav-link"><i class="bi bi-person-circle me-1"></i>Administrador</span></li>
+      </ul>
+    </div>
+  </nav>
+
+  <aside class="app-sidebar bg-body-secondary shadow" data-bs-theme="dark">
+    <div class="sidebar-brand">
+      <a href="/index" class="brand-link">
+        <i class="bi bi-capsule brand-image fs-3 ms-2"></i>
+        <span class="brand-text fw-light">JBpharma</span>
+      </a>
+    </div>
+    <div class="sidebar-wrapper">
+      <nav class="mt-2">
+        <ul class="nav sidebar-menu flex-column" data-lte-toggle="treeview" data-accordion="false">
+          <li class="nav-item"><a href="/index" class="nav-link"><i class="nav-icon bi bi-speedometer2"></i><p>Dashboard</p></a></li>
+<li class="nav-item"><a href="/producto" class="nav-link"><i class="nav-icon bi bi-box-seam"></i><p>Productos</p></a></li>
+<li class="nav-item"><a href="/usuario" class="nav-link"><i class="nav-icon bi bi-people-fill"></i><p>Usuarios</p></a></li>
+<li class="nav-item"><a href="/parametrocalidad" class="nav-link"><i class="nav-icon bi bi-clipboard-check"></i><p>Parámetros Calidad</p></a></li>
+<li class="nav-item"><a href="/ensayos" class="nav-link"><i class="nav-icon bi bi-flask"></i><p>Ensayos Laboratorio</p></a></li>
+<li class="nav-item"><a href="/nuevoensayo" class="nav-link"><i class="nav-icon bi bi-plus-circle"></i><p>Nuevo Ensayo</p></a></li>
+<li class="nav-item"><a href="/detalleensayo" class="nav-link"><i class="nav-icon bi bi-eye"></i><p>Detalle Ensayo</p></a></li>
+<li class="nav-item"><a href="/variables" class="nav-link"><i class="nav-icon bi bi-sliders"></i><p>Variables Ensayo</p></a></li>
+<li class="nav-item"><a href="/parametros" class="nav-link"><i class="nav-icon bi bi-rulers"></i><p>Parámetros Validación</p></a></li>
+<li class="nav-item"><a href="/validaciones" class="nav-link"><i class="nav-icon bi bi-traffic-light"></i><p>Validación Semafórica</p></a></li>
+<li class="nav-item"><a href="/alertas" class="nav-link"><i class="nav-icon bi bi-bell"></i><p>Alertas Ensayo</p></a></li>
+<li class="nav-item"><a href="/auditoriaLote" class="nav-link"><i class="nav-icon bi bi-shield-check"></i><p>Auditoría Lote</p></a></li>
+<li class="nav-item"><a href="/dictamenLote" class="nav-link"><i class="nav-icon bi bi-journal-check"></i><p>Dictamen Lote</p></a></li>
+<li class="nav-item"><a href="/historialLote" class="nav-link active"><i class="nav-icon bi bi-clock-history"></i><p>Historial Lote</p></a></li>
+<li class="nav-item"><a href="/informeAuditoria" class="nav-link"><i class="nav-icon bi bi-file-earmark-text"></i><p>Informe Auditoría</p></a></li>
+<li class="nav-item"><a href="/indicadorKpi" class="nav-link"><i class="nav-icon bi bi-bar-chart-line"></i><p>Indicadores KPI</p></a></li>
+
+        </ul>
+      </nav>
+    </div>
+  </aside>
+
+  <main class="app-main">
+    <div class="app-content-header">
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-sm-6"><h1 class="mb-0 fs-3">Crear Historial Lote</h1></div>
+          <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-end">
+              <li class="breadcrumb-item"><a href="/index">Inicio</a></li>
+              <li class="breadcrumb-item"><a href="/historialLote">Historial Lote</a></li>
+              <li class="breadcrumb-item active">Crear</li>
+            </ol>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="app-content">
+      <div class="container-fluid">
+        <div class="row justify-content-center">
+          <div class="col-md-8 col-lg-6">
+            <div class="card">
+              <div class="card-header">
+                <h3 class="card-title mb-0">
+                  <i class="bi bi-plus-circle me-2"></i>Crear Historial Lote
+                </h3>
+              </div>
+              <div class="card-body">
+                <form action="/historialLote/crearHistorialLote" method="post">
+                  
+            <div class="mb-3">
+              <label for="idOrdenProduccion" class="form-label fw-semibold">ID Orden de Producción</label>
+              <input type="number" class="form-control" id="idOrdenProduccion" name="idOrdenProduccion" placeholder="Ingrese el ID de la orden" min="1" />
+            </div>
+            <div class="mb-3">
+              <label for="fechaEvento" class="form-label fw-semibold">Fecha del Evento</label>
+              <input type="date" class="form-control" id="fechaEvento" name="fechaEvento" />
+            </div>
+            <div class="mb-3">
+              <label for="accion" class="form-label fw-semibold">Acción</label>
+              <input type="text" class="form-control" id="accion" name="accion" placeholder="Ej: CREACIÓN, MODIFICACIÓN, CIERRE" />
+            </div>
+            <div class="mb-3">
+              <label for="descripcion" class="form-label fw-semibold">Descripción</label>
+              <textarea class="form-control" id="descripcion" name="descripcion" rows="3" placeholder="Descripción del evento registrado"></textarea>
+            </div>
+                  <div class="d-flex gap-2 mt-4">
+                    <button type="submit" class="btn btn-success">
+                      <i class="bi bi-floppy-fill me-1"></i> Crear
+                    </button>
+                    <a href="/historialLote" class="btn btn-outline-secondary">
+                      <i class="bi bi-arrow-left me-1"></i> Cancelar
+                    </a>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="app-footer">
+    <div class="float-end d-none d-sm-inline">Pisip-JBpharma</div>
+    <strong>Copyright &copy; 2024 JBpharma.</strong> Todos los derechos reservados.
+  </footer>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/overlayscrollbars@2.11.0/browser/overlayscrollbars.browser.es6.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.min.js"></script>
+<script src="./js/adminlte.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const sidebarWrapper = document.querySelector('.sidebar-wrapper');
+  if (sidebarWrapper && window.innerWidth > 992 && window.OverlayScrollbarsGlobal?.OverlayScrollbars) {
+    OverlayScrollbarsGlobal.OverlayScrollbars(sidebarWrapper, {
+      scrollbars: { theme: 'os-theme-light', autoHide: 'leave', clickScroll: true }
+    });
+  }
+});
+</script>
+</body>
+</html>
