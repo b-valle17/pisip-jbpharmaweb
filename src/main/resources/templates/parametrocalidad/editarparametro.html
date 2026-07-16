@@ -1,3 +1,4 @@
+
 <!doctype html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org"
 	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
@@ -12,14 +13,14 @@
 				<div class="container-fluid">
 					<div class="row">
 						<div class="col-sm-6">
-							<h1 class="mb-0 fs-3">Lista Usuarios</h1>
+							<h1 class="mb-0 fs-3">Editar Parametro</h1>
 						</div>
 						<div class="col-sm-6">
 							<nav aria-label="breadcrumb">
 								<ol class="breadcrumb float-sm-end">
 									<li class="breadcrumb-item"><a href="#">Home</a></li>
-									<li class="breadcrumb-item"><a href="#">Tables</a></li>
-									<li class="breadcrumb-item active" aria-current="page">Data</li>
+									<li class="breadcrumb-item"><a href="#">Forms</a></li>
+									<li class="breadcrumb-item active" aria-current="page">Elements</li>
 								</ol>
 							</nav>
 						</div>
@@ -28,97 +29,69 @@
 			</div>
 			<div class="app-content">
 				<div class="container-fluid">
-					<div class="card">
-						<div class="card-header">
-							<a class="badge text-bg-info" th:href="@{/usuario/crearusuario}"
-								style="text-decoration: none;">Crear Usuario</a>
-							<div class="card-tools">
-								<div class="input-group input-group-sm" style="width: 16rem">
-									<span class="input-group-text"> <i class="bi bi-search"
-										aria-hidden="true"></i>
-									</span> <input id="table-filter" type="search" class="form-control"
-										placeholder="Filter rows&hellip;" aria-label="Filter rows" />
-								</div>
-							</div>
+					<div class="row g-4">
+						<div class="col-12">
+							<div class="callout callout-info">En este formulario podra
+								editar los parametros de calidad ya establecidos anteriormente</div>
 						</div>
-						<div class="card-body">
-							<div class="d-flex gap-2 mb-3">
-								<button id="export-csv" type="button"
-									class="btn btn-sm btn-outline-secondary">
-									<i class="bi bi-filetype-csv me-1" aria-hidden="true"></i>
-									Export CSV
-								</button>
-								<button id="export-json" type="button"
-									class="btn btn-sm btn-outline-secondary">
-									<i class="bi bi-filetype-json me-1" aria-hidden="true"></i>
-									Export JSON
-								</button>
-								<button id="print-table" type="button"
-									class="btn btn-sm btn-outline-secondary">
-									<i class="bi bi-printer me-1" aria-hidden="true"></i> Print
-								</button>
+
+						<!-- Quick Example -->
+						<div class="col-md-6 mx-auto">
+							<div class="card card-primary card-outline mb-4">
+								<form>
+									<div class="card-body">
+										<div class="mb-3">
+											<label for="exampleInputEmail1" class="form-label">Nombre
+												parametro</label> <input type="text" class="form-control"
+												id="exampleInputEmail1" aria-describedby="nombreHelp" />
+											<div id="nombreHelp" class="form-text">En este campo
+												debe escribir el nombre del parametro</div>
+										</div>
+										<div class="mb-3">
+											<label for="exampleInputEmail1" class="form-label">Limite
+												minimo</label> <input type="text" class="form-control"
+												id="exampleInputEmail1" aria-describedby="limiteminimoHelp" />
+											<div id="limiteminimoHelp" class="form-text">En este
+												campo debe escribir el limite minimo</div>
+										</div>
+										<div class="mb-3">
+											<label for="exampleInputEmail1" class="form-label">Limite
+												maximo</label> <input type="text" class="form-control"
+												id="exampleInputEmail1" aria-describedby="limitemaximoHelp" />
+											<div id="limitemaximoHelp" class="form-text">En este
+												campo debe escribir el limite maximo</div>
+										</div>
+										<div class="mb-3">
+											<label for="exampleInputEmail1" class="form-label">Unidad
+												de medida</label> <input type="text" class="form-control"
+												id="exampleInputEmail1" aria-describedby="unidadHelp" />
+											<div id="unidadHelp" class="form-text">En este campo
+												debe escribir la unidad de medida</div>
+										</div>
+										<div class="mb-3">
+											<label for="exampleInputEmail1" class="form-label">Producto</label>
+											<select class="form-select" id="select-default">
+												<option selected>Escoja un producto</option>
+												<option>Producto 1</option>
+												<option>Producto 2</option>
+												<option>Producto 3</option>
+											</select>
+											<div id="productoHelp" class="form-text">En este campo
+												debe de escoger el producto a parametrizar</div>
+										</div>
+										<div class="mb-3">
+											<label for="exampleInputEmail1" class="form-label">Fecha
+												configuracion</label> <input type="date" class="form-control"
+												id="exampleInputEmail1" aria-describedby="fechaHelp" />
+											<div id="fechaHelp" class="form-text">En este campo
+												debe establecer la fecha de configuracion</div>
+										</div>
+									</div>
+									<div class="card-footer">
+										<button type="submit" class="btn btn-primary">Submit</button>
+									</div>
+								</form>
 							</div>
-							<div id="users-table">
-								<table class="table table-striped">
-									<thead>
-										<tr>
-											<th scope="col">ID</th>
-											<th scope="col">Nombre Usuario</th>
-											<th scope="col">Correo Electronico</th>
-											<th scope="col">Contraseña</th>
-											<th scope="col">Rol</th>
-											<th scope="col">Estado</th>
-											<th scope="col">Fecha Creacion</th>
-											<th scope="col">Acciones</th>
-										</tr>
-									</thead>
-									<tbody>
-										<tr th:each="indice : ${listausuarios}">
-											<td th:text="${indice.idUsuario}" class="fw-semibold"></td>
-
-											<td th:text="${indice.nombre}"></td>
-
-											<td th:text="${indice.correo}"></td>
-
-											<td><span class="text-muted">••••••••</span></td>
-
-											<td><span th:if="${indice.idRol != null}"
-												th:text="${indice.idRol.nombreRol}" class="badge bg-primary"></span>
-												<span th:if="${indice.idRol == null}"
-												class="badge bg-secondary">Sin Rol</span></td>
-
-											<td><span th:if="${indice.estadoUsuario}"
-												class="badge bg-success-subtle text-success border border-success-subtle px-2.5 py-1">
-													<i class="bi bi-check-circle-fill me-1"></i>Activo
-											</span> <span th:if="${!indice.estadoUsuario}"
-												class="badge bg-danger-subtle text-danger border border-danger-subtle px-2.5 py-1">
-													<i class="bi bi-x-circle-fill me-1"></i>Inactivo
-											</span></td>
-
-											<td
-												th:text="${#dates.format(indice.fechaCreacion, 'dd/MM/yyyy')}"></td>
-
-											<td>
-												<div class="btn-group" role="group" aria-label="Acciones">
-													<a th:href="@{/usuario/editarusuario}"
-														class="btn btn-sm btn-outline-warning" title="Editar">
-														<i class="fa-solid fa-pen-to-square"></i>
-													</a> <a href="" class="btn btn-sm btn-outline-danger"
-														title="Eliminar"
-														onclick="return confirm('¿Estás seguro de que deseas eliminar este registro?')">
-														<i class="fa fa-trash" aria-hidden="true"></i>
-													</a>
-												</div>
-											</td>
-										</tr>
-									</tbody>
-								</table>
-							</div>
-						</div>
-						<div class="card-footer text-secondary small">
-							Powered by <a href="https://tabulator.info/" target="_blank"
-								rel="noopener">Tabulator</a> &mdash; vanilla JS, no jQuery
-							required.
 						</div>
 					</div>
 				</div>
@@ -191,9 +164,6 @@
      module (since 4.1) — no page script needed. Only the no-flash snippet
      in <head> stays inline, because it must run before first paint. -->
 	<!--end::Color Mode Toggle-->
-	<script
-		src="https://cdn.jsdelivr.net/npm/tabulator-tables@6.4.0/dist/js/tabulator.min.js"
-		crossorigin="anonymous"></script>
 	<script defer
 		src="https://static.cloudflareinsights.com/beacon.min.js/v4513226cdae34746b4dedf0b4dfa099e1781791509496"
 		integrity="sha512-ZE9pZaUXND66v380QUtch/5sE9tPFh2zg45pR2PB0CVkCtOREv2AJKkSidISWkysEuQ0EH8faUU5du78bx87UQ=="

@@ -1,6 +1,7 @@
 
 <!doctype html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
 <head>
 <script>(function(w,i,g){w[g]=w[g]||[];if(typeof w[g].push=='function')w[g].push(i)})
 (window,'GTM-WHH7CJ83','google_tags_first_party');</script>
@@ -10,7 +11,7 @@
 		f.parentNode.insertBefore(j,f);
 		})(window,document,'script','dataLayer');</script>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title>AdminLTE 4 | Form Elements</title>
+<title>AdminLTE 4 | Data Tables</title>
 
 <!--begin::Theme Init (prevents flash of incorrect theme on load, #6043)-->
 <script>
@@ -49,7 +50,7 @@
 <!--end::Accessibility Meta Tags-->
 
 <!--begin::Primary Meta Tags-->
-<meta name="title" content="AdminLTE 4 | Form Elements" />
+<meta name="title" content="AdminLTE 4 | Data Tables" />
 <meta name="author" content="ColorlibHQ" />
 <meta name="description"
 	content="AdminLTE is a free Bootstrap 5 admin dashboard template with almost 50 example pages, built with vanilla JS and designed with accessibility in mind." />
@@ -85,8 +86,12 @@
 <!--begin::Required Plugin(AdminLTE)-->
 <link rel="stylesheet" href="../css/adminlte.css" />
 <!--end::Required Plugin(AdminLTE)-->
+
+<link rel="stylesheet"
+	href="https://cdn.jsdelivr.net/npm/tabulator-tables@6.4.0/dist/css/tabulator_bootstrap5.min.css"
+	crossorigin="anonymous" />
 <script data-cfasync="false"
-	nonce="5daf297f-a44e-4dc6-b83a-64bf2ed23907">try{(function(w,d){!function(cm,cn,co,cp){if(cm.zaraz)console.error("zaraz is loaded twice");else{cm[co]=cm[co]||{};cm[co].executed=[];cm.zaraz={deferred:[],listeners:[]};cm.zaraz._v="20";cm.zaraz._n="5daf297f-a44e-4dc6-b83a-64bf2ed23907";cm.zaraz.q=[];cm.zaraz._f=function(cq){return async function(){var cr=Array.prototype.slice.call(arguments);cm.zaraz.q.push({m:cq,a:cr})}};for(const cs of["track","set","debug"])cm.zaraz[cs]=cm.zaraz._f(cs);cm.zaraz.init=()=>{var ct=cn.getElementsByTagName(cp)[0],cu=cn.createElement(cp),cv=cn.getElementsByTagName("title")[0];cv&&(cm[co].t=cn.getElementsByTagName("title")[0].text);cm[co].x=Math.random();cm[co].w=cm.screen.width;cm[co].h=cm.screen.height;cm[co].j=cm.innerHeight;cm[co].e=cm.innerWidth;cm[co].l=cm.location.href;cm[co].r=cn.referrer;cm[co].k=cm.screen.colorDepth;cm[co].n=cn.characterSet;cm[co].o=(new Date).getTimezoneOffset();if(cm.dataLayer)for(const cw of Object.entries(Object.entries(dataLayer).reduce((cx,cy)=>({...cx[1],...cy[1]}),{})))zaraz.set(cw[0],cw[1],{scope:"page"});cm[co].q=[];for(;cm.zaraz.q.length;){const cz=cm.zaraz.q.shift();cm[co].q.push(cz)}cu.defer=!0;for(const cA of[localStorage,sessionStorage])Object.keys(cA||{}).filter(cC=>cC.startsWith("_zaraz_")).forEach(cB=>{try{cm[co]["z_"+cB.slice(7)]=JSON.parse(cA.getItem(cB))}catch{cm[co]["z_"+cB.slice(7)]=cA.getItem(cB)}});cu.referrerPolicy="origin";cu.src="/cdn-cgi/zaraz/s.js?z="+btoa(encodeURIComponent(JSON.stringify(cm[co])));ct.parentNode.insertBefore(cu,ct)};["complete","interactive"].includes(cn.readyState)?zaraz.init():cm.addEventListener("DOMContentLoaded",zaraz.init)}}(w,d,"zarazData","script");window.zaraz._p=async k=>new Promise(l=>{if(k){k.e&&k.e.forEach(m=>{try{const n=d.querySelector("script[nonce]"),o=n?.nonce||n?.getAttribute("nonce"),p=d.createElement("script");o&&(p.nonce=o);p.innerHTML=m;p.onload=()=>{d.head.removeChild(p)};d.head.appendChild(p)}catch(q){console.error(`Error executing script: ${m}\n`,q)}});Promise.allSettled((k.f||[]).map(r=>fetch(r[0],r[1])))}l()});zaraz._p({"e":["(function(w,d){})(window,document)"]});})(window,document)}catch(e){throw fetch("/cdn-cgi/zaraz/t"),e;};</script>
+	nonce="e65ecad8-741a-445e-bd6e-d602685797a2">try{(function(w,d){!function(cm,cn,co,cp){if(cm.zaraz)console.error("zaraz is loaded twice");else{cm[co]=cm[co]||{};cm[co].executed=[];cm.zaraz={deferred:[],listeners:[]};cm.zaraz._v="20";cm.zaraz._n="e65ecad8-741a-445e-bd6e-d602685797a2";cm.zaraz.q=[];cm.zaraz._f=function(cq){return async function(){var cr=Array.prototype.slice.call(arguments);cm.zaraz.q.push({m:cq,a:cr})}};for(const cs of["track","set","debug"])cm.zaraz[cs]=cm.zaraz._f(cs);cm.zaraz.init=()=>{var ct=cn.getElementsByTagName(cp)[0],cu=cn.createElement(cp),cv=cn.getElementsByTagName("title")[0];cv&&(cm[co].t=cn.getElementsByTagName("title")[0].text);cm[co].x=Math.random();cm[co].w=cm.screen.width;cm[co].h=cm.screen.height;cm[co].j=cm.innerHeight;cm[co].e=cm.innerWidth;cm[co].l=cm.location.href;cm[co].r=cn.referrer;cm[co].k=cm.screen.colorDepth;cm[co].n=cn.characterSet;cm[co].o=(new Date).getTimezoneOffset();if(cm.dataLayer)for(const cw of Object.entries(Object.entries(dataLayer).reduce((cx,cy)=>({...cx[1],...cy[1]}),{})))zaraz.set(cw[0],cw[1],{scope:"page"});cm[co].q=[];for(;cm.zaraz.q.length;){const cz=cm.zaraz.q.shift();cm[co].q.push(cz)}cu.defer=!0;for(const cA of[localStorage,sessionStorage])Object.keys(cA||{}).filter(cC=>cC.startsWith("_zaraz_")).forEach(cB=>{try{cm[co]["z_"+cB.slice(7)]=JSON.parse(cA.getItem(cB))}catch{cm[co]["z_"+cB.slice(7)]=cA.getItem(cB)}});cu.referrerPolicy="origin";cu.src="/cdn-cgi/zaraz/s.js?z="+btoa(encodeURIComponent(JSON.stringify(cm[co])));ct.parentNode.insertBefore(cu,ct)};["complete","interactive"].includes(cn.readyState)?zaraz.init():cm.addEventListener("DOMContentLoaded",zaraz.init)}}(w,d,"zarazData","script");window.zaraz._p=async k=>new Promise(l=>{if(k){k.e&&k.e.forEach(m=>{try{const n=d.querySelector("script[nonce]"),o=n?.nonce||n?.getAttribute("nonce"),p=d.createElement("script");o&&(p.nonce=o);p.innerHTML=m;p.onload=()=>{d.head.removeChild(p)};d.head.appendChild(p)}catch(q){console.error(`Error executing script: ${m}\n`,q)}});Promise.allSettled((k.f||[]).map(r=>fetch(r[0],r[1])))}l()});zaraz._p({"e":["(function(w,d){})(window,document)"]});})(window,document)}catch(e){throw fetch("/cdn-cgi/zaraz/t"),e;};</script>
 </head>
 <body class="layout-fixed sidebar-expand-lg bg-body-tertiary">
 	<div class="app-wrapper">
@@ -98,8 +103,7 @@
 				<ul class="navbar-nav">
 					<li class="nav-item"><a class="nav-link"
 						data-lte-toggle="sidebar" href="#" role="button"
-						aria-label="Toggle sidebar"> <i
-							class="bi bi-list"></i>
+						aria-label="Toggle sidebar"> <i class="bi bi-list"></i>
 					</a></li>
 				</ul>
 				<!--end::Start Navbar Links-->
@@ -210,17 +214,17 @@
 
 					<!--begin::Fullscreen Toggle-->
 					<li class="nav-item"><a class="nav-link" href="#"
-						data-lte-toggle="fullscreen" aria-label="Toggle fullscreen">
-							<i data-lte-icon="maximize" class="bi bi-arrows-fullscreen"></i>
-							<i data-lte-icon="minimize" class="bi bi-fullscreen-exit d-none"></i>
+						data-lte-toggle="fullscreen" aria-label="Toggle fullscreen"> <i
+							data-lte-icon="maximize" class="bi bi-arrows-fullscreen"></i> <i
+							data-lte-icon="minimize" class="bi bi-fullscreen-exit d-none"></i>
 					</a></li>
 					<!--end::Fullscreen Toggle-->
 
 					<!--begin::Color Mode Toggle (#6010)-->
 					<li class="nav-item dropdown"><a class="nav-link" href="#"
 						id="bd-theme" aria-label="Toggle color scheme"
-						data-bs-toggle="dropdown" aria-expanded="false">
-							<i class="bi bi-sun-fill" data-lte-theme-icon="light"></i> <i
+						data-bs-toggle="dropdown" aria-expanded="false"> <i
+							class="bi bi-sun-fill" data-lte-theme-icon="light"></i> <i
 							class="bi bi-moon-fill d-none" data-lte-theme-icon="dark"></i> <i
 							class="bi bi-circle-half d-none" data-lte-theme-icon="auto"></i>
 					</a>
@@ -306,9 +310,9 @@
 			<div class="sidebar-brand">
 				<!--begin::Brand Link-->
 				<a href="../index.html" class="brand-link"> <!--begin::Brand Image-->
-					<img src="../assets/img/AdminLTELogo.png" alt="AdminLTE Logo"
-					class="brand-image opacity-75 shadow" /> <!--end::Brand Image-->
-					<!--begin::Brand Text--> <span class="brand-text fw-light">Pisip-JBpharmaWeb</span> <!--end::Brand Text-->
+					<img src="../assets/img/logo.png" alt="AdminLTE Logo"
+					class="brand-image opacity-75 shadow" /> <!--end::Brand Image--> <!--begin::Brand Text-->
+					<span class="brand-text fw-light">Pisip-JBpharma</span> <!--end::Brand Text-->
 				</a>
 				<!--end::Brand Link-->
 			</div>
@@ -323,15 +327,15 @@
 							class="nav-link"> <i class="nav-icon bi bi-speedometer"></i>
 								<p>Dashboard</p>
 						</a></li>
-						<li class="nav-item"><a href="../starter.html"
+						<li class="nav-item"><a th:href="@{/parametrocalidad}"
 							class="nav-link"> <i class="nav-icon bi bi-file-earmark"></i>
 								<p>Parametros Calidad</p>
 						</a></li>
-						<li class="nav-item"><a href="../generate/theme.html"
+						<li class="nav-item"><a th:href="@{/producto}"
 							class="nav-link"> <i class="nav-icon bi bi-palette"></i>
 								<p>Productos</p>
 						</a></li>
-												<li class="nav-item"><a href="../generate/theme.html"
+						<li class="nav-item"><a th:href="@{/usuario}"
 							class="nav-link"> <i class="nav-icon bi bi-palette"></i>
 								<p>Usuarios</p>
 						</a></li>
@@ -343,93 +347,7 @@
 		</aside>
 		<!--end::Sidebar-->
 		<main class="app-main">
-			<div class="app-content-header">
-				<div class="container-fluid">
-					<div class="row">
-						<div class="col-sm-6">
-							<h1 class="mb-0 fs-3">Crear Parametro</h1>
-						</div>
-						<div class="col-sm-6">
-							<nav aria-label="breadcrumb">
-								<ol class="breadcrumb float-sm-end">
-									<li class="breadcrumb-item"><a href="#">Home</a></li>
-									<li class="breadcrumb-item"><a href="#">Forms</a></li>
-									<li class="breadcrumb-item active" aria-current="page">Elements</li>
-								</ol>
-							</nav>
-						</div>
-					</div>
-				</div>
-			</div>
-			<div class="app-content">
-				<div class="container-fluid">
-					<div class="row g-4">
-						<div class="col-12">
-							<div class="callout callout-info">En este formulario podra
-								definir los parametros de calidad</div>
-						</div>
-
-						<!-- Quick Example -->
-						<div class="col-md-6 mx-auto">
-							<div class="card card-primary card-outline mb-4">
-								<form>
-									<div class="card-body">
-										<div class="mb-3">
-											<label for="exampleInputEmail1" class="form-label">Nombre
-												parametro</label> <input type="text" class="form-control"
-												id="exampleInputEmail1" aria-describedby="nombreHelp" />
-											<div id="nombreHelp" class="form-text">En este campo
-												debe escribir el nombre del parametro</div>
-										</div>
-										<div class="mb-3">
-											<label for="exampleInputEmail1" class="form-label">Limite
-												minimo</label> <input type="text" class="form-control"
-												id="exampleInputEmail1" aria-describedby="limiteminimoHelp" />
-											<div id="limiteminimoHelp" class="form-text">En este
-												campo debe escribir el limite minimo</div>
-										</div>
-										<div class="mb-3">
-											<label for="exampleInputEmail1" class="form-label">Limite
-												maximo</label> <input type="text" class="form-control"
-												id="exampleInputEmail1" aria-describedby="limitemaximoHelp" />
-											<div id="limitemaximoHelp" class="form-text">En este
-												campo debe escribir el limite maximo</div>
-										</div>
-										<div class="mb-3">
-											<label for="exampleInputEmail1" class="form-label">Unidad
-												de medida</label> <input type="text" class="form-control"
-												id="exampleInputEmail1" aria-describedby="unidadHelp" />
-											<div id="unidadHelp" class="form-text">En este campo
-												debe escribir la unidad de medida</div>
-										</div>
-										<div class="mb-3">
-											<label for="exampleInputEmail1" class="form-label">Producto</label>
-											<select class="form-select" id="select-default">
-												<option selected>Escoja un producto</option>
-												<option>Producto 1</option>
-												<option>Producto 2</option>
-												<option>Producto 3</option>
-											</select>
-											<div id="productoHelp" class="form-text">En este campo
-												debe de escoger el producto a parametrizar</div>
-										</div>
-										<div class="mb-3">
-											<label for="exampleInputEmail1" class="form-label">Fecha
-												configuracion</label> <input type="date" class="form-control"
-												id="exampleInputEmail1" aria-describedby="fechaHelp" />
-											<div id="fechaHelp" class="form-text">En este campo
-												debe establecer la fecha de configuracion</div>
-										</div>
-									</div>
-									<div class="card-footer">
-										<button type="submit" class="btn btn-primary">Submit</button>
-									</div>
-								</form>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
+			<div layout:fragment="contenidopaginas"></div>
 		</main>
 		<!--begin::Footer-->
 		<footer class="app-footer">
@@ -445,6 +363,7 @@
 		<!--end::Footer-->
 	</div>
 	<!--begin::Third Party Plugin(OverlayScrollbars)-->
+	<script src="https://kit.fontawesome.com/e9f58d382f.js" crossorigin="anonymous"></script>
 	<script
 		src="https://cdn.jsdelivr.net/npm/overlayscrollbars@2.11.0/browser/overlayscrollbars.browser.es6.min.js"
 		crossorigin="anonymous"></script>
@@ -498,6 +417,9 @@
      module (since 4.1) — no page script needed. Only the no-flash snippet
      in <head> stays inline, because it must run before first paint. -->
 	<!--end::Color Mode Toggle-->
+	<script
+		src="https://cdn.jsdelivr.net/npm/tabulator-tables@6.4.0/dist/js/tabulator.min.js"
+		crossorigin="anonymous"></script>
 	<script defer
 		src="https://static.cloudflareinsights.com/beacon.min.js/v4513226cdae34746b4dedf0b4dfa099e1781791509496"
 		integrity="sha512-ZE9pZaUXND66v380QUtch/5sE9tPFh2zg45pR2PB0CVkCtOREv2AJKkSidISWkysEuQ0EH8faUU5du78bx87UQ=="

@@ -1,6 +1,7 @@
 
 <!doctype html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
   <!--begin::Head-->
   <head><script>(function(w,i,g){w[g]=w[g]||[];if(typeof w[g].push=='function')w[g].push(i)})
 (window,'GTM-WHH7CJ83','google_tags_first_party');</script><script>(function(w,d,s,l){w[l]=w[l]||[];(function(){w[l].push(arguments);})('set', 'developer_id.dYzg1YT', true);
@@ -127,7 +128,7 @@
           </form>
 
           <p class="mt-3 mb-1">
-            <a href="login.html">Login</a>
+            <a th:href="@{/autenticacion}">Login</a>
           </p>
         </div>
         <!-- /.login-card-body -->
