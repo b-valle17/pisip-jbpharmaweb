@@ -1,3 +1,4 @@
+
 <!doctype html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org"
 	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
@@ -12,7 +13,7 @@
 				<div class="container-fluid">
 					<div class="row">
 						<div class="col-sm-6">
-							<h1 class="mb-0 fs-3">Lista Usuarios</h1>
+							<h1 class="mb-0 fs-3">Lista Parametros</h1>
 						</div>
 						<div class="col-sm-6">
 							<nav aria-label="breadcrumb">
@@ -30,8 +31,9 @@
 				<div class="container-fluid">
 					<div class="card">
 						<div class="card-header">
-							<a class="badge text-bg-info" th:href="@{/usuario/crearusuario}"
-								style="text-decoration: none;">Crear Usuario</a>
+							<a class="badge text-bg-info"
+								th:href="@{/parametrocalidad/crearparametro}"
+								style="text-decoration: none;">Crear Parametro</a>
 							<div class="card-tools">
 								<div class="input-group input-group-sm" style="width: 16rem">
 									<span class="input-group-text"> <i class="bi bi-search"
@@ -63,44 +65,32 @@
 									<thead>
 										<tr>
 											<th scope="col">ID</th>
-											<th scope="col">Nombre Usuario</th>
-											<th scope="col">Correo Electronico</th>
-											<th scope="col">Contraseña</th>
-											<th scope="col">Rol</th>
-											<th scope="col">Estado</th>
-											<th scope="col">Fecha Creacion</th>
+											<th scope="col">Nombre Parametro</th>
+											<th scope="col">Limite Minimo</th>
+											<th scope="col">Limite Maximo</th>
+											<th scope="col">Unidad de Medida</th>
+											<th scope="col">Fecha Configuracion</th>
+											<th scope="col">Producto</th>
 											<th scope="col">Acciones</th>
 										</tr>
 									</thead>
 									<tbody>
-										<tr th:each="indice : ${listausuarios}">
-											<td th:text="${indice.idUsuario}" class="fw-semibold"></td>
-
-											<td th:text="${indice.nombre}"></td>
-
-											<td th:text="${indice.correo}"></td>
-
-											<td><span class="text-muted">••••••••</span></td>
-
-											<td><span th:if="${indice.idRol != null}"
-												th:text="${indice.idRol.nombreRol}" class="badge bg-primary"></span>
-												<span th:if="${indice.idRol == null}"
-												class="badge bg-secondary">Sin Rol</span></td>
-
-											<td><span th:if="${indice.estadoUsuario}"
-												class="badge bg-success-subtle text-success border border-success-subtle px-2.5 py-1">
-													<i class="bi bi-check-circle-fill me-1"></i>Activo
-											</span> <span th:if="${!indice.estadoUsuario}"
-												class="badge bg-danger-subtle text-danger border border-danger-subtle px-2.5 py-1">
-													<i class="bi bi-x-circle-fill me-1"></i>Inactivo
-											</span></td>
-
+										<tr th:each="indice : ${listaparametros}">
+											<td th:text="${indice.idParametro}" class="fw-semibold"></td>
+											<td th:text="${indice.nombreParametro}"></td>
+											<td th:text="${indice.limiteMinimo}"></td>
+											<td th:text="${indice.limiteMaximo}"></td>
+											<td th:text="${indice.unidadMedida}"></td>
 											<td
-												th:text="${#dates.format(indice.fechaCreacion, 'dd/MM/yyyy')}"></td>
-
+												th:text="${#dates.format(indice.fechaConfiguracion, 'dd/MM/yyyy')}"></td>
+											<td><span th:if="${indice.idProducto != null}"
+												th:text="${indice.idProducto.nombreProducto}"
+												class="badge bg-primary"> </span> <span
+												th:if="${indice.idProducto == null}"
+												class="badge bg-secondary">Sin Producto </span></td>
 											<td>
 												<div class="btn-group" role="group" aria-label="Acciones">
-													<a th:href="@{/usuario/editarusuario}"
+													<a th:href="@{/parametrocalidad/editarparametro}"
 														class="btn btn-sm btn-outline-warning" title="Editar">
 														<i class="fa-solid fa-pen-to-square"></i>
 													</a> <a href="" class="btn btn-sm btn-outline-danger"
