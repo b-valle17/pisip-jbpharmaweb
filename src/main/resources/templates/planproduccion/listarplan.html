@@ -1,281 +1,211 @@
 <!doctype html>
-<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="/plantilla/plantillaui">
 <head>
 <title>Plan de Producción | JB Pharma</title>
 
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="stylesheet"
-	href="https://cdn.jsdelivr.net/npm/@fontsource/source-sans-3@5.0.12/index.css">
-<link rel="stylesheet"
-	href="https://cdn.jsdelivr.net/npm/overlayscrollbars@2.11.0/styles/overlayscrollbars.min.css">
-<link rel="stylesheet"
-	href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
-<link rel="stylesheet" th:href="@{/css/adminlte.css}">
-
-<!-- SE AGREGA: Estilos de Tabulator adaptados a Bootstrap 5 -->
-<link rel="stylesheet"
-	href="https://cdn.jsdelivr.net/npm/tabulator-tables@6.4.0/dist/css/tabulator_bootstrap5.min.css"
-	crossorigin="anonymous" />
-
 <style>
-.metric-card .icon {
-	font-size: 2rem;
-	opacity: .75;
-}
-
 .table-actions .btn {
 	margin-right: .25rem;
 }
-
-.status-dot {
-	width: .65rem;
-	height: .65rem;
-	display: inline-block;
-	border-radius: 50%;
-	margin-right: .35rem;
-}
-
-.page-help {
-	font-size: .92rem;
+@media print {
+	body * {
+		visibility: hidden;
+	}
+	#printable-area, #printable-area * {
+		visibility: visible;
+	}
+	#printable-area {
+		position: absolute;
+		left: 0;
+		top: 0;
+		width: 100%;
+	}
+	.card-header, .d-flex.gap-2.mb-3, .table-actions {
+		display: none !important;
+	}
 }
 </style>
-
 </head>
-<body class="layout-fixed sidebar-expand-lg bg-body-tertiary">
-	<div class="app-wrapper">
-		<nav class="app-header navbar navbar-expand bg-body">
+<body>
+
+	<div layout:fragment="contenidopaginas">
+
+		<!-- Header de la sección -->
+		<div class="app-content-header">
 			<div class="container-fluid">
-				<ul class="navbar-nav">
-					<li class="nav-item"><a class="nav-link"
-						data-lte-toggle="sidebar" href="#"><i class="bi bi-list"></i></a></li>
-					<li class="nav-item d-none d-md-block"><span
-						class="nav-link fw-semibold">Área de Producción</span></li>
-				</ul>
-				<ul class="navbar-nav ms-auto">
-					<li class="nav-item"><a class="nav-link"><i
-							class="bi bi-bell-fill"></i><span
-							class="navbar-badge badge text-bg-danger">2</span></a></li>
-					<li class="nav-item"><span class="nav-link"><i
-							class="bi bi-person-circle me-1"></i>Gerente</span></li>
-				</ul>
-			</div>
-		</nav>
-
-		<aside class="app-sidebar bg-body-secondary shadow"
-			data-bs-theme="dark">
-			<div class="sidebar-brand">
-				<a th:href="@{/index.html}" class="brand-link"> <img
-					th:src="@{/assets/img/logo.png}" alt="Logo JB Pharma"
-					class="brand-image me-2" style="max-height: 33px; width: auto;">
-				</a>
-			</div>
-			<div class="sidebar-wrapper">
-				<nav class="mt-2">
-					<ul class="nav sidebar-menu flex-column" data-lte-toggle="treeview"
-						data-accordion="false">
-						<li class="nav-item"><a th:href="@{/planproduccion}"
-									href="./listarplan.html"
-							class="nav-link active"><i
-								class="nav-icon bi bi-file-earmark"></i>
-								<p>Planes de Producción</p></a></li>
-						<li class="nav-item"><a th:href="@{/ordenproduccion}"
-									href="./listarorden.html"
-							class="nav-link "><i class="nav-icon bi bi-file-earmark"></i>
-								<p>Órdenes de Fabricación</p></a></li>
-					</ul>
-				</nav>
-			</div>
-		</aside>
-
-		<main class="app-main">
-			<div class="app-content-header">
-				<div class="container-fluid">
-					<div class="row">
-						<div class="col-sm-6">
-							<h1 class="mb-0 fs-3">Planes de Producción</h1>
-						</div>
-						<div class="col-sm-6">
-							<ol class="breadcrumb float-sm-end">
-								<li class="breadcrumb-item"><a href="./index.html">Inicio</a></li>
-								<li class="breadcrumb-item active">PlanDeProduccion</li>
-							</ol>
-						</div>
+				<div class="row">
+					<div class="col-sm-6">
+						<h1 class="mb-0 fs-3">Planes de Producción</h1>
+					</div>
+					<div class="col-sm-6">
+						<ol class="breadcrumb float-sm-end">
+							<li class="breadcrumb-item"><a href="./index.html">Inicio</a></li>
+							<li class="breadcrumb-item active">PlanDeProduccion</li>
+						</ol>
 					</div>
 				</div>
 			</div>
-			<div class="app-content">
-				<div class="container-fluid">
+		</div>
 
-					<!-- SE AGREGA: Estructura de la tarjeta con Buscador, Botones de Exportación y la Tabla -->
-					<div class="card">
-						<div class="card-header">
-							<h3 class="card-title">Gestión de Planes de Producción</h3>
-							<div class="card-tools">
-								<div class="input-group input-group-sm" style="width: 16rem">
-									<span class="input-group-text"> <i class="bi bi-search"
-										aria-hidden="true"></i>
-									</span> <input id="table-filter" type="search" class="form-control"
-										placeholder="Filtrar filas…" aria-label="Filtrar filas" />
-								</div>
+		<div class="app-content">
+			<div class="container-fluid">
+
+				<div class="card" id="printable-area">
+					<div class="card-header">
+						<h3 class="card-title">Gestión de Planes de Producción</h3>
+						<div class="card-tools">
+							<div class="input-group input-group-sm" style="width: 16rem">
+								<span class="input-group-text"> <i class="bi bi-search"
+									aria-hidden="true"></i>
+								</span>
+								<!-- Filtro global -->
+								<input id="table-filter" type="search" class="form-control"
+									placeholder="Filtrar filas…" aria-label="Filtrar filas" />
 							</div>
-						</div>
-						<div class="card-body">
-							<div class="d-flex gap-2 mb-3">
-								<a th:href="@{/planproduccion/crearplan}"
-									href="./crearplan.html" class="btn btn-sm btn-primary"> <i
-									class="bi bi-plus-circle me-1" aria-hidden="true"></i> Nuevo
-									plan
-								</a>
-
-								<button id="export-csv" type="button"
-									class="btn btn-sm btn-outline-secondary">
-									<i class="bi bi-filetype-csv me-1" aria-hidden="true"></i>
-									Exportar CSV
-								</button>
-								<button id="export-json" type="button"
-									class="btn btn-sm btn-outline-secondary">
-									<i class="bi bi-filetype-json me-1" aria-hidden="true"></i>
-									Exportar JSON
-								</button>
-								<button id="print-table" type="button"
-									class="btn btn-sm btn-outline-secondary">
-									<i class="bi bi-printer me-1" aria-hidden="true"></i> Imprimir
-								</button>
-							</div>
-
-							<!-- Contenedor de la tabla Tabulator -->
-							<div id="users-table"></div>
 						</div>
 					</div>
-					<!-- Fin de la sección de la tabla -->
+					<div class="card-body">
+						<div class="d-flex gap-2 mb-3">
+							<a th:href="@{/planproduccion/crearplan}" href="./crearplan.html"
+								class="btn btn-sm btn-primary"> <i
+								class="bi bi-plus-circle me-1" aria-hidden="true"></i> Nuevo
+								plan
+							</a>
 
+							<button id="export-csv" type="button"
+								class="btn btn-sm btn-outline-secondary">
+								<i class="bi bi-filetype-csv me-1" aria-hidden="true"></i>
+								Exportar CSV
+							</button>
+							<button id="export-json" type="button"
+								class="btn btn-sm btn-outline-secondary">
+								<i class="bi bi-filetype-json me-1" aria-hidden="true"></i>
+								Exportar JSON
+							</button>
+							<button id="print-table" type="button"
+								class="btn btn-sm btn-outline-secondary">
+								<i class="bi bi-printer me-1" aria-hidden="true"></i> Imprimir
+							</button>
+						</div>
+
+						<!-- Estructura de tabla HTML -->
+						<div class="table-responsive">
+							<table class="table table-striped">
+								<thead>
+									<tr>
+										<th scope="col">Código</th>
+										<th scope="col">Periodo</th>
+										<th scope="col">Emisión</th>
+										<th scope="col">Estado</th>
+										<th scope="col">Acciones</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr th:each="indice : ${listaplan}">
+										<td th:text="${indice.codigoPlan}"></td>
+										<td th:text="${indice.anio}"></td>
+										<td th:text="${indice.fechaEmision}" class="text-center"></td>
+										<td th:text="${indice.estado}"> </td>
+										<td class="text-center">
+											<div class="btn-group table-actions">
+												<a
+													th:href="@{/planproduccion/editar/{id}(id=${indice.idPlan})}"
+													class="btn btn-sm btn-outline-warning" title="Editar Plan">
+													<i class="bi bi-pencil"></i>
+												</a> <a
+													th:href="@{/planproduccion/eliminar/{id}(id=${indice.idPlan})}"
+													class="btn btn-sm btn-outline-danger" title="Eliminar"
+													onClick="return confirm('¿Seguro que desea eliminar este plan?')">
+													<i class="bi bi-trash"></i>
+												</a>
+											</div>
+										</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+
+					</div>
 				</div>
-			</div>
-		</main>
 
-		<footer class="app-footer">
-			<strong>Gestión de Planes de Producción</strong>
-		</footer>
+			</div>
+		</div>
+
+		<!-- Lógica para Filtro, Exportación e Impresión -->
+		<script>
+            document.addEventListener('DOMContentLoaded', () => {
+                const filterInput = document.getElementById('table-filter');
+                const table = document.getElementById('planes-table');
+                const rows = table.getElementsByTagName('tbody')[0].getElementsByTagName('tr');
+
+                // 1. Filtro global en tiempo real 
+                filterInput.addEventListener('input', function() {
+                    const value = this.value.toLowerCase().trim();
+                    
+                    for (let i = 0; i < rows.length; i++) {
+                        const rowText = rows[i].textContent.toLowerCase();
+                        if (rowText.includes(value)) {
+                            rows[i].style.display = '';
+                        } else {
+                            rows[i].style.display = 'none';
+                        }
+                    }
+                });
+
+                // Helper para extraer los datos visibles de la tabla en un array limpio
+                function getTableData() {
+                    const data = [];
+                    for (let i = 0; i < rows.length; i++) {
+                        if (rows[i].style.display !== 'none') {
+                            const cells = rows[i].getElementsByTagName('td');
+                            data.push({
+                                codigo: cells[0].textContent.trim(),
+                                periodo: cells[1].textContent.trim(),
+                                emision: cells[2].textContent.trim(),
+                                estado: cells[3].textContent.trim()
+                            });
+                        }
+                    }
+                    return data;
+                }
+
+                // Helper para descargar archivos en el navegador
+                function downloadFile(content, fileName, contentType) {
+                    const a = document.createElement("a");
+                    const file = new Blob([content], { type: contentType });
+                    a.href = URL.createObjectURL(file);
+                    a.download = fileName;
+                    a.click();
+                }
+
+                // 2. Exportar a CSV
+                document.getElementById('export-csv').addEventListener('click', () => {
+                    const data = getTableData();
+                    let csvContent = "\uFEFFCódigo,Período,Emisión,Estado\n"; // \uFEFF fuerza UTF-8 en Excel
+                    
+                    data.forEach(row => {
+                        csvContent += `"${row.codigo}","${row.periodo}","${row.emision}","${row.estado}"\n`;
+                    });
+                    
+                    downloadFile(csvContent, "planes_produccion.csv", "text/csv;charset=utf-8;");
+                });
+
+                // 3. Exportar a JSON
+                document.getElementById('export-json').addEventListener('click', () => {
+                    const data = getTableData();
+                    const jsonContent = JSON.stringify(data, null, 2);
+                    downloadFile(jsonContent, "planes_produccion.json", "application/json");
+                });
+
+                // 4. Imprimir la Tabla de manera nativa y limpia
+                document.getElementById('print-table').addEventListener('click', () => {
+                    window.print();
+                });
+            });
+        </script>
 	</div>
-
-	<script
-		src="https://cdn.jsdelivr.net/npm/overlayscrollbars@2.11.0/browser/overlayscrollbars.browser.es6.min.js"></script>
-	<script
-		src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"></script>
-	<script
-		src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.min.js"></script>
-	<script th:src="@{/js/adminlte.js}"></script>
-
-	<!-- SE AGREGA: CDN de la librería JavaScript de Tabulator -->
-	<script
-		src="https://cdn.jsdelivr.net/npm/tabulator-tables@6.4.0/dist/js/tabulator.min.js"
-		crossorigin="anonymous"></script>
-
-	<script>
-// Configuración básica del scrollbar lateral de AdminLTE
-document.addEventListener('DOMContentLoaded', () => {
-  const sidebarWrapper = document.querySelector('.sidebar-wrapper');
-  if (sidebarWrapper && window.innerWidth > 992 && window.OverlayScrollbarsGlobal?.OverlayScrollbars) {
-    OverlayScrollbarsGlobal.OverlayScrollbars(sidebarWrapper, {
-      scrollbars: { theme: 'os-theme-light', autoHide: 'leave', clickScroll: true }
-    });
-  }
-});
-</script>
-
-	<!-- SE AGREGA: Lógica e Inicialización de los datos de la Tabla -->
-	<script>
-  // Renderizador personalizado para los badges de estado
-  const statusBadge = (cell) => {
-  const value = cell.getValue();
-  const map = { 
-    'Completado': 'success', 
-    'En Proceso': 'warning', 
-    'Planificado': 'info', 
-    'Borrador': 'secondary',
-    'Cancelado': 'danger'
-  };
-  const color = map[value] || 'secondary';
-  return `<span class="badge text-bg-${color}">${value}</span>`;
-};
-
-  document.addEventListener('DOMContentLoaded', () => {
-    // Dataset que alimentará la tabla
-    const data = [
-  { id: 1, codigo: 'PLAN-2026-01', periodo: 'Enero 2026', emision: '2026-01-02', estado: 'Completado' },
-  { id: 2, codigo: 'PLAN-2026-02', periodo: 'Febrero 2026', emision: '2026-02-01', estado: 'Completado' },
-  { id: 3, codigo: 'PLAN-2026-03', periodo: 'Marzo 2026', emision: '2026-02-26', estado: 'Completado' },
-  { id: 4, codigo: 'PLAN-2026-04', periodo: 'Abril 2026', emision: '2026-03-28', estado: 'Completado' },
-  { id: 5, codigo: 'PLAN-2026-05', periodo: 'Mayo 2026', emision: '2026-04-29', estado: 'En Proceso' },
-  { id: 6, codigo: 'PLAN-2026-06', periodo: 'Junio 2026', emision: '2026-05-25', estado: 'En Proceso' },
-  { id: 7, codigo: 'PLAN-2026-07', periodo: 'Julio 2026', emision: '2026-06-22', estado: 'Planificado' },
-  { id: 8, codigo: 'PLAN-2026-08', periodo: 'Agosto 2026', emision: '2026-07-10', estado: 'Borrador' },
-  { id: 9, codigo: 'PLAN-2025-12', periodo: 'Diciembre 2025', emision: '2025-11-28', estado: 'Cancelado' }
-];
-
-    // Creación del objeto Tabulator
-    const table = new Tabulator('#users-table', {
-  data: data,
-  layout: 'fitColumns',
-  pagination: true,
-  paginationSize: 10,
-  columns: [
-    { title: "Código", field: "codigo", headerFilter: "input", sorter: "string" },
-    { title: "Período", field: "periodo", headerFilter: "input", sorter: "string" },
-    { title: "Emisión", field: "emision", sorter: "date", hozAlign: "center", width: 150 },
-    { 
-      title: "Estado", 
-      field: "estado", 
-      formatter: statusBadge, 
-      headerFilter: "list", 
-      headerFilterParams: { values: ['', 'Borrador', 'Planificado', 'En Proceso', 'Completado', 'Cancelado'] },
-      hozAlign: "center",
-      width: 150 
-    },
-    { 
-      title: "Acciones", 
-      hozAlign: "center", 
-      headerSort: false, 
-      width: 140,
-      formatter: function(cell, formatterParams, onRendered) {
-        // Renderiza botones estilizados de ver/editar directamente en la celda
-        return `
-          <div class="btn-group table-actions">
-            <button class="btn btn-sm btn-outline-primary" title="Ver Detalles">
-              <i class="bi bi-eye"></i>
-            </button>
-            <button class="btn btn-sm btn-outline-warning" title="Editar Plan">
-              <i class="bi bi-pencil"></i>
-            </button>
-          </div>
-        `;
-      }
-    }
-  ]
-});
-
-    // Filtro global en tiempo real (Buscador superior)
-    document.getElementById('table-filter').addEventListener('input', (e) => {
-  const value = e.target.value;
-  if (value) {
-    table.setFilter([
-      [
-        { field: 'codigo', type: 'like', value: value },
-        { field: 'periodo', type: 'like', value: value }
-      ]
-    ]);
-  } else {
-    table.clearFilter();
-  }
-});
-
-    // Eventos de los botones de descarga y visualización
-    document.getElementById('export-csv').addEventListener('click', () => table.download('csv', 'users.csv'));
-    document.getElementById('export-json').addEventListener('click', () => table.download('json', 'users.json'));
-    document.getElementById('print-table').addEventListener('click', () => table.print(false, true));
-  });
-</script>
 
 </body>
 </html>

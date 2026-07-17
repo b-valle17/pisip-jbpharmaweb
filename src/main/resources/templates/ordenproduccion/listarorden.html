@@ -1,279 +1,213 @@
 <!doctype html>
-<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="/plantilla/plantillaui">
 <head>
 <title>Orden de Producción | JB Pharma</title>
 
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="stylesheet"
-	href="https://cdn.jsdelivr.net/npm/@fontsource/source-sans-3@5.0.12/index.css">
-<link rel="stylesheet"
-	href="https://cdn.jsdelivr.net/npm/overlayscrollbars@2.11.0/styles/overlayscrollbars.min.css">
-<link rel="stylesheet"
-	href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
-<link rel="stylesheet" th:href="@{/css/adminlte.css}">
-
-<!-- SE AGREGA: Estilos de Tabulator adaptados a Bootstrap 5 -->
-<link rel="stylesheet"
-	href="https://cdn.jsdelivr.net/npm/tabulator-tables@6.4.0/dist/css/tabulator_bootstrap5.min.css"
-	crossorigin="anonymous" />
-
 <style>
-.metric-card .icon {
-	font-size: 2rem;
-	opacity: .75;
-}
-
 .table-actions .btn {
 	margin-right: .25rem;
 }
-
-.status-dot {
-	width: .65rem;
-	height: .65rem;
-	display: inline-block;
-	border-radius: 50%;
-	margin-right: .35rem;
-}
-
-.page-help {
-	font-size: .92rem;
+@media print {
+	body * {
+		visibility: hidden;
+	}
+	#printable-area, #printable-area * {
+		visibility: visible;
+	}
+	#printable-area {
+		position: absolute;
+		left: 0;
+		top: 0;
+		width: 100%;
+	}
+	.card-header, .d-flex.gap-2.mb-3, .table-actions {
+		display: none !important;
+	}
 }
 </style>
-
 </head>
-<body class="layout-fixed sidebar-expand-lg bg-body-tertiary">
-	<div class="app-wrapper">
-		<nav class="app-header navbar navbar-expand bg-body">
+<body>
+
+	<div layout:fragment="contenidopaginas">
+
+		<!-- Header de la sección -->
+		<div class="app-content-header">
 			<div class="container-fluid">
-				<ul class="navbar-nav">
-					<li class="nav-item"><a class="nav-link"
-						data-lte-toggle="sidebar" href="#"><i class="bi bi-list"></i></a></li>
-					<li class="nav-item d-none d-md-block"><span
-						class="nav-link fw-semibold">Área de Producción</span></li>
-				</ul>
-				<ul class="navbar-nav ms-auto">
-					<li class="nav-item"><a class="nav-link"><i
-							class="bi bi-bell-fill"></i><span
-							class="navbar-badge badge text-bg-danger">2</span></a></li>
-					<li class="nav-item"><span class="nav-link"><i
-							class="bi bi-person-circle me-1"></i>Supervisor</span></li>
-				</ul>
-			</div>
-		</nav>
-
-		<aside class="app-sidebar bg-body-secondary shadow"
-			data-bs-theme="dark">
-			<div class="sidebar-brand">
-				<a th:href="@{/index.html}" class="brand-link"> <img
-					th:src="@{/assets/img/logo.png}" alt="Logo JB Pharma"
-					class="brand-image me-2" style="max-height: 33px; width: auto;">
-				</a>
-			</div>
-			<div class="sidebar-wrapper">
-				<nav class="mt-2">
-					<ul class="nav sidebar-menu flex-column" data-lte-toggle="treeview"
-						data-accordion="false">
-						<li class="nav-item"><a th:href="@{/planproduccion}"
-									href="./listarplan.html"
-							class="nav-link"><i
-								class="nav-icon bi bi-file-earmark"></i>
-								<p>Planes de Producción</p></a></li>
-						<li class="nav-item"><a th:href="@{/ordenproduccion}"
-									href="./listarorden.html"
-							class="nav-link active"><i class="nav-icon bi bi-file-earmark"></i>
-								<p>Órdenes de Fabricación</p></a></li>
-					</ul>
-				</nav>
-			</div>
-		</aside>
-
-		<main class="app-main">
-			<div class="app-content-header">
-				<div class="container-fluid">
-					<div class="row">
-						<div class="col-sm-6">
-							<h1 class="mb-0 fs-3">Ordenes de Fabricación</h1>
-						</div>
-						<div class="col-sm-6">
-							<ol class="breadcrumb float-sm-end">
-								<li class="breadcrumb-item"><a href="./index.html">Inicio</a></li>
-             			 		<li class="breadcrumb-item active">OrdenDeFabricación</li>	
-							</ol>
-						</div>
+				<div class="row">
+					<div class="col-sm-6">
+						<h1 class="mb-0 fs-3">Órdenes de Producción</h1>
+					</div>
+					<div class="col-sm-6">
+						<ol class="breadcrumb float-sm-end">
+							<li class="breadcrumb-item"><a href="./index.html">Inicio</a></li>
+							<li class="breadcrumb-item active">OrdenDeProduccion</li>
+						</ol>
 					</div>
 				</div>
 			</div>
-			<div class="app-content">
-				<div class="container-fluid">
+		</div>
 
-					<!-- SE AGREGA: Estructura de la tarjeta con Buscador, Botones de Exportación y la Tabla -->
-					<div class="card">
-						<div class="card-header">
-							<h3 class="card-title">Gestión de Órdenes de Fabricación</h3>
-							<div class="card-tools">
-								<div class="input-group input-group-sm" style="width: 16rem">
-									<span class="input-group-text"> <i class="bi bi-search"
-										aria-hidden="true"></i>
-									</span> <input id="table-filter" type="search" class="form-control"
-										placeholder="Filtrar filas…" aria-label="Filtrar filas" />
-								</div>
+		<div class="app-content">
+			<div class="container-fluid">
+
+				<div class="card" id="printable-area">
+					<div class="card-header">
+						<h3 class="card-title">Gestión de Órdenes de Fabricación</h3>
+						<div class="card-tools">
+							<div class="input-group input-group-sm" style="width: 16rem">
+								<span class="input-group-text"> <i class="bi bi-search"
+									aria-hidden="true"></i>
+								</span>
+								<!-- Filtro global -->
+								<input id="table-filter" type="search" class="form-control"
+									placeholder="Filtrar filas…" aria-label="Filtrar filas" />
 							</div>
-						</div>
-						<div class="card-body">
-							<div class="d-flex gap-2 mb-3">
-								<a th:href="@{/ordenproduccion/crearorden}"
-									href="./crearplan.html" class="btn btn-sm btn-primary"> <i
-									class="bi bi-plus-circle me-1" aria-hidden="true"></i> Nueva
-									órden
-								</a>
-
-								<button id="export-csv" type="button"
-									class="btn btn-sm btn-outline-secondary">
-									<i class="bi bi-filetype-csv me-1" aria-hidden="true"></i>
-									Exportar CSV
-								</button>
-								<button id="export-json" type="button"
-									class="btn btn-sm btn-outline-secondary">
-									<i class="bi bi-filetype-json me-1" aria-hidden="true"></i>
-									Exportar JSON
-								</button>
-								<button id="print-table" type="button"
-									class="btn btn-sm btn-outline-secondary">
-									<i class="bi bi-printer me-1" aria-hidden="true"></i> Imprimir
-								</button>
-							</div>
-
-							<!-- Contenedor de la tabla Tabulator -->
-							<div id="users-table"></div>
 						</div>
 					</div>
-					<!-- Fin de la sección de la tabla -->
+					<div class="card-body">
+						<div class="d-flex gap-2 mb-3">
+							<a th:href="@{/ordenproduccion/crearorden}" href="./crearorden.html"
+								class="btn btn-sm btn-primary"> <i
+								class="bi bi-plus-circle me-1" aria-hidden="true"></i> Nuevo
+								orden
+							</a>
 
+							<button id="export-csv" type="button"
+								class="btn btn-sm btn-outline-secondary">
+								<i class="bi bi-filetype-csv me-1" aria-hidden="true"></i>
+								Exportar CSV
+							</button>
+							<button id="export-json" type="button"
+								class="btn btn-sm btn-outline-secondary">
+								<i class="bi bi-filetype-json me-1" aria-hidden="true"></i>
+								Exportar JSON
+							</button>
+							<button id="print-table" type="button"
+								class="btn btn-sm btn-outline-secondary">
+								<i class="bi bi-printer me-1" aria-hidden="true"></i> Imprimir
+							</button>
+						</div>
+
+						<!-- Estructura de tabla HTML -->
+						<div class="table-responsive">
+							<table class="table table-striped">
+								<thead>
+									<tr>
+										<th scope="col">Número de Lote</th>
+										<th scope="col">Cantidad(Kg)</th>
+										<th scope="col">Fecha Inicio</th>
+										<th scope="col">Fecha Fin</th>
+										<th scope="col">Estado</th>									
+										<th scope="col">Acciones</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr th:each="indice : ${listaorden}">
+										<td th:text="${indice.numeroLote}"></td>
+										<td th:text="${indice.cantidadLote}"></td>
+										<td th:text="${indice.fechaInicio}" class="text-center"></td>
+										<td th:text="${indice.fechaFin}" class="text-center"></td>
+										<td th:text="${indice.estado}"> </td>
+										<td class="text-center">
+											<div class="btn-group table-actions">
+												<a
+													th:href="@{/ordenproduccion/editar/{id}(id=${indice.idOrden})}"
+													class="btn btn-sm btn-outline-warning" title="Editar Orden">
+													<i class="bi bi-pencil"></i>
+												</a> <a
+													th:href="@{/ordenproduccion/eliminar/{id}(id=${indice.idOrden})}"
+													class="btn btn-sm btn-outline-danger" title="Eliminar"
+													onClick="return confirm('¿Seguro que desea eliminar esta órden?')">
+													<i class="bi bi-trash"></i>
+												</a>
+											</div>
+										</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+
+					</div>
 				</div>
-			</div>
-		</main>
 
-		<footer class="app-footer">
-			<strong>Gestión de Órdenes de Fabricación</strong>
-		</footer>
+			</div>
+		</div>
+
+		<!-- Lógica para Filtro, Exportación e Impresión -->
+		<script>
+            document.addEventListener('DOMContentLoaded', () => {
+                const filterInput = document.getElementById('table-filter');
+                const table = document.getElementById('ordenes-table');
+                const rows = table.getElementsByTagName('tbody')[0].getElementsByTagName('tr');
+
+                // 1. Filtro global en tiempo real 
+                filterInput.addEventListener('input', function() {
+                    const value = this.value.toLowerCase().trim();
+                    
+                    for (let i = 0; i < rows.length; i++) {
+                        const rowText = rows[i].textContent.toLowerCase();
+                        if (rowText.includes(value)) {
+                            rows[i].style.display = '';
+                        } else {
+                            rows[i].style.display = 'none';
+                        }
+                    }
+                });
+
+                // Helper para extraer los datos visibles de la tabla en un array limpio
+                function getTableData() {
+                    const data = [];
+                    for (let i = 0; i < rows.length; i++) {
+                        if (rows[i].style.display !== 'none') {
+                            const cells = rows[i].getElementsByTagName('td');
+                            data.push({
+                                codigo: cells[0].textContent.trim(),
+                                periodo: cells[1].textContent.trim(),
+                                emision: cells[2].textContent.trim(),
+                                estado: cells[3].textContent.trim()
+                            });
+                        }
+                    }
+                    return data;
+                }
+
+                // Helper para descargar archivos en el navegador
+                function downloadFile(content, fileName, contentType) {
+                    const a = document.createElement("a");
+                    const file = new Blob([content], { type: contentType });
+                    a.href = URL.createObjectURL(file);
+                    a.download = fileName;
+                    a.click();
+                }
+
+                // 2. Exportar a CSV
+                document.getElementById('export-csv').addEventListener('click', () => {
+                    const data = getTableData();
+                    let csvContent = "\uFEFFCódigo,Período,Emisión,Estado\n"; // \uFEFF fuerza UTF-8 en Excel
+                    
+                    data.forEach(row => {
+                        csvContent += `"${row.codigo}","${row.periodo}","${row.emision}","${row.estado}"\n`;
+                    });
+                    
+                    downloadFile(csvContent, "ordenes_produccion.csv", "text/csv;charset=utf-8;");
+                });
+
+                // 3. Exportar a JSON
+                document.getElementById('export-json').addEventListener('click', () => {
+                    const data = getTableData();
+                    const jsonContent = JSON.stringify(data, null, 2);
+                    downloadFile(jsonContent, "ordenes_produccion.json", "application/json");
+                });
+
+                // 4. Imprimir la Tabla de manera nativa y limpia
+                document.getElementById('print-table').addEventListener('click', () => {
+                    window.print();
+                });
+            });
+        </script>
 	</div>
-
-	<script
-		src="https://cdn.jsdelivr.net/npm/overlayscrollbars@2.11.0/browser/overlayscrollbars.browser.es6.min.js"></script>
-	<script
-		src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"></script>
-	<script
-		src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.min.js"></script>
-	<script th:src="@{/js/adminlte.js}"></script>
-
-	<!-- SE AGREGA: CDN de la librería JavaScript de Tabulator -->
-	<script
-		src="https://cdn.jsdelivr.net/npm/tabulator-tables@6.4.0/dist/js/tabulator.min.js"
-		crossorigin="anonymous"></script>
-
-	<script>
-// Configuración básica del scrollbar lateral de AdminLTE
-document.addEventListener('DOMContentLoaded', () => {
-  const sidebarWrapper = document.querySelector('.sidebar-wrapper');
-  if (sidebarWrapper && window.innerWidth > 992 && window.OverlayScrollbarsGlobal?.OverlayScrollbars) {
-    OverlayScrollbarsGlobal.OverlayScrollbars(sidebarWrapper, {
-      scrollbars: { theme: 'os-theme-light', autoHide: 'leave', clickScroll: true }
-    });
-  }
-});
-</script>
-
-	<!-- SE AGREGA: Lógica e Inicialización de los datos de la Tabla -->
-	<script>
-  // Renderizador personalizado para los badges de estado
-  const statusBadge = (cell) => {
-  const value = cell.getValue();
-  const map = { 
-    'Completado': 'success', 
-    'En Proceso': 'warning', 
-    'Control de Calidad': 'info', 
-    'Planificado': 'primary',
-    'Cancelado': 'danger'
-  };
-  const color = map[value] || 'secondary';
-  return `<span class="badge text-bg-${color}">${value}</span>`;
-};
-
-  document.addEventListener('DOMContentLoaded', () => {
-    // Dataset que alimentará la tabla
-   const data = [
-  { id: 1, numeroLote: 'LOTE-2026-001', cantidadLote: 15000, fechaInicio: '2026-01-05', fechaFin: '2026-01-10', estado: 'Completado' },
-  { id: 2, numeroLote: 'LOTE-2026-002', cantidadLote: 8500,  fechaInicio: '2026-01-12', fechaFin: '2026-01-15', estado: 'Completado' },
-  { id: 3, numeroLote: 'LOTE-2026-003', cantidadLote: 25000, fechaInicio: '2026-02-02', fechaFin: '2026-02-08', estado: 'Completado' },
-  { id: 4, numeroLote: 'LOTE-2026-004', cantidadLote: 5000,  fechaInicio: '2026-03-01', fechaFin: '2026-03-04', estado: 'Cancelado' },
-  { id: 5, numeroLote: 'LOTE-2026-005', cantidadLote: 12000, fechaInicio: '2026-05-10', fechaFin: '2026-05-14', estado: 'Control de Calidad' },
-  { id: 6, numeroLote: 'LOTE-2026-006', cantidadLote: 30000, fechaInicio: '2026-06-01', fechaFin: '2026-06-07', estado: 'En Proceso' },
-  { id: 7, numeroLote: 'LOTE-2026-007', cantidadLote: 18500, fechaInicio: '2026-06-15', fechaFin: '2026-06-20', estado: 'En Proceso' },
-  { id: 8, numeroLote: 'LOTE-2026-008', cantidadLote: 10000, fechaInicio: '2026-07-20', fechaFin: '2026-07-25', estado: 'Planificado' },
-  { id: 9, numeroLote: 'LOTE-2026-009', cantidadLote: 40000, fechaInicio: '2026-08-01', fechaFin: '2026-08-10', estado: 'Planificado' }
-];
-
-    // Creación del objeto Tabulator
-    const table = new Tabulator('#users-table', {
-  data: data,
-  layout: 'fitColumns',
-  pagination: true,
-  paginationSize: 10,
-  columns: [
-    { title: "Número de Lote", field: "numeroLote", headerFilter: "input", sorter: "string" },
-    { 
-      title: "Cantidad (Uds)", 
-      field: "cantidadLote", 
-      sorter: "number", 
-      hozAlign: "right",
-      formatter: "money", // Formatea con comas de miles automáticamente
-      formatterParams: { decimal: ".", thousand: ",", precision: 0 } 
-    },
-    { title: "Fecha Inicio", field: "fechaInicio", sorter: "date", hozAlign: "center" },
-    { title: "Fecha Fin", field: "fechaFin", sorter: "date", hozAlign: "center" },
-    { 
-      title: "Estado", 
-      field: "estado", 
-      formatter: statusBadge, 
-      headerFilter: "list", 
-      headerFilterParams: { values: ['', 'Planificado', 'En Proceso', 'Control de Calidad', 'Completado', 'Cancelado'] },
-      hozAlign: "center",
-      width: 160 
-    },
-    { 
-      title: "Acciones", 
-      hozAlign: "center", 
-      headerSort: false, 
-      width: 120,
-      formatter: function(cell, formatterParams, onRendered) {
-        return `
-          <div class="btn-group table-actions">
-            <button class="btn btn-sm btn-outline-primary" title="Ver Detalles"><i class="bi bi-eye"></i></button>
-            <button class="btn btn-sm btn-outline-warning" title="Editar Orden"><i class="bi bi-pencil"></i></button>
-          </div>
-        `;
-      }
-    }
-  ]
-});
-
-    // Filtro global en tiempo real (Buscador superior)
-    document.getElementById('table-filter').addEventListener('input', (e) => {
-  const value = e.target.value;
-  if (value) {
-    table.setFilter("numeroLote", "like", value);
-  } else {
-    table.clearFilter();
-  }
-});
-
-    // Eventos de los botones de descarga y visualización
-    document.getElementById('export-csv').addEventListener('click', () => table.download('csv', 'users.csv'));
-    document.getElementById('export-json').addEventListener('click', () => table.download('json', 'users.json'));
-    document.getElementById('print-table').addEventListener('click', () => table.print(false, true));
-  });
-</script>
 
 </body>
 </html>
