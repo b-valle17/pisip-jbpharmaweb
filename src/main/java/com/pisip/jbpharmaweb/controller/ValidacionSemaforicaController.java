@@ -6,22 +6,22 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import com.pisip.jbpharma.dominio.entidades.AlertaEnsayo;
+import com.pisip.jbpharma.dominio.entidades.ValidacionSemaforica;
 
 @Controller
-@RequestMapping("/alertas") // URL
-public class AlertaEnsayoController {
+@RequestMapping("/validaciones") // URL
+public class ValidacionSemaforicaController {
 
 	@GetMapping
 	public String leerpagina() {
-		return "/alertaensayo/alertas"; // UBICACIÓN FÍSICA DE LA PÁGINA
+		return "/validacionsemaforica/validaciones"; // UBICACIÓN FÍSICA DE LA PÁGINA
 	}
 
 	@GetMapping("/{id}")
 	public String detallepagina(@PathVariable Long id, Model model) {
-		AlertaEnsayo alerta = new AlertaEnsayo();
-		alerta.setIdAlerta(id);
-		model.addAttribute("alerta", alerta);
-		return "/alertaensayo/detallealerta";
+		ValidacionSemaforica validacion = new ValidacionSemaforica();
+		validacion.setIdValidacion(id);
+		model.addAttribute("validacion", validacion);
+		return "/validacionsemaforica/detallevalidacion";
 	}
 }

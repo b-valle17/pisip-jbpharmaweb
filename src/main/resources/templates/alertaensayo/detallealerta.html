@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{plantilla/plantillauli}">
+<head>
+<title>Detalle de notificación</title>
+</head>
+<body>
+	<h3 layout:fragment="titulo">Detalle de notificación</h3>
+	<ol layout:fragment="breadcrumb" class="breadcrumb float-sm-end">
+		<li class="breadcrumb-item"><a th:href="@{/dashboard}">Inicio</a></li>
+		<li class="breadcrumb-item"><a th:href="@{/alertas}">Notificaciones</a></li>
+		<li class="breadcrumb-item active">Detalle</li>
+	</ol>
+	<div layout:fragment="contenidopaginas">
+		<div class="card content-card">
+			<div class="card-header">
+				<h5 class="card-title mb-0"
+					th:text="${alerta != null ? alerta.asunto : 'Temperatura superior al límite'}"></h5>
+			</div>
+			<div class="card-body">
+				<div class="row g-4">
+					<div class="col-md-4">
+						<small class="text-secondary d-block">Validación</small><strong
+							th:text="${alerta != null ? alerta.idValidacion : 2}"></strong>
+					</div>
+					<div class="col-md-4">
+						<small class="text-secondary d-block">Tipo</small><strong
+							th:text="${alerta != null ? alerta.tipoAlerta : 'EMAIL'}"></strong>
+					</div>
+					<div class="col-md-4">
+						<small class="text-secondary d-block">Estado</small><span
+							class="badge text-bg-success"
+							th:text="${alerta != null ? alerta.estadoEnvio : 'ENVIADO'}"></span>
+					</div>
+					<div class="col-md-6">
+						<small class="text-secondary d-block">Destinatario</small><strong
+							th:text="${alerta != null ? alerta.destinatario : 'laboratorio@jbpharma.com'}"></strong>
+					</div>
+					<div class="col-12">
+						<div class="alert alert-warning"
+							th:text="${alerta != null ? alerta.mensaje : 'Se detectó una temperatura de 27.5 °C; máximo permitido 25 °C.'}"></div>
+					</div>
+				</div>
+			</div>
+			<div class="card-footer d-flex justify-content-between">
+				<a th:href="@{/alertas}" class="btn btn-outline-secondary">Volver</a>
+				<form
+					th:action="@{/alertas/{id}/reenviar(id=${alerta != null ? alerta.idAlerta : 2})}"
+					method="post">
+					<button class="btn btn-primary">Reenviar</button>
+				</form>
+			</div>
+		</div>
+	</div>
+	<th:block layout:fragment="scripts"></th:block>
+</body>
+</html>

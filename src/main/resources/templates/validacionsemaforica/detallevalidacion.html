@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{plantilla/plantillauli}">
+<head>
+<title>Detalle de validación</title>
+</head>
+<body>
+	<h3 layout:fragment="titulo">Detalle de validación</h3>
+	<ol layout:fragment="breadcrumb" class="breadcrumb float-sm-end">
+		<li class="breadcrumb-item"><a th:href="@{/dashboard}">Inicio</a></li>
+		<li class="breadcrumb-item"><a th:href="@{/validaciones}">Validaciones</a></li>
+		<li class="breadcrumb-item active">Detalle</li>
+	</ol>
+	<div layout:fragment="contenidopaginas">
+		<div class="card content-card">
+			<div class="card-header">
+				<h5 class="card-title mb-0">Resultado generado automáticamente</h5>
+			</div>
+			<div class="card-body">
+				<div class="row g-4">
+					<div class="col-md-4">
+						<small class="text-secondary d-block">ID</small><strong
+							th:text="${validacion != null ? validacion.idValidacion : 2}"></strong>
+					</div>
+					<div class="col-md-4">
+						<small class="text-secondary d-block">Variable</small><strong
+							th:text="${validacion != null ? validacion.idVariable : '2 - Temperatura'}"></strong>
+					</div>
+					<div class="col-md-4">
+						<small class="text-secondary d-block">Parámetro</small><strong
+							th:text="${validacion != null ? validacion.idParametro : '20 - 25 °C'}"></strong>
+					</div>
+					<div class="col-md-4">
+						<small class="text-secondary d-block">Resultado</small><span
+							class="badge text-bg-danger"
+							th:text="${validacion != null ? validacion.resultado : 'ERROR'}"></span>
+					</div>
+					<div class="col-12">
+						<div class="alert alert-danger"
+							th:text="${validacion != null ? validacion.mensaje : 'Temperatura superior al máximo permitido.'}"></div>
+					</div>
+				</div>
+			</div>
+			<div class="card-footer">
+				<a th:href="@{/validaciones}" class="btn btn-outline-secondary">Volver</a>
+			</div>
+		</div>
+	</div>
+	<th:block layout:fragment="scripts"></th:block>
+</body>
+</html>
