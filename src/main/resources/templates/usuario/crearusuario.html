@@ -74,10 +74,8 @@
 										</div>
 										<div class="mb-3">
 											<label for="select-default" class="form-label">Rol</label> <select
-												class="form-select" id="select-default"
-												th:field="*{rolUsuario}">
+												class="form-select" id="select-default" th:field="*{idRol}">
 												<option value="" selected>Escoja el rol</option>
-
 												<option th:each="rol : ${roles}" th:value="${rol.idRol}"
 													th:text="${rol.nombreRol}"></option>
 											</select>

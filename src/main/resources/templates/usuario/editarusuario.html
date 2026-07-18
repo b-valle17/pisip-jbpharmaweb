@@ -38,50 +38,64 @@
 						<!-- Quick Example -->
 						<div class="col-md-6 mx-auto">
 							<div class="card card-primary card-outline mb-4">
-								<form>
+								<form th:action="@{/usuario/actualizar}" th:object="${usuario}"
+									method="post">
+									<!-- Campo oculto (Este está bien) -->
+									<input type="hidden" th:field="*{idUsuario}">
+
 									<div class="card-body">
 										<div class="mb-3">
-											<label for="exampleInputEmail1" class="form-label">Nombre
-												usuario</label> <input type="text" class="form-control"
-												id="exampleInputEmail1" aria-describedby="nombreHelp" />
+											<label for="nombre" class="form-label">Nombre usuario</label>
+											<!-- FALTABA EL th:field -->
+											<input type="text" class="form-control" id="nombre"
+												th:field="*{nombre}" />
 											<div id="nombreHelp" class="form-text">En este campo
 												debe escribir el nombre del usuario</div>
 										</div>
+
 										<div class="mb-3">
-											<label for="exampleInputEmail1" class="form-label">Correo
-												electronico</label> <input type="email" class="form-control"
-												id="exampleInputEmail1" aria-describedby="limiteminimoHelp" />
+											<label for="correo" class="form-label">Correo
+												electrónico</label>
+											<!-- FALTABA EL th:field -->
+											<input type="email" class="form-control" id="correo"
+												th:field="*{correo}" />
 											<div id="limiteminimoHelp" class="form-text">En este
-												campo debe escribir el correo electronico</div>
+												campo debe escribir el correo electrónico</div>
 										</div>
+
 										<div class="mb-3">
-											<label for="exampleInputEmail1" class="form-label">Contraseña</label>
-											<input type="password" class="form-control"
-												id="exampleInputEmail1" aria-describedby="limitemaximoHelp" />
+											<label for="contrasena" class="form-label">Contraseña</label>
+											<!-- FALTABA EL th:field (Normalmente apunta a contrasenaHash) -->
+											<input type="password" class="form-control" id="contrasena"
+												th:field="*{contrasenaHash}" />
 											<div id="limitemaximoHelp" class="form-text">En este
 												campo debe escribir la contraseña</div>
 										</div>
+
 										<div class="mb-3 form-check">
+											<!-- FALTABA EL th:field -->
 											<input type="checkbox" class="form-check-input"
-												id="exampleCheck1" /> <label class="form-check-label"
-												for="exampleCheck1">Activo</label>
+												id="estadoUsuario" th:field="*{estadoUsuario}" /> <label
+												class="form-check-label" for="estadoUsuario">Activo</label>
 											<div id="fechaHelp" class="form-text">En este campo
-												debe establecer si el usuario estara activo o inactivo</div>
+												debe establecer si el usuario estará activo o inactivo</div>
 										</div>
+
 										<div class="mb-3">
-											<label for="exampleInputEmail1" class="form-label">Rol</label>
-											<select class="form-select" id="select-default">
-												<option selected>Escoja el rol</option>
-												<option>Admin</option>
-												<option>Cliente</option>
-												<option>Supervisor</option>
+											<label for="idRol" class="form-label">Rol</label>
+											<!-- SE CAMBIÓ POR UN SELECT DINÁMICO ASOCIADO A TU LISTA DE ROLES -->
+											<select class="form-select" id="idRol" th:field="*{idRol}">
+												<option value="">Escoja el rol</option>
+												<option th:each="rol : ${roles}" th:value="${rol.idRol}"
+													th:text="${rol.nombreRol}"></option>
 											</select>
 											<div id="fechaHelp" class="form-text">En este campo
-												debe definir el rol que tendra el usuario</div>
+												debe definir el rol que tendrá el usuario</div>
 										</div>
 									</div>
 									<div class="card-footer">
-										<button type="submit" class="btn btn-primary">Submit</button>
+										<button type="submit" class="btn btn-primary">Guardar
+											Cambios</button>
 									</div>
 								</form>
 							</div>

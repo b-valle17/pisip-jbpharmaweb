@@ -38,51 +38,59 @@
 						<!-- Quick Example -->
 						<div class="col-md-6 mx-auto">
 							<div class="card card-primary card-outline mb-4">
-								<form>
+								<form th:action="@{/parametrocalidad/actualizar}"
+									th:object="${parametrocalidad}" method="post">
+									<input type="hidden" th:field="*{idParametro}">
 									<div class="card-body">
 										<div class="mb-3">
 											<label for="exampleInputEmail1" class="form-label">Nombre
 												parametro</label> <input type="text" class="form-control"
-												id="exampleInputEmail1" aria-describedby="nombreHelp" />
+												id="exampleInputEmail1" aria-describedby="nombreHelp"
+												th:field="*{nombreParametro}" />
 											<div id="nombreHelp" class="form-text">En este campo
 												debe escribir el nombre del parametro</div>
 										</div>
 										<div class="mb-3">
 											<label for="exampleInputEmail1" class="form-label">Limite
 												minimo</label> <input type="text" class="form-control"
-												id="exampleInputEmail1" aria-describedby="limiteminimoHelp" />
+												id="exampleInputEmail1" aria-describedby="limiteminimoHelp"
+												th:field="*{limiteMinimo}" />
 											<div id="limiteminimoHelp" class="form-text">En este
 												campo debe escribir el limite minimo</div>
 										</div>
 										<div class="mb-3">
 											<label for="exampleInputEmail1" class="form-label">Limite
 												maximo</label> <input type="text" class="form-control"
-												id="exampleInputEmail1" aria-describedby="limitemaximoHelp" />
+												id="exampleInputEmail1" aria-describedby="limitemaximoHelp"
+												th:field="*{limiteMaximo}" />
 											<div id="limitemaximoHelp" class="form-text">En este
 												campo debe escribir el limite maximo</div>
 										</div>
 										<div class="mb-3">
 											<label for="exampleInputEmail1" class="form-label">Unidad
 												de medida</label> <input type="text" class="form-control"
-												id="exampleInputEmail1" aria-describedby="unidadHelp" />
+												id="exampleInputEmail1" aria-describedby="unidadHelp"
+												th:field="*{unidadMedida}" />
 											<div id="unidadHelp" class="form-text">En este campo
 												debe escribir la unidad de medida</div>
 										</div>
 										<div class="mb-3">
-											<label for="exampleInputEmail1" class="form-label">Producto</label>
-											<select class="form-select" id="select-default">
-												<option selected>Escoja un producto</option>
-												<option>Producto 1</option>
-												<option>Producto 2</option>
-												<option>Producto 3</option>
+											<label for="select-default" class="form-label">Producto</label>
+											<select class="form-select" id="select-default"
+												th:field="*{idProducto}">
+												<option value="" selected>Escoja el producto</option>
+												<option th:each="rol : ${productos}"
+													th:value="${rol.idProducto}"
+													th:text="${rol.nombreProducto}"></option>
 											</select>
-											<div id="productoHelp" class="form-text">En este campo
-												debe de escoger el producto a parametrizar</div>
+											<div id="fechaHelp" class="form-text">En este campo
+												debe escoger el producto a parametrizar</div>
 										</div>
 										<div class="mb-3">
 											<label for="exampleInputEmail1" class="form-label">Fecha
 												configuracion</label> <input type="date" class="form-control"
-												id="exampleInputEmail1" aria-describedby="fechaHelp" />
+												id="exampleInputEmail1" aria-describedby="fechaHelp"
+												th:field="*{fechaConfiguracion}" />
 											<div id="fechaHelp" class="form-text">En este campo
 												debe establecer la fecha de configuracion</div>
 										</div>

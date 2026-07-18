@@ -23,5 +23,5 @@ public class ParametroCalidadRequestDto {
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private Date fechaConfiguracion;
 	
-	private Integer productoParametro;
+	private Integer idProducto;
 }

@@ -68,14 +68,14 @@
 												debe escribir la unidad de medida</div>
 										</div>
 										<div class="mb-3">
-											<label for="exampleInputEmail1" class="form-label">Producto</label>
-											<select class="form-select" id="select-default" th:field="*{productoParametro}">
-												<option value="" selected>Escoja un producto</option>
-												<option th:each="producto : ${productos}" th:value="${producto.idProducto}"
-													th:text="${producto.nombreProducto}"></option>
+											<label for="select-default" class="form-label">Producto</label> <select
+												class="form-select" id="select-default" th:field="*{idProducto}">
+												<option value="" selected>Escoja el producto</option>
+												<option th:each="rol : ${productos}" th:value="${rol.idProducto}"
+													th:text="${rol.nombreProducto}"></option>
 											</select>
-											<div id="productoHelp" class="form-text">En este campo
-												debe de escoger el producto a parametrizar</div>
+											<div id="fechaHelp" class="form-text">En este campo
+												debe escoger el producto a parametrizar</div>
 										</div>
 										<div class="mb-3">
 											<label for="exampleInputEmail1" class="form-label">Fecha

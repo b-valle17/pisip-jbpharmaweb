@@ -1,49 +1,102 @@
 package com.pisip.jbpharmaweb.controller;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.pisip.jbpharmaweb.model.dto.request.ParametroCalidadRequestDto;
 import com.pisip.jbpharmaweb.model.dto.request.UsuarioRequestDTO;
 import com.pisip.jbpharmaweb.model.dto.response.ParametroCalidadResponseDto;
+import com.pisip.jbpharmaweb.model.dto.response.ProductoResponseDto;
+import com.pisip.jbpharmaweb.model.dto.response.UsuarioResponseDTO;
 import com.pisip.jbpharmaweb.service.IParametroCalidadService;
 
 @Controller
 @RequestMapping("/parametrocalidad")
 public class ParametroCalidadController {
-	
+
 	@Autowired
 	private IParametroCalidadService servicioAPI;
+
 	@GetMapping
 	public String leerpagina(Model model) {
 		List<ParametroCalidadResponseDto> datosAPI = servicioAPI.listarParametros();
+		List<ProductoResponseDto> listaProductos = servicioAPI.listarProductos();
+		// Convertimos la lista de roles en un mapa [ID: Nombre] para buscar fácil en
+		// Thymeleaf
+		Map<Integer, String> mapaProductos = listaProductos.stream()
+				.collect(Collectors.toMap(ProductoResponseDto::getIdProducto, ProductoResponseDto::getNombreProducto));
 		model.addAttribute("listaparametros", datosAPI);
+		model.addAttribute("mapaProductos", mapaProductos); // Pasamos el mapa a la vista
 		return "/parametrocalidad/listaparametros";
 	}
-	
+
 	@GetMapping("/crearparametro")
 	public String leerpaginacrear(Model model) {
 		model.addAttribute("parametro", new ParametroCalidadRequestDto());
 		model.addAttribute("productos", servicioAPI.listarProductos());
 		return "/parametrocalidad/crearparametro";
 	}
-	
+
 	@PostMapping("/guardar")
 	public String guardarParametro(@ModelAttribute ParametroCalidadRequestDto parametro) {
 		servicioAPI.guardarParametro(parametro);
 		return "redirect:/parametrocalidad";
 	}
-	
+
 	@GetMapping("/editarparametro")
-	public String leerpaginaeditar() {
+	public String leerpaginaeditar(@RequestParam("idParametro") int idParametro, Model model) {
+		Optional<ParametroCalidadResponseDto> parametroOpt = servicioAPI.obtenerParametroPorId(idParametro);
+
+		if (parametroOpt.isEmpty()) {
+			return "redirect:/parametrocalidad?error=ParametroNoEncontrado";
+		}
+
+		ParametroCalidadResponseDto res = parametroOpt.get();
+
+		// Mapeamos los datos de la respuesta al DTO del formulario
+		ParametroCalidadRequestDto formDto = new ParametroCalidadRequestDto();
+		formDto.setIdParametro(res.getIdParametro());
+		formDto.setNombreParametro(res.getNombreParametro());
+		formDto.setLimiteMaximo(res.getLimiteMaximo());
+		formDto.setLimiteMinimo(res.getLimiteMinimo());
+		formDto.setUnidadMedida(res.getUnidadMedida());
+		formDto.setFechaConfiguracion(res.getFechaConfiguracion());
+		formDto.setIdProducto(res.getIdProducto());
+
+		model.addAttribute("parametrocalidad", formDto);
+		model.addAttribute("productos", servicioAPI.listarProductos()); // Necesario para el <select>
+
 		return "/parametrocalidad/editarparametro";
+	}
+
+	@PostMapping("/actualizar")
+	public String actualizarParametro(@ModelAttribute ParametroCalidadRequestDto parametro) {
+		servicioAPI.actualizarParametro(parametro.getIdParametro(), parametro);
+		return "redirect:/parametrocalidad";
+	}
+
+	@PostMapping("/eliminar/{idParametro}")
+	public String eliminarParametro(@PathVariable int idParametro, RedirectAttributes redirectAttributes) {
+		try {
+			servicioAPI.eliminarParametro(idParametro);
+			redirectAttributes.addFlashAttribute("success", "Parametro eliminado correctamente.");
+		} catch (Exception e) {
+			redirectAttributes.addFlashAttribute("error", "No se pudo eliminar el parametro.");
+		}
+		return "redirect:/parametrocalidad"; // Redirige de vuelta al listado
 	}
 
 }

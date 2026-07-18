@@ -66,4 +66,40 @@ public class UsuarioServiceImpl implements IUsuarioService {
 		return webClient.get().uri("/roles").retrieve().bodyToFlux(RolResponseDto.class).collectList().block();
 	}
 
+	@Override
+	public Optional<UsuarioResponseDTO> obtenerUsuarioPorId(int idUsuario) {
+		try {
+	        UsuarioResponseDTO usuario = webClient.get()
+	            .uri("/usuarios/{idUsuario}", idUsuario)
+	            .retrieve()
+	            .bodyToMono(UsuarioResponseDTO.class)
+	            .block();
+	        return Optional.ofNullable(usuario);
+	    } catch (Exception e) {
+	        return Optional.empty();
+	    }
+	}
+
+	@Override
+	public void actualizarUsuario(int idUsuario, UsuarioRequestDTO usuarioActualizado) {
+		webClient.put()
+        .uri("/usuarios/{idUsuario}", idUsuario)
+        .bodyValue(usuarioActualizado)
+        .retrieve()
+        .toBodilessEntity()
+        .block();
+		
+	}
+
+	@Override
+	public void eliminarUsuario(int idUsuario) {
+		webClient.delete()
+        .uri("/usuarios/{idUsuario}", idUsuario)
+        .retrieve()
+        .toBodilessEntity() // Usamos esto porque el backend responde con un "Void" (vacío)
+        .block(); // Espera a que la operación termine de forma síncrona
+		
+	}
+
+
 }
