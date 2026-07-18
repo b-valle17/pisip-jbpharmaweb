@@ -1,142 +1,137 @@
+
 <!doctype html>
-<html lang="es">
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="/plantilla/plantillaui">
 <head>
-<title>Indicadores KPI | JBpharma</title>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/source-sans-3@5.0.12/index.css">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/overlayscrollbars@2.11.0/styles/overlayscrollbars.min.css">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
-<link rel="stylesheet" href="./css/adminlte.css">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 </head>
 <body class="layout-fixed sidebar-expand-lg bg-body-tertiary">
-<div class="app-wrapper">
-  <nav class="app-header navbar navbar-expand bg-body">
-    <div class="container-fluid">
-      <ul class="navbar-nav">
-        <li class="nav-item"><a class="nav-link" data-lte-toggle="sidebar" href="#"><i class="bi bi-list"></i></a></li>
-        <li class="nav-item d-none d-md-block"><span class="nav-link fw-semibold">Pisip-JBpharmaWeb</span></li>
-      </ul>
-      <ul class="navbar-nav ms-auto">
-        <li class="nav-item"><a class="nav-link" href="./alertas.html"><i class="bi bi-bell-fill"></i></a></li>
-        <li class="nav-item"><span class="nav-link"><i class="bi bi-person-circle me-1"></i>Administrador</span></li>
-      </ul>
-    </div>
-  </nav>
-
-  <aside class="app-sidebar bg-body-secondary shadow" data-bs-theme="dark">
-    <div class="sidebar-brand">
-      <a href="/index" class="brand-link">
-        <i class="bi bi-capsule brand-image fs-3 ms-2"></i>
-        <span class="brand-text fw-light">JBpharma</span>
-      </a>
-    </div>
-    <div class="sidebar-wrapper">
-      <nav class="mt-2">
-        <ul class="nav sidebar-menu flex-column" data-lte-toggle="treeview" data-accordion="false">
-          <li class="nav-item"><a href="/index" class="nav-link"><i class="nav-icon bi bi-speedometer2"></i><p>Dashboard</p></a></li>
-<li class="nav-item"><a href="/producto" class="nav-link"><i class="nav-icon bi bi-box-seam"></i><p>Productos</p></a></li>
-<li class="nav-item"><a href="/usuario" class="nav-link"><i class="nav-icon bi bi-people-fill"></i><p>Usuarios</p></a></li>
-<li class="nav-item"><a href="/parametrocalidad" class="nav-link"><i class="nav-icon bi bi-clipboard-check"></i><p>Parámetros Calidad</p></a></li>
-<li class="nav-item"><a href="/ensayos" class="nav-link"><i class="nav-icon bi bi-flask"></i><p>Ensayos Laboratorio</p></a></li>
-<li class="nav-item"><a href="/nuevoensayo" class="nav-link"><i class="nav-icon bi bi-plus-circle"></i><p>Nuevo Ensayo</p></a></li>
-<li class="nav-item"><a href="/detalleensayo" class="nav-link"><i class="nav-icon bi bi-eye"></i><p>Detalle Ensayo</p></a></li>
-<li class="nav-item"><a href="/variables" class="nav-link"><i class="nav-icon bi bi-sliders"></i><p>Variables Ensayo</p></a></li>
-<li class="nav-item"><a href="/parametros" class="nav-link"><i class="nav-icon bi bi-rulers"></i><p>Parámetros Validación</p></a></li>
-<li class="nav-item"><a href="/validaciones" class="nav-link"><i class="nav-icon bi bi-traffic-light"></i><p>Validación Semafórica</p></a></li>
-<li class="nav-item"><a href="/alertas" class="nav-link"><i class="nav-icon bi bi-bell"></i><p>Alertas Ensayo</p></a></li>
-<li class="nav-item"><a href="/auditoriaLote" class="nav-link"><i class="nav-icon bi bi-shield-check"></i><p>Auditoría Lote</p></a></li>
-<li class="nav-item"><a href="/dictamenLote" class="nav-link"><i class="nav-icon bi bi-journal-check"></i><p>Dictamen Lote</p></a></li>
-<li class="nav-item"><a href="/historialLote" class="nav-link"><i class="nav-icon bi bi-clock-history"></i><p>Historial Lote</p></a></li>
-<li class="nav-item"><a href="/informeAuditoria" class="nav-link"><i class="nav-icon bi bi-file-earmark-text"></i><p>Informe Auditoría</p></a></li>
-<li class="nav-item"><a href="/indicadorKpi" class="nav-link active"><i class="nav-icon bi bi-bar-chart-line"></i><p>Indicadores KPI</p></a></li>
-
-        </ul>
-      </nav>
-    </div>
-  </aside>
-
-  <main class="app-main">
-    <div class="app-content-header">
-      <div class="container-fluid">
-        <div class="row">
-          <div class="col-sm-6"><h1 class="mb-0 fs-3">Indicadores KPI</h1></div>
-          <div class="col-sm-6">
-            <ol class="breadcrumb float-sm-end">
-              <li class="breadcrumb-item"><a href="/index">Inicio</a></li>
-              <li class="breadcrumb-item active">Indicadores KPI</li>
-            </ol>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="app-content">
-      <div class="container-fluid">
-        <div class="card">
-          <div class="card-header d-flex align-items-center">
-            <a href="/indicadorKpi/crearIndicadorKpi" class="btn btn-sm btn-primary">
-              <i class="bi bi-plus-circle me-1"></i> Crear Indicadores KPI
-            </a>
-            <div class="ms-auto" style="width:16rem">
-              <div class="input-group input-group-sm">
-                <span class="input-group-text"><i class="bi bi-search"></i></span>
-                <input type="search" class="form-control" placeholder="Buscar..." />
-              </div>
-            </div>
-          </div>
-          <div class="card-body">
-            <div class="d-flex gap-2 mb-3">
-              <button type="button" class="btn btn-sm btn-outline-secondary">
-                <i class="bi bi-filetype-csv me-1"></i> Export CSV
-              </button>
-              <button type="button" class="btn btn-sm btn-outline-secondary">
-                <i class="bi bi-filetype-json me-1"></i> Export JSON
-              </button>
-              <button type="button" class="btn btn-sm btn-outline-secondary">
-                <i class="bi bi-printer me-1"></i> Imprimir
-              </button>
-            </div>
-            <div class="table-responsive">
-              <table class="table table-hover align-middle">
-                <thead>
-                  <tr><th>#</th><th>Nombre Indicador</th><th>Valor</th><th>Fecha Cálculo</th><th>Descripción</th><th>Acciones</th></tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td colspan="6" class="text-center text-secondary py-4">
-                      No hay registros disponibles.
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-          <div class="card-footer text-secondary small">
-            Pisip-JBpharma &mdash; Indicadores KPI
-          </div>
-        </div>
-      </div>
-    </div>
-  </main>
-
-  <footer class="app-footer">
-    <div class="float-end d-none d-sm-inline">Pisip-JBpharma</div>
-    <strong>Copyright &copy; 2024 JBpharma.</strong> Todos los derechos reservados.
-  </footer>
-</div>
-<script src="https://cdn.jsdelivr.net/npm/overlayscrollbars@2.11.0/browser/overlayscrollbars.browser.es6.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.min.js"></script>
-<script src="./js/adminlte.js"></script>
-<script>
-document.addEventListener('DOMContentLoaded', () => {
-  const sidebarWrapper = document.querySelector('.sidebar-wrapper');
-  if (sidebarWrapper && window.innerWidth > 992 && window.OverlayScrollbarsGlobal?.OverlayScrollbars) {
-    OverlayScrollbarsGlobal.OverlayScrollbars(sidebarWrapper, {
-      scrollbars: { theme: 'os-theme-light', autoHide: 'leave', clickScroll: true }
-    });
-  }
-});
-</script>
+	<div class="app-wrapper">
+		<div layout:fragment="contenidopaginas">
+			<div class="app-content-header">
+				<div class="container-fluid">
+					<div class="row">
+						<div class="col-sm-6">
+							<h1 class="mb-0 fs-3">Lista Indicadores KPI</h1>
+						</div>
+						<div class="col-sm-6">
+							<nav aria-label="breadcrumb">
+								<ol class="breadcrumb float-sm-end">
+									<li class="breadcrumb-item"><a href="/index">Inicio</a></li>
+									<li class="breadcrumb-item active" aria-current="page">Indicadores KPI</li>
+								</ol>
+							</nav>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="app-content">
+				<div class="container-fluid">
+					<div class="card">
+						<div class="card-header">
+							<a class="badge text-bg-info"
+								th:href="@{/indicadorKpi/crearIndicadorKpi}"
+								style="text-decoration: none;">Crear Indicador KPI</a>
+							<div class="card-tools">
+								<div class="input-group input-group-sm" style="width: 16rem">
+									<span class="input-group-text"> <i class="bi bi-search"
+										aria-hidden="true"></i>
+									</span> <input id="table-filter" type="search" class="form-control"
+										placeholder="Filter rows&hellip;" aria-label="Filter rows" />
+								</div>
+							</div>
+						</div>
+						<div class="card-body">
+							<div id="users-table">
+								<table class="table table-striped">
+									<thead>
+										<tr>
+											<th scope="col">ID</th>
+											<th scope="col">Nombre Indicador</th>
+											<th scope="col">Valor</th>
+											<th scope="col">Fecha Cálculo</th>
+											<th scope="col">Descripción</th>
+											<th scope="col">Acciones</th>
+										</tr>
+									</thead>
+									<tbody>
+										<tr th:each="indice : ${listaindicadorkpi}">
+											<td th:text="${indice.idKpi}" class="fw-semibold"></td>
+											<td th:text="${indice.nombreIndicador}"></td>
+											<td th:text="${indice.valor}"></td>
+											<td th:text="${indice.fechaCalculo}"></td>
+											<td th:text="${indice.descripcion}"></td>
+											<td>
+												<div class="btn-group" role="group" aria-label="Acciones">
+													<a th:href="@{/indicadorKpi/editarIndicadorKpi}"
+														class="btn btn-sm btn-outline-warning" title="Editar">
+														<i class="fa-solid fa-pen-to-square"></i>
+													</a> <a href="" class="btn btn-sm btn-outline-danger"
+														title="Eliminar"
+														onclick="return confirm('¿Estás seguro de que deseas eliminar este registro?')">
+														<i class="fa fa-trash" aria-hidden="true"></i>
+													</a>
+												</div>
+											</td>
+										</tr>
+									</tbody>
+								</table>
+							</div>
+						</div>
+						<div class="card-footer text-secondary small">
+							Pisip-JBpharma &mdash; Indicadores KPI
+						</div>
+					</div>
+				</div>
+			</div>
+	<!--begin::Footer-->
+	<footer class="app-footer">
+		<!--begin::To the end-->
+		<div class="float-end d-none d-sm-inline">Anything you want</div>
+		<!--end::To the end-->
+		<!--begin::Copyright-->
+		<strong> Copyright &copy; 2014-2026&nbsp; <a
+			href="https://adminlte.io" class="text-decoration-none">AdminLTE.io</a>.
+		</strong> All rights reserved.
+		<!--end::Copyright-->
+	</footer>
+	<!--end::Footer-->
+	</div>
+	<script
+		src="https://cdn.jsdelivr.net/npm/overlayscrollbars@2.11.0/browser/overlayscrollbars.browser.es6.min.js"
+		crossorigin="anonymous"></script>
+	<script
+		src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
+		crossorigin="anonymous"></script>
+	<script
+		src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.min.js"
+		crossorigin="anonymous"></script>
+	<script src="../js/adminlte.js"></script>
+	<script>
+      const SELECTOR_SIDEBAR_WRAPPER = '.sidebar-wrapper';
+      const Default = {
+        scrollbarTheme: 'os-theme-light',
+        scrollbarAutoHide: 'leave',
+        scrollbarClickScroll: true,
+      };
+      document.addEventListener('DOMContentLoaded', function () {
+        const sidebarWrapper = document.querySelector(SELECTOR_SIDEBAR_WRAPPER);
+        const isMobile = window.innerWidth <= 992;
+        if (
+          sidebarWrapper &&
+          OverlayScrollbarsGlobal?.OverlayScrollbars !== undefined &&
+          !isMobile
+        ) {
+          OverlayScrollbarsGlobal.OverlayScrollbars(sidebarWrapper, {
+            scrollbars: {
+              theme: Default.scrollbarTheme,
+              autoHide: Default.scrollbarAutoHide,
+              clickScroll: Default.scrollbarClickScroll,
+            },
+          });
+        }
+      });
+    </script>
 </body>
 </html>
