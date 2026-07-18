@@ -14,5 +14,5 @@ public class ParametroCalidadResponseDto {
 	private BigDecimal limiteMaximo;
 	private String unidadMedida;
 	private Date fechaConfiguracion;
-	private ProductoResponseDto idProducto;
+	private int idProducto;
 }

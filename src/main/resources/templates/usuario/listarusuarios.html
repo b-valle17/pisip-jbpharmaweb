@@ -82,10 +82,14 @@
 
 											<td><span class="text-muted">••••••••</span></td>
 
-											<td><span th:if="${indice.idRol != null}"
-												th:text="${indice.idRol.nombreRol}" class="badge bg-primary"></span>
-												<span th:if="${indice.idRol == null}"
-												class="badge bg-secondary">Sin Rol</span></td>
+											<td>
+												<!-- Buscamos el ID numérico dentro de nuestro mapa de roles -->
+												<span th:if="${indice.idRol != null}"
+												th:text="${mapaRoles[indice.idRol]}"
+												class="badge bg-primary"></span> <span
+												th:if="${indice.idRol == null}" class="badge bg-secondary">Sin
+													Rol</span>
+											</td>
 
 											<td><span th:if="${indice.estadoUsuario}"
 												class="badge bg-success-subtle text-success border border-success-subtle px-2.5 py-1">
@@ -100,14 +104,20 @@
 
 											<td>
 												<div class="btn-group" role="group" aria-label="Acciones">
-													<a th:href="@{/usuario/editarusuario}"
+													<a
+														th:href="@{/usuario/editarusuario(idUsuario=${indice.idUsuario})}"
 														class="btn btn-sm btn-outline-warning" title="Editar">
 														<i class="fa-solid fa-pen-to-square"></i>
-													</a> <a href="" class="btn btn-sm btn-outline-danger"
-														title="Eliminar"
-														onclick="return confirm('¿Estás seguro de que deseas eliminar este registro?')">
-														<i class="fa fa-trash" aria-hidden="true"></i>
 													</a>
+													<!-- Formulario para Eliminar -->
+													<form
+														th:action="@{/usuario/eliminar/{idUsuario}(idUsuario=${indice.idUsuario})}"
+														method="post" style="display: inline;"
+														onsubmit="return confirm('¿Estás seguro de que deseas eliminar este usuario?');">
+														<button type="submit" class="btn btn-sm btn-outline-danger">
+															<i class="fa-solid fa-trash"></i>
+														</button>
+													</form>
 												</div>
 											</td>
 										</tr>

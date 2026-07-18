@@ -38,19 +38,21 @@
 						<!-- Quick Example -->
 						<div class="col-md-6 mx-auto">
 							<div class="card card-primary card-outline mb-4">
-								<form>
+								<form th:action="@{/producto/actualizar}" th:object="${producto}"
+									method="post">
+									<input type="hidden" th:field="*{idProducto}">
 									<div class="card-body">
 										<div class="mb-3">
 											<label for="exampleInputEmail1" class="form-label">Nombre
 												producto</label> <input type="text" class="form-control"
-												id="exampleInputEmail1" aria-describedby="nombreHelp" />
+												id="exampleInputEmail1" aria-describedby="nombreHelp" th:field="*{nombreProducto}"/>
 											<div id="nombreHelp" class="form-text">En este campo
 												debe escribir el nombre del producto</div>
 										</div>
 										<div class="mb-3">
 											<label for="exampleInputEmail1" class="form-label">Descripcion
 												del producto</label> <input type="text" class="form-control"
-												id="exampleInputEmail1" aria-describedby="limiteminimoHelp" />
+												id="exampleInputEmail1" aria-describedby="limiteminimoHelp" th:field="*{descripcion}"/>
 											<div id="limiteminimoHelp" class="form-text">En este
 												campo debe escribir la descripcion del producto</div>
 										</div>

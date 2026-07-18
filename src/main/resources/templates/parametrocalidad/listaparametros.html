@@ -83,21 +83,30 @@
 											<td th:text="${indice.unidadMedida}"></td>
 											<td
 												th:text="${#dates.format(indice.fechaConfiguracion, 'dd/MM/yyyy')}"></td>
-											<td><span th:if="${indice.idProducto != null}"
-												th:text="${indice.idProducto.nombreProducto}"
-												class="badge bg-primary"> </span> <span
+											<td>
+												<!-- Buscamos el ID numérico dentro de nuestro mapa de roles -->
+												<span th:if="${indice.idProducto != null}"
+												th:text="${mapaProductos[indice.idProducto]}"
+												class="badge bg-primary"></span> <span
 												th:if="${indice.idProducto == null}"
-												class="badge bg-secondary">Sin Producto </span></td>
+												class="badge bg-secondary">Sin Producto</span>
+											</td>
 											<td>
 												<div class="btn-group" role="group" aria-label="Acciones">
-													<a th:href="@{/parametrocalidad/editarparametro}"
+													<a
+														th:href="@{/parametrocalidad/editarparametro(idParametro=${indice.idParametro})}"
 														class="btn btn-sm btn-outline-warning" title="Editar">
 														<i class="fa-solid fa-pen-to-square"></i>
-													</a> <a href="" class="btn btn-sm btn-outline-danger"
-														title="Eliminar"
-														onclick="return confirm('¿Estás seguro de que deseas eliminar este registro?')">
-														<i class="fa fa-trash" aria-hidden="true"></i>
 													</a>
+													<form
+														th:action="@{/parametrocalidad/eliminar/{idParametro}(idParametro=${indice.idParametro})}"
+														method="post" style="display: inline;"
+														onsubmit="return confirm('¿Estás seguro de que deseas eliminar este parametro?');">
+														<button type="submit"
+															class="btn btn-sm btn-outline-danger">
+															<i class="fa-solid fa-trash"></i>
+														</button>
+													</form>
 												</div>
 											</td>
 										</tr>

@@ -19,6 +19,6 @@ public class UsuarioRequestDTO {
     
     private Date fechaCreacion;
     
-    private Integer rolUsuario;
+    private Integer idRol;
 
 }
