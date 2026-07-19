@@ -1,52 +1,136 @@
 <!doctype html>
-<html lang="es" xmlns:th="http://www.thymeleaf.org"
+<html lang="es"
+	xmlns:th="http://www.thymeleaf.org"
 	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 	layout:decorate="~{plantilla/plantillauli}">
 <head>
-<title>Detalle de validación</title>
+	<meta charset="UTF-8">
+	<title>Validación semafórica</title>
 </head>
 <body>
-	<h3 layout:fragment="titulo">Detalle de validación</h3>
+	<h3 layout:fragment="titulo">Validación semafórica</h3>
+
 	<ol layout:fragment="breadcrumb" class="breadcrumb float-sm-end">
 		<li class="breadcrumb-item"><a th:href="@{/dashboard}">Inicio</a></li>
 		<li class="breadcrumb-item"><a th:href="@{/validaciones}">Validaciones</a></li>
-		<li class="breadcrumb-item active">Detalle</li>
+		<li class="breadcrumb-item active"
+			th:text="${validacion.idValidacion != null ? 'Editar' : 'Nueva'}">
+			Nueva
+		</li>
 	</ol>
+
 	<div layout:fragment="contenidopaginas">
-		<div class="card content-card">
-			<div class="card-header">
-				<h5 class="card-title mb-0">Resultado generado automáticamente</h5>
-			</div>
-			<div class="card-body">
-				<div class="row g-4">
-					<div class="col-md-4">
-						<small class="text-secondary d-block">ID</small><strong
-							th:text="${validacion != null ? validacion.idValidacion : 2}"></strong>
-					</div>
-					<div class="col-md-4">
-						<small class="text-secondary d-block">Variable</small><strong
-							th:text="${validacion != null ? validacion.idVariable : '2 - Temperatura'}"></strong>
-					</div>
-					<div class="col-md-4">
-						<small class="text-secondary d-block">Parámetro</small><strong
-							th:text="${validacion != null ? validacion.idParametro : '20 - 25 °C'}"></strong>
-					</div>
-					<div class="col-md-4">
-						<small class="text-secondary d-block">Resultado</small><span
-							class="badge text-bg-danger"
-							th:text="${validacion != null ? validacion.resultado : 'ERROR'}"></span>
-					</div>
-					<div class="col-12">
-						<div class="alert alert-danger"
-							th:text="${validacion != null ? validacion.mensaje : 'Temperatura superior al máximo permitido.'}"></div>
+		<form th:action="${validacion.idValidacion != null}
+				? @{/validaciones/{id}/actualizar(id=${validacion.idValidacion})}
+				: @{/validaciones/guardar}"
+			th:object="${validacion}"
+			method="post">
+
+			<input type="hidden"
+				th:if="${validacion.idValidacion != null}"
+				th:field="*{idValidacion}">
+
+			<div class="card content-card">
+				<div class="card-header">
+					<h5 class="card-title mb-0"
+						th:text="${validacion.idValidacion != null
+							? 'Actualizar validación'
+							: 'Registrar validación'}">
+						Registrar validación
+					</h5>
+				</div>
+
+				<div class="card-body">
+					<div class="row g-3">
+
+						<div class="col-md-4">
+							<label for="idVariable" class="form-label">Variable de ensayo</label>
+							<select id="idVariable"
+								class="form-select"
+								th:field="*{idVariable}"
+								required>
+								<option value="">Seleccione una variable</option>
+								<option th:each="variable : ${variables}"
+									th:value="${variable.idVariable}"
+									th:text="${variable.nombreVariable
+										+ ' - ' + variable.valorObtenido
+										+ ' ' + variable.unidadMedida}">
+								</option>
+							</select>
+						</div>
+
+						<div class="col-md-4">
+							<label for="idParametro" class="form-label">Parámetro de calidad</label>
+							<select id="idParametro"
+								class="form-select"
+								th:field="*{idParametro}"
+								required>
+								<option value="">Seleccione un parámetro</option>
+								<option th:each="parametro : ${parametros}"
+									th:value="${parametro.idParametro}"
+									th:text="${parametro.nombreParametro != null
+										? parametro.nombreParametro
+										: 'Parámetro ' + parametro.idParametro}">
+								</option>
+							</select>
+						</div>
+
+						<div class="col-md-4">
+							<label for="resultado" class="form-label">Resultado</label>
+							<select id="resultado"
+								class="form-select"
+								th:field="*{resultado}"
+								required>
+								<option value="">Seleccione</option>
+								<option value="VERDE">VERDE</option>
+								<option value="AMARILLO">AMARILLO</option>
+								<option value="ROJO">ROJO</option>
+								<option value="OK">OK</option>
+								<option value="ADVERTENCIA">ADVERTENCIA</option>
+								<option value="ERROR">ERROR</option>
+							</select>
+						</div>
+
+						<div class="col-12">
+							<label for="mensaje" class="form-label">Mensaje</label>
+							<textarea id="mensaje"
+								class="form-control"
+								rows="3"
+								th:field="*{mensaje}"></textarea>
+						</div>
+
+						<div class="col-md-6">
+							<label for="fechaValidacion" class="form-label">Fecha</label>
+							<input type="datetime-local"
+								id="fechaValidacion"
+								class="form-control"
+								th:field="*{fechaValidacion}">
+						</div>
 					</div>
 				</div>
+
+				<div class="card-footer text-end">
+					<a th:href="@{/validaciones}" class="btn btn-outline-secondary">Cancelar</a>
+					<button type="submit" class="btn btn-primary">
+						<i class="bi bi-save me-1"></i>Guardar
+					</button>
+				</div>
 			</div>
-			<div class="card-footer">
-				<a th:href="@{/validaciones}" class="btn btn-outline-secondary">Volver</a>
-			</div>
-		</div>
+		</form>
 	</div>
-	<th:block layout:fragment="scripts"></th:block>
+
+	<th:block layout:fragment="scripts">
+		<script>
+			document.addEventListener("DOMContentLoaded", function () {
+				const fecha = document.getElementById("fechaValidacion");
+				if (fecha && !fecha.value) {
+					const ahora = new Date();
+					const desfase = ahora.getTimezoneOffset() * 60000;
+					fecha.value = new Date(ahora.getTime() - desfase)
+						.toISOString().slice(0, 16);
+				}
+			});
+		</script>
+	</th:block>
 </body>
 </html>
