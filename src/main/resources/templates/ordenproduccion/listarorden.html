@@ -109,7 +109,14 @@
 										<td th:text="${indice.cantidadLote}"></td>
 										<td th:text="${indice.fechaInicio}" class="text-center"></td>
 										<td th:text="${indice.fechaFin}" class="text-center"></td>
-										<td th:text="${indice.estado}"> </td>
+										<td class="text-center">
+        <span th:if="${indice.estado == 'REGISTRADO'}" class="badge text-bg-primary">Registrado</span>
+        <span th:if="${indice.estado == 'EN_PROCESO'}" class="badge text-bg-warning">En Proceso</span>
+        <span th:if="${indice.estado == 'EN_REVISION'}" class="badge text-bg-info">En Revisión</span>
+        <!-- Opción de respaldo por si viene un estado inesperado -->
+        <span th:if="${indice.estado != 'REGISTRADO' and indice.estado != 'EN_PROCESO' and indice.estado != 'EN_REVISION'}" 
+              th:text="${indice.estado}" class="badge text-bg-secondary"></span>
+    </td>
 										<td class="text-center">
 											<div class="btn-group table-actions">
 												<a
