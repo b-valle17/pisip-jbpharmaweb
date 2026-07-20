@@ -1,94 +1,123 @@
 <!doctype html>
 <html xmlns:th="http://www.thymeleaf.org"
-      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="/plantilla/plantillaui">
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="/plantilla/plantillaui">
 <head>
-    <title>Orden de Producción | JB Pharma</title>
-    
-    <style>
-        .metric-card .icon { font-size: 2rem; opacity: .75; }
-        .table-actions .btn { margin-right: .25rem; }
-        .status-dot { width: .65rem; height: .65rem; display:inline-block; border-radius:50%; margin-right:.35rem; }
-        .page-help { font-size:.92rem; }
-    </style>
+<title>Orden de Producción | JB Pharma</title>
+
+<style>
+.metric-card .icon {
+	font-size: 2rem;
+	opacity: .75;
+}
+
+.table-actions .btn {
+	margin-right: .25rem;
+}
+
+.status-dot {
+	width: .65rem;
+	height: .65rem;
+	display: inline-block;
+	border-radius: 50%;
+	margin-right: .35rem;
+}
+
+.page-help {
+	font-size: .92rem;
+}
+</style>
 </head>
 <body>
 
-    <div layout:fragment="contenidopaginas">
-        <div class="app-content-header">
-            <div class="container-fluid">
-                <div class="row">
-                    <div class="col-sm-6">
-                        <h1 class="mb-0 fs-3">Registrar nueva Órden de Fabricación</h1>
-                    </div>
-                    <div class="col-sm-6">
-                        <ol class="breadcrumb float-sm-end">
-                            <li class="breadcrumb-item"><a href="./index.html">Inicio</a></li>
-                            <li class="breadcrumb-item">
-                                <a th:href="@{/ordenproduccion}" href="./listarorden.html">OrdenDeFabricacion</a>
-                            </li>									
-                            <li class="breadcrumb-item active">RegistrarNuevaOrden</li>
-                        </ol>
-                    </div>
-                </div>
-            </div>
-        </div>
+	<div layout:fragment="contenidopaginas">
+		<div class="app-content-header">
+			<div class="container-fluid">
+				<div class="row">
+					<div class="col-sm-6">
+						<h1 class="mb-0 fs-3">Registrar nueva Órden de Fabricación</h1>
+					</div>
+					<div class="col-sm-6">
+						<ol class="breadcrumb float-sm-end">
+							<li class="breadcrumb-item"><a href="./index.html">Inicio</a></li>
+							<li class="breadcrumb-item"><a th:href="@{/ordenproduccion}"
+								href="./listarorden.html">OrdenDeFabricacion</a></li>
+							<li class="breadcrumb-item active">RegistrarNuevaOrden</li>
+						</ol>
+					</div>
+				</div>
+			</div>
+		</div>
 
-        <div class="app-content">
-            <div class="container-fluid">
-                <div class="row">
-                    <div class="col-lg-8">
-                        <div class="card card-primary card-outline">
-                            <div class="card-header">
-                                <h3 class="card-title">Nueva Órden</h3>
-                            </div>
-                            <form th:action="@{/ordenproduccion/guardar}" th:object="${orden}" method="post">
-                                <div class="card-body">
-                                    <div class="row g-3">
-                                        <div class="col-md-6">
-                                            <label class="form-label">Producto</label>
-                                            <select class="form-select" required>
-                                                <option value="">Seleccione</option>
-                                                <option>Paracetamol</option>
-                                                <option>Ibuprofeno</option>
-                                                <option>Jarabe</option>
-                                            </select>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <label class="form-label">Número de Lote</label>
-                                            <input type="text" class="form-control" id="codigoPlan" placeholder="Ej: LOT-121" required th:field="*{numeroLote}">
-                                        </div>
-                                        <div class="col-md-6">
-                                            <label class="form-label">Tamaño de Lote (KG)</label>
-                                            <input type="number" class="form-control" id="mes" min="1" max="100" placeholder="3" required th:field="*{cantidadLote}">
-                                        </div>
-                                        <div class="col-md-6">
-                                            <label class="form-label">Fecha Inicio</label>
-                                            <input type="date" class="form-control" id="fechaEmision" required th:field="*{fechaInicio}" >
-                                        </div>
-                                        <div class="col-md-6">
-                                            <label class="form-label">Fecha Fin</label>
-                                            <input type="date" class="form-control" id="fechaEmision" required th:field="*{fechaFin}">
-                                        </div>
-                                        <div class="col-md-6">
-                                            <label class="form-label">Estado</label>
-                                            <input type="text" class="form-control" id="estado" placeholder="Ej: En Proceso" required th:field="*{estado}">
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="card-footer d-flex gap-2">
-                                    <button class="btn btn-primary" type="submit">
-                                        <i class="bi bi-save me-1"></i>Guardar y continuar
-                                    </button>
-                                    <a class="btn btn-outline-secondary" th:href="@{/ordenproduccion}" href="./listarorden.html">Cancelar</a>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+		<div class="app-content">
+			<div class="container-fluid">
+				<div class="row">
+					<div class="col-lg-8">
+						<div class="card card-primary card-outline">
+							<div class="card-header">
+								<h3 class="card-title">Nueva Órden</h3>
+							</div>
+							<form th:action="@{/ordenproduccion/guardar}"
+								th:object="${orden}" method="post">
+								<div class="card-body">
+									<div class="row g-3">
+										<div class="col-md-6">
+											<label class="form-label">Producto</label> <select
+												class="form-select" required>
+												<option value="">Seleccione</option>
+												<option>Paracetamol</option>
+												<option>Ibuprofeno</option>
+												<option>Jarabe</option>
+											</select>
+										</div>
+										
+										<div class="col-md-6">
+											<label class="form-label">Número de Lote</label> <input
+												type="text" class="form-control" id="codigoPlan"
+												placeholder="Ej: LOT-121" required th:field="*{numeroLote}">
+										</div>
+										<div class="col-md-6">
+											<label class="form-label">Tamaño de Lote (KG)</label> <input
+												type="number" class="form-control" id="mes" min="1"
+												max="100" placeholder="3" required
+												th:field="*{cantidadLote}">
+										</div>
+										<div class="col-md-6">
+											<label class="form-label">Fecha Inicio</label> <input
+												type="date" class="form-control" id="fechaEmision" required
+												th:field="*{fechaInicio}">
+										</div>
+										<div class="col-md-6">
+											<label class="form-label">Fecha Fin</label> <input
+												type="date" class="form-control" id="fechaEmision" required
+												th:field="*{fechaFin}">
+										</div>
+										<div class="col-md-6">
+											<label class="form-label">Estado de la Orden</label> <select
+												class="form-select" th:field="*{estado}" required>
+												<option value="">Seleccione</option>
+												<option value="EN PROCESO">EN PROCESO</option>
+												<option value="PLANIFICADO">PLANIFICADO</option>
+												<option value="BORRADOR">BORRADOR</option>
+												<option value="CANCELADO">CANCELADO</option>
+											</select>
+										</div>
+									</div>
+								</div>
+								<div class="card-footer d-flex gap-2">
+									<button class="btn btn-primary" type="submit">
+										<i class="bi bi-save me-1"></i>Guardar y continuar
+									</button>
+									<a class="btn btn-outline-secondary"
+										th:href="@{/ordenproduccion}" href="./listarorden.html">Cancelar</a>
+								</div>
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
 
 </body>
 </html>

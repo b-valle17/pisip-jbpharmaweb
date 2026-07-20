@@ -10,13 +10,13 @@ import lombok.Data;
 public class PlanProduccionRequestDto {
 	
 
-	private int idPlan;
+	private Integer idPlan;
 
 	private String codigoPlan;
 
-	private int mes;
+	private Integer mes;
 
-	private int anio;
+	private Integer anio;
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private Date fechaEmision;
 

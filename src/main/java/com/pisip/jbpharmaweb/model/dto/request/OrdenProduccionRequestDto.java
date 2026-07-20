@@ -10,7 +10,7 @@ import lombok.Data;
 @Data
 public class OrdenProduccionRequestDto {
 
-	private int idOrden;
+	private Integer idOrden;
 
 	private String numeroLote;
 
