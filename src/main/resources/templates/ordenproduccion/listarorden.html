@@ -1,0 +1,213 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="/plantilla/plantillaui">
+<head>
+<title>Orden de Producción | JB Pharma</title>
+
+<style>
+.table-actions .btn {
+	margin-right: .25rem;
+}
+@media print {
+	body * {
+		visibility: hidden;
+	}
+	#printable-area, #printable-area * {
+		visibility: visible;
+	}
+	#printable-area {
+		position: absolute;
+		left: 0;
+		top: 0;
+		width: 100%;
+	}
+	.card-header, .d-flex.gap-2.mb-3, .table-actions {
+		display: none !important;
+	}
+}
+</style>
+</head>
+<body>
+
+	<div layout:fragment="contenidopaginas">
+
+		<!-- Header de la sección -->
+		<div class="app-content-header">
+			<div class="container-fluid">
+				<div class="row">
+					<div class="col-sm-6">
+						<h1 class="mb-0 fs-3">Órdenes de Producción</h1>
+					</div>
+					<div class="col-sm-6">
+						<ol class="breadcrumb float-sm-end">
+							<li class="breadcrumb-item"><a href="./index.html">Inicio</a></li>
+							<li class="breadcrumb-item active">OrdenDeProduccion</li>
+						</ol>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="app-content">
+			<div class="container-fluid">
+
+				<div class="card" id="printable-area">
+					<div class="card-header">
+						<h3 class="card-title">Gestión de Órdenes de Fabricación</h3>
+						<div class="card-tools">
+							<div class="input-group input-group-sm" style="width: 16rem">
+								<span class="input-group-text"> <i class="bi bi-search"
+									aria-hidden="true"></i>
+								</span>
+								<!-- Filtro global -->
+								<input id="table-filter" type="search" class="form-control"
+									placeholder="Filtrar filas…" aria-label="Filtrar filas" />
+							</div>
+						</div>
+					</div>
+					<div class="card-body">
+						<div class="d-flex gap-2 mb-3">
+							<a th:href="@{/ordenproduccion/crearorden}" href="./crearorden.html"
+								class="btn btn-sm btn-primary"> <i
+								class="bi bi-plus-circle me-1" aria-hidden="true"></i> Nuevo
+								orden
+							</a>
+
+							<button id="export-csv" type="button"
+								class="btn btn-sm btn-outline-secondary">
+								<i class="bi bi-filetype-csv me-1" aria-hidden="true"></i>
+								Exportar CSV
+							</button>
+							<button id="export-json" type="button"
+								class="btn btn-sm btn-outline-secondary">
+								<i class="bi bi-filetype-json me-1" aria-hidden="true"></i>
+								Exportar JSON
+							</button>
+							<button id="print-table" type="button"
+								class="btn btn-sm btn-outline-secondary">
+								<i class="bi bi-printer me-1" aria-hidden="true"></i> Imprimir
+							</button>
+						</div>
+
+						<!-- Estructura de tabla HTML -->
+						<div class="table-responsive">
+							<table class="table table-striped">
+								<thead>
+									<tr>
+										<th scope="col">Número de Lote</th>
+										<th scope="col">Cantidad(Kg)</th>
+										<th scope="col">Fecha Inicio</th>
+										<th scope="col">Fecha Fin</th>
+										<th scope="col">Estado</th>									
+										<th scope="col">Acciones</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr th:each="indice : ${listaorden}">
+										<td th:text="${indice.numeroLote}"></td>
+										<td th:text="${indice.cantidadLote}"></td>
+										<td th:text="${indice.fechaInicio}" class="text-center"></td>
+										<td th:text="${indice.fechaFin}" class="text-center"></td>
+										<td th:text="${indice.estado}"> </td>
+										<td class="text-center">
+											<div class="btn-group table-actions">
+												<a
+													th:href="@{/ordenproduccion/editar/{id}(id=${indice.idOrden})}"
+													class="btn btn-sm btn-outline-warning" title="Editar Orden">
+													<i class="bi bi-pencil"></i>
+												</a> <a
+													th:href="@{/ordenproduccion/eliminar/{id}(id=${indice.idOrden})}"
+													class="btn btn-sm btn-outline-danger" title="Eliminar"
+													onClick="return confirm('¿Seguro que desea eliminar esta órden?')">
+													<i class="bi bi-trash"></i>
+												</a>
+											</div>
+										</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+
+					</div>
+				</div>
+
+			</div>
+		</div>
+
+		<!-- Lógica para Filtro, Exportación e Impresión -->
+		<script>
+            document.addEventListener('DOMContentLoaded', () => {
+                const filterInput = document.getElementById('table-filter');
+                const table = document.getElementById('ordenes-table');
+                const rows = table.getElementsByTagName('tbody')[0].getElementsByTagName('tr');
+
+                // 1. Filtro global en tiempo real 
+                filterInput.addEventListener('input', function() {
+                    const value = this.value.toLowerCase().trim();
+                    
+                    for (let i = 0; i < rows.length; i++) {
+                        const rowText = rows[i].textContent.toLowerCase();
+                        if (rowText.includes(value)) {
+                            rows[i].style.display = '';
+                        } else {
+                            rows[i].style.display = 'none';
+                        }
+                    }
+                });
+
+                // Helper para extraer los datos visibles de la tabla en un array limpio
+                function getTableData() {
+                    const data = [];
+                    for (let i = 0; i < rows.length; i++) {
+                        if (rows[i].style.display !== 'none') {
+                            const cells = rows[i].getElementsByTagName('td');
+                            data.push({
+                                codigo: cells[0].textContent.trim(),
+                                periodo: cells[1].textContent.trim(),
+                                emision: cells[2].textContent.trim(),
+                                estado: cells[3].textContent.trim()
+                            });
+                        }
+                    }
+                    return data;
+                }
+
+                // Helper para descargar archivos en el navegador
+                function downloadFile(content, fileName, contentType) {
+                    const a = document.createElement("a");
+                    const file = new Blob([content], { type: contentType });
+                    a.href = URL.createObjectURL(file);
+                    a.download = fileName;
+                    a.click();
+                }
+
+                // 2. Exportar a CSV
+                document.getElementById('export-csv').addEventListener('click', () => {
+                    const data = getTableData();
+                    let csvContent = "\uFEFFCódigo,Período,Emisión,Estado\n"; // \uFEFF fuerza UTF-8 en Excel
+                    
+                    data.forEach(row => {
+                        csvContent += `"${row.codigo}","${row.periodo}","${row.emision}","${row.estado}"\n`;
+                    });
+                    
+                    downloadFile(csvContent, "ordenes_produccion.csv", "text/csv;charset=utf-8;");
+                });
+
+                // 3. Exportar a JSON
+                document.getElementById('export-json').addEventListener('click', () => {
+                    const data = getTableData();
+                    const jsonContent = JSON.stringify(data, null, 2);
+                    downloadFile(jsonContent, "ordenes_produccion.json", "application/json");
+                });
+
+                // 4. Imprimir la Tabla de manera nativa y limpia
+                document.getElementById('print-table').addEventListener('click', () => {
+                    window.print();
+                });
+            });
+        </script>
+	</div>
+
+</body>
+</html>
