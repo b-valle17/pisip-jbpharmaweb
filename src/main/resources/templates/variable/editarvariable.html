@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="es"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{plantilla/plantillauli}">
+<head>
+	<meta charset="UTF-8">
+	<title>Editar variable</title>
+</head>
+<body>
+	<h3 layout:fragment="titulo">Editar variable</h3>
+
+	<ol layout:fragment="breadcrumb" class="breadcrumb float-sm-end">
+		<li class="breadcrumb-item"><a th:href="@{/dashboard}">Inicio</a></li>
+		<li class="breadcrumb-item"><a th:href="@{/variables}">Variables</a></li>
+		<li class="breadcrumb-item active">Editar</li>
+	</ol>
+
+	<div layout:fragment="contenidopaginas">
+		<form th:action="@{/variables/{id}/actualizar(id=${variable.idVariable})}"
+			th:object="${variable}"
+			method="post">
+
+			<input type="hidden" th:field="*{idVariable}">
+			<input type="hidden" th:field="*{creadoEn}">
+
+			<div class="card content-card">
+				<div class="card-header">
+					<h5 class="card-title mb-0">Actualizar variable</h5>
+				</div>
+
+				<div class="card-body">
+					<div class="row g-3">
+
+						<div class="col-md-6">
+							<label for="idEnsayo" class="form-label">Ensayo</label>
+							<select id="idEnsayo"
+								class="form-select"
+								th:field="*{idEnsayo}"
+								required>
+								<option value="">Seleccione un ensayo</option>
+								<option th:each="ensayo : ${ensayos}"
+									th:value="${ensayo.idEnsayo}"
+									th:text="${ensayo.codigoEnsayo}">
+								</option>
+							</select>
+						</div>
+
+						<div class="col-md-6">
+							<label for="nombreVariable" class="form-label">Nombre de variable</label>
+							<input type="text"
+								id="nombreVariable"
+								class="form-control"
+								th:field="*{nombreVariable}"
+								required>
+						</div>
+
+						<div class="col-md-6">
+							<label for="valorObtenido" class="form-label">Valor obtenido</label>
+							<input type="number"
+								id="valorObtenido"
+								step="0.0001"
+								class="form-control"
+								th:field="*{valorObtenido}"
+								required>
+						</div>
+
+						<div class="col-md-6">
+							<label for="unidadMedida" class="form-label">Unidad de medida</label>
+							<input type="text"
+								id="unidadMedida"
+								class="form-control"
+								th:field="*{unidadMedida}"
+								required>
+						</div>
+					</div>
+				</div>
+
+				<div class="card-footer text-end">
+					<a th:href="@{/variables}" class="btn btn-outline-secondary">Cancelar</a>
+					<button type="submit" class="btn btn-primary">
+						<i class="bi bi-save me-1"></i>Actualizar variable
+					</button>
+				</div>
+			</div>
+		</form>
+	</div>
+
+	<th:block layout:fragment="scripts"></th:block>
+</body>
+</html>

@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="es"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{plantilla/plantillauli}">
+<head>
+	<meta charset="UTF-8">
+	<title>Alerta de ensayo</title>
+</head>
+<body>
+	<h3 layout:fragment="titulo">Alerta de ensayo</h3>
+
+	<ol layout:fragment="breadcrumb" class="breadcrumb float-sm-end">
+		<li class="breadcrumb-item"><a th:href="@{/dashboard}">Inicio</a></li>
+		<li class="breadcrumb-item"><a th:href="@{/alertas}">Notificaciones</a></li>
+		<li class="breadcrumb-item active"
+			th:text="${alerta.idAlerta != null ? 'Editar' : 'Nueva'}">
+			Nueva
+		</li>
+	</ol>
+
+	<div layout:fragment="contenidopaginas">
+		<form th:action="${alerta.idAlerta != null}
+				? @{/alertas/{id}/actualizar(id=${alerta.idAlerta})}
+				: @{/alertas/guardar}"
+			th:object="${alerta}"
+			method="post">
+
+			<input type="hidden"
+				th:if="${alerta.idAlerta != null}"
+				th:field="*{idAlerta}">
+
+			<div class="card content-card">
+				<div class="card-header">
+					<h5 class="card-title mb-0"
+						th:text="${alerta.idAlerta != null
+							? 'Actualizar notificación'
+							: 'Registrar notificación'}">
+						Registrar notificación
+					</h5>
+				</div>
+
+				<div class="card-body">
+					<div class="row g-3">
+
+						<div class="col-md-4">
+							<label for="idValidacion" class="form-label">Validación</label>
+							<select id="idValidacion"
+								class="form-select"
+								th:field="*{idValidacion}"
+								required>
+								<option value="">Seleccione una validación</option>
+								<option th:each="validacion : ${validaciones}"
+									th:value="${validacion.idValidacion}"
+									th:text="${'Validación ' + validacion.idValidacion
+										+ ' - ' + validacion.resultado}">
+								</option>
+							</select>
+						</div>
+
+						<div class="col-md-4">
+							<label for="tipoAlerta" class="form-label">Tipo</label>
+							<select id="tipoAlerta"
+								class="form-select"
+								th:field="*{tipoAlerta}"
+								required>
+								<option value="">Seleccione</option>
+								<option value="EMAIL">EMAIL</option>
+								<option value="SISTEMA">SISTEMA</option>
+							</select>
+						</div>
+
+						<div class="col-md-4">
+							<label for="destinatario" class="form-label">Destinatario</label>
+							<input type="email"
+								id="destinatario"
+								class="form-control"
+								th:field="*{destinatario}"
+								required>
+						</div>
+
+						<div class="col-md-6">
+							<label for="asunto" class="form-label">Asunto</label>
+							<input type="text"
+								id="asunto"
+								class="form-control"
+								th:field="*{asunto}"
+								required>
+						</div>
+
+						<div class="col-md-6">
+							<label for="estadoEnvio" class="form-label">Estado</label>
+							<select id="estadoEnvio"
+								class="form-select"
+								th:field="*{estadoEnvio}"
+								required>
+								<option value="PENDIENTE">PENDIENTE</option>
+								<option value="ENVIADO">ENVIADO</option>
+								<option value="ERROR">ERROR</option>
+							</select>
+						</div>
+
+						<div class="col-12">
+							<label for="mensaje" class="form-label">Mensaje</label>
+							<textarea id="mensaje"
+								class="form-control"
+								rows="4"
+								th:field="*{mensaje}"
+								required></textarea>
+						</div>
+					</div>
+				</div>
+
+				<div class="card-footer text-end">
+					<a th:href="@{/alertas}" class="btn btn-outline-secondary">Cancelar</a>
+					<button type="submit" class="btn btn-primary">
+						<i class="bi bi-save me-1"></i>Guardar
+					</button>
+				</div>
+			</div>
+		</form>
+	</div>
+
+	<th:block layout:fragment="scripts"></th:block>
+</body>
+</html>
