@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org"
+    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{plantilla/plantillauli}">
+<head>
+    <meta charset="UTF-8">
+    <title>Variables de ensayo</title>
+</head>
+<body>
+    <h3 layout:fragment="titulo">Variables de ensayo</h3>
+    <ol layout:fragment="breadcrumb" class="breadcrumb float-sm-end">
+        <li class="breadcrumb-item"><a th:href="@{/dashboard}">Inicio</a></li>
+        <li class="breadcrumb-item active">Variables</li>
+    </ol>
+
+    <div layout:fragment="contenidopaginas">
+        <div class="card content-card">
+            <div class="card-header d-flex align-items-center">
+                <h5 class="card-title mb-0">Variables registradas</h5>
+                <a th:href="@{/variables/nuevo}" class="btn btn-primary btn-sm ms-auto">
+                    <i class="bi bi-plus-circle me-1"></i>Nueva variable
+                </a>
+            </div>
+            <div class="card-body">
+                <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
+                <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+
+                <input id="buscadorVariables" type="search" class="form-control mb-3"
+                    placeholder="Buscar por ensayo, variable, valor, unidad o fecha" autocomplete="off">
+
+                <div class="table-responsive">
+                    <table id="tablaVariables" class="table table-hover align-middle">
+                        <thead>
+                            <tr>
+                                <th>Ensayo</th>
+                                <th>Variable</th>
+                                <th>Valor</th>
+                                <th>Unidad</th>
+                                <th>Creado</th>
+                                <th class="text-end">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="fila-variable" th:each="v : ${variables}">
+                                <td th:text="${v.idEnsayo}"></td>
+                                <td th:text="${v.nombreVariable}"></td>
+                                <td th:text="${v.valorObtenido}"></td>
+                                <td th:text="${v.unidadMedida}"></td>
+                                <td th:text="${v.creadoEn}"></td>
+                                <td class="text-end table-actions">
+                                    <a th:href="@{/variables/{id}/editar(id=${v.idVariable})}"
+                                        class="btn btn-sm btn-outline-primary" title="Editar">
+                                        <i class="bi bi-pencil"></i>
+                                    </a>
+                                    <button type="button" class="btn btn-sm btn-outline-danger"
+                                        title="Eliminar" data-bs-toggle="modal" data-bs-target="#modalEliminarVariable"
+                                        th:data-id="${v.idVariable}" th:data-nombre="${v.nombreVariable}"
+                                        onclick="prepararEliminacionVariable(this)">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr id="sinResultadosVariables" style="display:none">
+                                <td colspan="6" class="text-center text-muted py-4">No se encontraron variables con ese criterio.</td>
+                            </tr>
+                            <tr th:if="${variables == null or #lists.isEmpty(variables)}">
+                                <td colspan="6" class="text-center text-muted py-4">No existen variables registradas.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="modalEliminarVariable" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Confirmar eliminación</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p>¿Está seguro de eliminar la variable <strong id="nombreVariableEliminar"></strong>?</p>
+                        <p class="text-danger mb-0">También se eliminarán sus validaciones y alertas asociadas. Esta acción no se puede deshacer.</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <form id="formEliminarVariable" method="post">
+                            <button type="submit" class="btn btn-danger"><i class="bi bi-trash me-1"></i>Eliminar</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <th:block layout:fragment="scripts">
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                const buscador = document.getElementById('buscadorVariables');
+                const filas = Array.from(document.querySelectorAll('#tablaVariables .fila-variable'));
+                const sinResultados = document.getElementById('sinResultadosVariables');
+                function normalizar(texto) {
+                    return (texto || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').trim();
+                }
+                buscador.addEventListener('input', function () {
+                    const criterio = normalizar(buscador.value);
+                    let visibles = 0;
+                    filas.forEach(function (fila) {
+                        const coincide = normalizar(fila.innerText).includes(criterio);
+                        fila.style.display = coincide ? '' : 'none';
+                        if (coincide) visibles++;
+                    });
+                    if (sinResultados) sinResultados.style.display = filas.length > 0 && visibles === 0 ? '' : 'none';
+                });
+            });
+            function prepararEliminacionVariable(boton) {
+                const id = boton.getAttribute('data-id');
+                const nombre = boton.getAttribute('data-nombre');
+                document.getElementById('nombreVariableEliminar').textContent = nombre;
+                document.getElementById('formEliminarVariable').action = '/variables/' + id + '/eliminar';
+            }
+        </script>
+    </th:block>
+</body>
+</html>

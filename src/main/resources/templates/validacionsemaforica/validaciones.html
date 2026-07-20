@@ -1,89 +1,96 @@
 <!doctype html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org"
-	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-	layout:decorate="~{plantilla/plantillauli}">
+    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{plantilla/plantillauli}">
 <head>
-<title>Validación semafórica</title>
+    <meta charset="UTF-8">
+    <title>Validaciones semafóricas</title>
 </head>
 <body>
-	<h3 layout:fragment="titulo">Validación semafórica</h3>
-	<ol layout:fragment="breadcrumb" class="breadcrumb float-sm-end">
-		<li class="breadcrumb-item"><a th:href="@{/dashboard}">Inicio</a></li>
-		<li class="breadcrumb-item active">Validaciones</li>
-	</ol>
-	<div layout:fragment="contenidopaginas">
-		<div class="card content-card">
-			<div class="card-header d-flex align-items-center">
-				<h5 class="card-title mb-0">Resultados automáticos</h5>
-				<a th:href="@{/validaciones/ejecutar}"
-					class="btn btn-success btn-sm ms-auto"><i
-					class="bi bi-play-circle me-1"></i>Ejecutar validación</a>
-			</div>
-			<div class="card-body">
-				<div class="example"
-					th:if="${validaciones == null or #lists.isEmpty(validaciones)}">Se
-					muestran 3 registros de ejemplo.</div>
-				<div class="table-responsive">
-					<table class="table table-hover align-middle">
-						<thead>
-							<tr>
-								<th>Variable</th>
-								<th>Parámetro</th>
-								<th>Resultado</th>
-								<th>Mensaje</th>
-								<th>Fecha</th>
-								<th class="text-end">Detalle</th>
-							</tr>
-						</thead>
-						<tbody>
-							<tr th:each="v : ${validaciones}">
-								<td th:text="${v.idVariable}"></td>
-								<td th:text="${v.idParametro}"></td>
-								<td><span class="badge"
-									th:classappend="${v.resultado == 'OK'} ? ' text-bg-success' : (${v.resultado == 'ADVERTENCIA'} ? ' text-bg-warning' : ' text-bg-danger')"
-									th:text="${v.resultado}"></span></td>
-								<td th:text="${v.mensaje}"></td>
-								<td th:text="${v.fechaValidacion}"></td>
-								<td class="text-end"><a
-									th:href="@{/validaciones/{id}(id=${v.idValidacion})}"
-									class="btn btn-sm btn-outline-info"><i class="bi bi-eye"></i></a></td>
-							</tr>
-							<th:block
-								th:if="${validaciones == null or #lists.isEmpty(validaciones)}">
-								<tr>
-									<td>1 - pH</td>
-									<td>1 - 6.5/7.5</td>
-									<td><span class="badge text-bg-success">OK</span></td>
-									<td>Dentro del rango permitido.</td>
-									<td>16/07/2026 09:05</td>
-									<td class="text-end"><a th:href="@{/validaciones/1}"
-										class="btn btn-sm btn-outline-info"><i class="bi bi-eye"></i></a></td>
-								</tr>
-								<tr>
-									<td>2 - Temperatura</td>
-									<td>2 - 20/25 °C</td>
-									<td><span class="badge text-bg-danger">ERROR</span></td>
-									<td>Superior al máximo permitido.</td>
-									<td>16/07/2026 10:45</td>
-									<td class="text-end"><a th:href="@{/validaciones/2}"
-										class="btn btn-sm btn-outline-info"><i class="bi bi-eye"></i></a></td>
-								</tr>
-								<tr>
-									<td>3 - Humedad</td>
-									<td>3 - 40/60 %</td>
-									<td><span class="badge text-bg-warning">ADVERTENCIA</span></td>
-									<td>Próximo al límite máximo.</td>
-									<td>17/07/2026 08:15</td>
-									<td class="text-end"><a th:href="@{/validaciones/3}"
-										class="btn btn-sm btn-outline-info"><i class="bi bi-eye"></i></a></td>
-								</tr>
-							</th:block>
-						</tbody>
-					</table>
-				</div>
-			</div>
-		</div>
-	</div>
-	<th:block layout:fragment="scripts"></th:block>
+    <h3 layout:fragment="titulo">Validaciones semafóricas</h3>
+    <ol layout:fragment="breadcrumb" class="breadcrumb float-sm-end">
+        <li class="breadcrumb-item"><a th:href="@{/dashboard}">Inicio</a></li>
+        <li class="breadcrumb-item active">Validaciones semafóricas</li>
+    </ol>
+
+    <div layout:fragment="contenidopaginas">
+        <div class="card">
+            <div class="card-header d-flex align-items-center">
+                <h5 class="mb-0">Validaciones registradas</h5>
+                <a th:href="@{/validaciones/nuevo}" class="btn btn-primary btn-sm ms-auto">Nueva validación</a>
+            </div>
+            <div class="card-body">
+                <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
+                <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+                <input id="buscador" type="search" class="form-control mb-3" placeholder="Buscar" autocomplete="off">
+                <div class="table-responsive">
+                    <table id="tabla" class="table table-hover align-middle">
+                        <thead>
+                            <tr><th>Variable</th><th>Parámetro</th><th>Resultado</th><th>Mensaje</th><th>Fecha</th><th>Acciones</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr class="fila" th:each="v : ${validaciones}">
+                                <td th:text="${v.idVariable}"></td>
+                                <td th:text="${v.idParametro}"></td>
+                                <td>
+                                    <span class="badge"
+                                        th:classappend="${v.resultado == 'VERDE'} ? ' text-bg-success' : (${v.resultado == 'AMARILLO' or v.resultado == 'ADVERTENCIA'} ? ' text-bg-warning' : (${v.resultado == 'ROJO'} ? ' text-bg-danger' : ' text-bg-secondary'))"
+                                        th:text="${v.resultado}"></span>
+                                </td>
+                                <td th:text="${v.mensaje}"></td>
+                                <td th:text="${v.fechaValidacion}"></td>
+                                <td class="table-actions">
+                                    <a th:href="@{/validaciones/{id}/editar(id=${v.idValidacion})}" class="btn btn-sm btn-outline-primary" title="Editar"><i class="bi bi-pencil"></i></a>
+                                    <button type="button" class="btn btn-sm btn-outline-danger" title="Eliminar"
+                                        data-bs-toggle="modal" data-bs-target="#modalEliminarValidacion"
+                                        th:data-id="${v.idValidacion}" th:data-resultado="${v.resultado}"
+                                        onclick="prepararEliminacionValidacion(this)"><i class="bi bi-trash"></i></button>
+                                </td>
+                            </tr>
+                            <tr id="sinResultadosValidaciones" style="display:none"><td colspan="6" class="text-center text-muted">No se encontraron validaciones.</td></tr>
+                            <tr th:if="${validaciones == null or #lists.isEmpty(validaciones)}"><td colspan="6" class="text-center text-muted">No existen validaciones.</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="modalEliminarValidacion" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header"><h5 class="modal-title">Confirmar eliminación</h5><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button></div>
+                    <div class="modal-body">
+                        <p>¿Está seguro de eliminar esta validación (<strong id="resultadoValidacionEliminar"></strong>)?</p>
+                        <p class="text-danger mb-0">También se eliminarán sus alertas asociadas. Esta acción no se puede deshacer.</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <form id="formEliminarValidacion" method="post"><button type="submit" class="btn btn-danger"><i class="bi bi-trash me-1"></i>Eliminar</button></form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <th:block layout:fragment="scripts">
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                const buscador = document.getElementById('buscador');
+                const filas = Array.from(document.querySelectorAll('#tabla .fila'));
+                const sinResultados = document.getElementById('sinResultadosValidaciones');
+                function normalizar(texto) { return (texto || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').trim(); }
+                buscador.addEventListener('input', function () {
+                    const criterio = normalizar(buscador.value); let visibles = 0;
+                    filas.forEach(function (fila) { const coincide = normalizar(fila.innerText).includes(criterio); fila.style.display = coincide ? '' : 'none'; if (coincide) visibles++; });
+                    if (sinResultados) sinResultados.style.display = filas.length > 0 && visibles === 0 ? '' : 'none';
+                });
+            });
+            function prepararEliminacionValidacion(boton) {
+                const id = boton.getAttribute('data-id');
+                document.getElementById('resultadoValidacionEliminar').textContent = boton.getAttribute('data-resultado');
+                document.getElementById('formEliminarValidacion').action = '/validaciones/' + id + '/eliminar';
+            }
+        </script>
+    </th:block>
 </body>
 </html>

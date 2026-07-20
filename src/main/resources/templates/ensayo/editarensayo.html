@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="es"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{plantilla/plantillauli}">
+<head>
+	<meta charset="UTF-8">
+	<title>Editar ensayo</title>
+</head>
+<body>
+	<h3 layout:fragment="titulo">Editar ensayo</h3>
+
+	<ol layout:fragment="breadcrumb" class="breadcrumb float-sm-end">
+		<li class="breadcrumb-item"><a th:href="@{/dashboard}">Inicio</a></li>
+		<li class="breadcrumb-item"><a th:href="@{/ensayos}">Ensayos</a></li>
+		<li class="breadcrumb-item active">Editar</li>
+	</ol>
+
+	<div layout:fragment="contenidopaginas">
+		<form th:action="@{/ensayos/{id}/actualizar(id=${ensayo.idEnsayo})}"
+			th:object="${ensayo}"
+			method="post">
+
+			<input type="hidden" th:field="*{idEnsayo}">
+			<input type="hidden" th:field="*{creadoEn}">
+			<input type="hidden" th:field="*{codigoEnsayo}">
+
+			<div class="card content-card">
+				<div class="card-header">
+					<h5 class="card-title mb-0">Actualizar ensayo</h5>
+				</div>
+
+				<div class="card-body">
+					<div class="row g-3">
+
+						<div class="col-md-4">
+							<label for="idOrden" class="form-label">Orden de producción</label>
+							<select id="idOrden"
+								class="form-select"
+								th:field="*{idOrden}"
+								required>
+								<option value="">Seleccione una orden</option>
+								<option th:each="orden : ${ordenes}"
+									th:value="${orden.idOrden}"
+									th:text="${orden.numeroLote != null
+										? orden.numeroLote + ' (ID ' + orden.idOrden + ')'
+										: 'Orden ' + orden.idOrden}">
+								</option>
+							</select>
+						</div>
+
+						<div class="col-md-4">
+							<label for="idProducto" class="form-label">Producto</label>
+							<select id="idProducto"
+								class="form-select"
+								th:field="*{idProducto}"
+								required>
+								<option value="">Seleccione un producto</option>
+								<option th:each="producto : ${productos}"
+									th:value="${producto.idProducto}"
+									th:text="${producto.nombreProducto != null
+										? producto.nombreProducto
+										: 'Producto ' + producto.idProducto}">
+								</option>
+							</select>
+						</div>
+
+						<div class="col-md-4">
+							<label for="codigoEnsayo" class="form-label">Código ensayo</label>
+							<input type="text"
+								id="codigoEnsayo"
+								class="form-control"
+								th:value="${ensayo.codigoEnsayo}"
+								readonly>
+						</div>
+
+						<div class="col-md-4">
+							<label for="fechaEnsayo" class="form-label">Fecha ensayo</label>
+							<input type="datetime-local"
+								id="fechaEnsayo"
+								class="form-control"
+								th:field="*{fechaEnsayo}"
+								required>
+						</div>
+
+						<div class="col-md-5">
+							<label for="responsable" class="form-label">Responsable</label>
+							<input type="text"
+								id="responsable"
+								class="form-control"
+								th:field="*{responsable}"
+								required>
+						</div>
+
+						<div class="col-md-3">
+							<label for="estado" class="form-label">Estado</label>
+							<select id="estado" class="form-select" th:field="*{estado}" required>
+								<option value="REGISTRADO">REGISTRADO</option>
+								<option value="EN_PROCESO">EN_PROCESO</option>
+								<option value="EN_REVISION">EN_REVISION</option>
+								<option value="COMPLETADO">COMPLETADO</option>
+								<option value="FINALIZADO">FINALIZADO</option>
+								<option value="OBSERVADO">OBSERVADO</option>
+								<option value="PENDIENTE">PENDIENTE</option>
+								<option value="RECHAZADO">RECHAZADO</option>
+							</select>
+						</div>
+
+						<div class="col-12">
+							<label for="observacion" class="form-label">Observación</label>
+							<textarea id="observacion"
+								class="form-control"
+								rows="4"
+								th:field="*{observacion}"></textarea>
+						</div>
+					</div>
+				</div>
+
+				<div class="card-footer text-end">
+					<a th:href="@{/ensayos}" class="btn btn-outline-secondary">Cancelar</a>
+					<button type="submit" class="btn btn-primary">
+						<i class="bi bi-save me-1"></i>Actualizar ensayo
+					</button>
+				</div>
+			</div>
+		</form>
+	</div>
+</body>
+</html>
