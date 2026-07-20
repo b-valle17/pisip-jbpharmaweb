@@ -17,27 +17,27 @@ public class AlertaEnsayoServiceImpl implements iAlertaEnsayoService {
 	}
 
 	public List<AlertaEnsayoResponseDto> listar() {
-		return webClient.get().uri("/api/alertas").retrieve()
+		return webClient.get().uri("/alertas").retrieve()
 				.bodyToMono(new ParameterizedTypeReference<List<AlertaEnsayoResponseDto>>() {
 				}).blockOptional().orElseGet(List::of);
 	}
 
 	public Optional<AlertaEnsayoResponseDto> buscarPorId(long id) {
-		return webClient.get().uri("/api/alertas/{id}", id).retrieve().bodyToMono(AlertaEnsayoResponseDto.class)
+		return webClient.get().uri("/alertas/{id}", id).retrieve().bodyToMono(AlertaEnsayoResponseDto.class)
 				.blockOptional();
 	}
 
 	public AlertaEnsayoResponseDto guardar(AlertaEnsayoRequestDto dto) {
-		return webClient.post().uri("/api/alertas").bodyValue(dto).retrieve().bodyToMono(AlertaEnsayoResponseDto.class)
+		return webClient.post().uri("/alertas").bodyValue(dto).retrieve().bodyToMono(AlertaEnsayoResponseDto.class)
 				.block();
 	}
 
 	public AlertaEnsayoResponseDto actualizar(long id, AlertaEnsayoRequestDto dto) {
-		return webClient.put().uri("/api/alertas/{id}", id).bodyValue(dto).retrieve()
+		return webClient.put().uri("/alertas/{id}", id).bodyValue(dto).retrieve()
 				.bodyToMono(AlertaEnsayoResponseDto.class).block();
 	}
 
 	public void eliminar(long id) {
-		webClient.delete().uri("/api/alertas/{id}", id).retrieve().toBodilessEntity().block();
+		webClient.delete().uri("/alertas/{id}", id).retrieve().toBodilessEntity().block();
 	}
 }
