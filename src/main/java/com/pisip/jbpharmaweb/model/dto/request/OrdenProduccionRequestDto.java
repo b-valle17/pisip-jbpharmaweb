@@ -11,6 +11,8 @@ import lombok.Data;
 public class OrdenProduccionRequestDto {
 
 	private Integer idOrden;
+	
+	private Integer idPlan;
 
 	private String numeroLote;
 
