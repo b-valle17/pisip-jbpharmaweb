@@ -29,4 +29,13 @@ public class PlanProduccionServiceImpl implements IPlanProduccionService{
 	public void guardarPlan(PlanProduccionRequestDto nuevo) {
 		webClient.post().uri("/planProduccion").bodyValue(nuevo).retrieve().toBodilessEntity().block();		
 	}
+
+	@Override
+	public void eliminarPlan(Integer idPlan) {
+	    webClient.delete()
+	            .uri("/planProduccion/{id}", idPlan)
+	            .retrieve()
+	            .toBodilessEntity()
+	            .block();
+	}
 }
