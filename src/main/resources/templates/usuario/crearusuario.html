@@ -38,6 +38,25 @@
 						<!-- Quick Example -->
 						<div class="col-md-6 mx-auto">
 							<div class="card card-primary card-outline mb-4">
+								<!-- 🔻 ALERTAS THYMELEAF 🔻 -->
+								<div th:if="${mensajeError}"
+									class="alert alert-danger alert-dismissible fade show alert-custom mb-3"
+									role="alert">
+									<i class="bi bi-exclamation-triangle-fill me-2"></i> <span
+										th:text="${mensajeError}"></span>
+									<button type="button" class="btn-close" data-bs-dismiss="alert"
+										aria-label="Close"></button>
+								</div>
+
+								<div th:if="${mensajeExito}"
+									class="alert alert-success alert-dismissible fade show alert-custom mb-3"
+									role="alert">
+									<i class="bi bi-check-circle-fill me-2"></i> <span
+										th:text="${mensajeExito}"></span>
+									<button type="button" class="btn-close" data-bs-dismiss="alert"
+										aria-label="Close"></button>
+								</div>
+								<!-- 🔺 FIN ALERTAS 🔺 -->
 								<form th:action="@{/usuario/guardar}" th:object="${usuario}"
 									method="post">
 									<div class="card-body">

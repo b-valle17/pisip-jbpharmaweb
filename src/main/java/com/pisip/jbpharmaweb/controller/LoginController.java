@@ -39,12 +39,16 @@ public class LoginController {
 	@GetMapping
 	public String leerpagina(@RequestParam(value = "error", required = false) String error,
 			@RequestParam(value = "forbidden", required = false) String forbidden,
-			@RequestParam(value = "resetSuccess", required = false) String resetSuccess, Model model) {
+			@RequestParam(value = "resetSuccess", required = false) String resetSuccess,
+			@RequestParam(value = "noRol", required = false) String noRol, // <-- AÑADIR PARÁMETRO
+			Model model) {
 
 		if ("unauthorized".equals(error)) {
 			model.addAttribute("mensajeError", "Debes iniciar sesión para acceder al sistema.");
-		} else if ("true".equals(error)) { // <-- AGREGA ESTE ELSE IF
+		} else if ("true".equals(error)) {
 			model.addAttribute("mensajeError", "Usuario o contraseña incorrectos.");
+		} else if (noRol != null) { // <-- NUEVO MENSAJE PARA USUARIO SIN ROL
+			model.addAttribute("mensajeError", "Tu usuario no tiene un rol asignado. Contacta al administrador.");
 		} else if (forbidden != null) {
 			model.addAttribute("mensajeError", "No tienes permisos para acceder a este módulo.");
 		} else if (resetSuccess != null) {
@@ -64,16 +68,26 @@ public class LoginController {
 	public String procesarLogin(@RequestParam("username") String correo, @RequestParam("password") String contrasena,
 			HttpSession session) {
 
+		// 1. Intentamos autenticar credenciales
 		Optional<UsuarioResponseDTO> usuarioOpt = servicioAPI.autenticar(correo, contrasena);
 
 		if (usuarioOpt.isPresent()) {
 			UsuarioResponseDTO usuario = usuarioOpt.get();
+
+			// 2. Validar idRol nulo o igual a 0
+			if (usuario.getIdRol() == null || usuario.getIdRol() <= 0) {
+				return "redirect:/autenticacion?noRol=true";
+			}
 
 			List<RolResponseDto> listaRoles = servicioAPI.listarRoles();
 			Map<Integer, String> mapaRoles = listaRoles.stream()
 					.collect(Collectors.toMap(RolResponseDto::getIdRol, RolResponseDto::getNombreRol));
 
 			String nombreRol = mapaRoles.getOrDefault(usuario.getIdRol(), "").toUpperCase();
+
+			if (nombreRol.isEmpty()) {
+				return "redirect:/autenticacion?noRol=true";
+			}
 
 			session.setAttribute("usuarioLogueado", usuario.getCorreo());
 			session.setAttribute("nombreUsuario", usuario.getNombre());
@@ -89,9 +103,10 @@ public class LoginController {
 			case "ANALISTA":
 				return "redirect:/ensayos";
 			default:
-				return "redirect:/autenticacion?error=true";
+				return "redirect:/autenticacion?noRol=true";
 			}
 		} else {
+			// 3. Si las credenciales fallan o el correo no existe en la BD
 			return "redirect:/autenticacion?error=true";
 		}
 	}

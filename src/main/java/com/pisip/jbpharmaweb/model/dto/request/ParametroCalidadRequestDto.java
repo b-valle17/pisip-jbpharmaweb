@@ -10,7 +10,7 @@ import lombok.Data;
 @Data
 public class ParametroCalidadRequestDto {
 
-	private int idParametro;
+	private Integer idParametro;
 	
 	private String nombreParametro;
 
