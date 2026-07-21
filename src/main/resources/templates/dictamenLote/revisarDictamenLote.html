@@ -1,0 +1,179 @@
+
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="/plantilla/plantillaui">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+</head>
+<body class="layout-fixed sidebar-expand-lg bg-body-tertiary">
+	<div class="app-wrapper">
+		<div layout:fragment="contenidopaginas">
+			<div class="app-content-header">
+				<div class="container-fluid">
+					<div class="row">
+						<div class="col-sm-6">
+							<h1 class="mb-0 fs-3">Revisar Dictamen de Lote</h1>
+						</div>
+						<div class="col-sm-6">
+							<nav aria-label="breadcrumb">
+								<ol class="breadcrumb float-sm-end">
+									<li class="breadcrumb-item"><a href="/index">Inicio</a></li>
+									<li class="breadcrumb-item"><a href="/dictamenLote">Dictamen Lote</a></li>
+									<li class="breadcrumb-item active" aria-current="page">Revisar</li>
+								</ol>
+							</nav>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="app-content">
+				<div class="container-fluid">
+					<div class="row g-4">
+						<div class="col-md-8 mx-auto">
+
+							<!-- Datos del dictamen -->
+							<div class="card card-primary card-outline mb-4">
+								<div class="card-header">
+									<h3 class="card-title">Lote #<span th:text="${dictamen.idOrdenProduccion}"></span></h3>
+								</div>
+								<div class="card-body">
+									<dl class="row mb-0">
+										<dt class="col-sm-4">Estado actual del dictamen</dt>
+										<dd class="col-sm-8">
+											<span class="badge"
+												th:classappend="${dictamen.estado == 'ACEPTADO'} ? 'text-bg-success' : (${dictamen.estado == 'RECHAZADO'} ? 'text-bg-danger' : 'text-bg-secondary')"
+												th:text="${dictamen.estado}"></span>
+										</dd>
+
+										<dt class="col-sm-4">Fecha de dictamen</dt>
+										<dd class="col-sm-8" th:text="${dictamen.fechaDictamen}"></dd>
+
+										<dt class="col-sm-4">Observaciones</dt>
+										<dd class="col-sm-8" th:text="${dictamen.observaciones}"></dd>
+									</dl>
+								</div>
+							</div>
+
+							<!-- Ensayo de laboratorio asociado al lote -->
+							<div class="card card-info card-outline mb-4">
+								<div class="card-header">
+									<h3 class="card-title">Ensayo de laboratorio del lote</h3>
+								</div>
+								<div class="card-body" th:if="${dictamen.idEnsayo != null}">
+									<dl class="row mb-0">
+										<dt class="col-sm-4">Código de ensayo</dt>
+										<dd class="col-sm-8" th:text="${dictamen.codigoEnsayo}"></dd>
+
+										<dt class="col-sm-4">Estado del ensayo</dt>
+										<dd class="col-sm-8" th:text="${dictamen.estadoEnsayo}"></dd>
+
+										<dt class="col-sm-4">Observación</dt>
+										<dd class="col-sm-8" th:text="${dictamen.observacionEnsayo}"></dd>
+									</dl>
+								</div>
+								<div class="card-body" th:if="${dictamen.idEnsayo == null}">
+									<div class="callout callout-warning mb-0">
+										Este lote todavía no tiene un ensayo de laboratorio registrado.
+									</div>
+								</div>
+							</div>
+
+							<!-- Acciones: Aceptar / Rechazar -->
+							<div class="card card-outline mb-4"
+								th:if="${dictamen.estado != 'ACEPTADO' and dictamen.estado != 'RECHAZADO'}">
+								<div class="card-header">
+									<h3 class="card-title">Decisión del supervisor</h3>
+								</div>
+								<div class="card-body">
+									<form th:action="@{/dictamenLote/{id}/aceptar(id=${dictamen.idDictamen})}" method="post"
+										class="d-inline">
+										<button type="submit" class="btn btn-success"
+											onclick="return confirm('¿Confirma que acepta este lote?')">
+											<i class="bi bi-check-circle"></i> Aceptar Lote
+										</button>
+									</form>
+
+									<button type="button" class="btn btn-danger ms-2" data-bs-toggle="modal"
+										data-bs-target="#modalRechazo">
+										<i class="bi bi-x-circle"></i> Rechazar Lote
+									</button>
+								</div>
+							</div>
+
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<!-- Modal para capturar el motivo del rechazo -->
+			<div class="modal fade" id="modalRechazo" tabindex="-1" aria-hidden="true">
+				<div class="modal-dialog">
+					<form th:action="@{/dictamenLote/{id}/rechazar(id=${dictamen.idDictamen})}" method="post">
+						<div class="modal-content">
+							<div class="modal-header">
+								<h5 class="modal-title">Motivo de rechazo</h5>
+								<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+							</div>
+							<div class="modal-body">
+								<label for="motivo" class="form-label">Explica por qué se rechaza el lote</label>
+								<textarea name="motivo" id="motivo" class="form-control" rows="3" required></textarea>
+							</div>
+							<div class="modal-footer">
+								<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+								<button type="submit" class="btn btn-danger">Confirmar Rechazo</button>
+							</div>
+						</div>
+					</form>
+				</div>
+			</div>
+	<!--begin::Footer-->
+	<footer class="app-footer">
+		<!--begin::To the end-->
+		<div class="float-end d-none d-sm-inline">Anything you want</div>
+		<!--end::To the end-->
+		<!--begin::Copyright-->
+		<strong> Copyright &copy; 2014-2026&nbsp; <a
+			href="https://adminlte.io" class="text-decoration-none">AdminLTE.io</a>.
+		</strong> All rights reserved.
+		<!--end::Copyright-->
+	</footer>
+	<!--end::Footer-->
+	</div>
+	<script
+		src="https://cdn.jsdelivr.net/npm/overlayscrollbars@2.11.0/browser/overlayscrollbars.browser.es6.min.js"
+		crossorigin="anonymous"></script>
+	<script
+		src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
+		crossorigin="anonymous"></script>
+	<script
+		src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.min.js"
+		crossorigin="anonymous"></script>
+	<script src="../js/adminlte.js"></script>
+	<script>
+      const SELECTOR_SIDEBAR_WRAPPER = '.sidebar-wrapper';
+      const Default = {
+        scrollbarTheme: 'os-theme-light',
+        scrollbarAutoHide: 'leave',
+        scrollbarClickScroll: true,
+      };
+      document.addEventListener('DOMContentLoaded', function () {
+        const sidebarWrapper = document.querySelector(SELECTOR_SIDEBAR_WRAPPER);
+        const isMobile = window.innerWidth <= 992;
+        if (
+          sidebarWrapper &&
+          OverlayScrollbarsGlobal?.OverlayScrollbars !== undefined &&
+          !isMobile
+        ) {
+          OverlayScrollbarsGlobal.OverlayScrollbars(sidebarWrapper, {
+            scrollbars: {
+              theme: Default.scrollbarTheme,
+              autoHide: Default.scrollbarAutoHide,
+              clickScroll: Default.scrollbarClickScroll,
+            },
+          });
+        }
+      });
+    </script>
+</body>
+</html>

@@ -13,7 +13,7 @@
 				<div class="container-fluid">
 					<div class="row">
 						<div class="col-sm-6">
-							<h1 class="mb-0 fs-3">Lista Historial Lote</h1>
+							<h1 class="mb-0 fs-3">Historial de Lotes (Aceptados / Rechazados)</h1>
 						</div>
 						<div class="col-sm-6">
 							<nav aria-label="breadcrumb">
@@ -33,6 +33,17 @@
 							<a class="badge text-bg-info"
 								th:href="@{/historialLote/crearHistorialLote}"
 								style="text-decoration: none;">Crear Historial Lote</a>
+
+							<!-- Filtro por estado -->
+							<div class="btn-group btn-group-sm ms-3" role="group" aria-label="Filtro de estado">
+								<a th:href="@{/historialLote}" class="btn"
+									th:classappend="${estadoSeleccionado == null} ? 'btn-secondary' : 'btn-outline-secondary'">Todos</a>
+								<a th:href="@{/historialLote(estado='ACEPTADO')}" class="btn"
+									th:classappend="${estadoSeleccionado == 'ACEPTADO'} ? 'btn-success' : 'btn-outline-success'">Aceptados</a>
+								<a th:href="@{/historialLote(estado='RECHAZADO')}" class="btn"
+									th:classappend="${estadoSeleccionado == 'RECHAZADO'} ? 'btn-danger' : 'btn-outline-danger'">Rechazados</a>
+							</div>
+
 							<div class="card-tools">
 								<div class="input-group input-group-sm" style="width: 16rem">
 									<span class="input-group-text"> <i class="bi bi-search"
@@ -52,6 +63,7 @@
 											<th scope="col">Fecha Evento</th>
 											<th scope="col">Acción</th>
 											<th scope="col">Descripción</th>
+											<th scope="col">Estado del Lote</th>
 											<th scope="col">Acciones</th>
 										</tr>
 									</thead>
@@ -62,6 +74,11 @@
 											<td th:text="${indice.fechaEvento}"></td>
 											<td th:text="${indice.accion}"></td>
 											<td th:text="${indice.descripcion}"></td>
+											<td>
+												<span class="badge"
+													th:classappend="${indice.estadoLote == 'ACEPTADO'} ? 'text-bg-success' : (${indice.estadoLote == 'RECHAZADO'} ? 'text-bg-danger' : 'text-bg-secondary')"
+													th:text="${indice.estadoLote} ?: 'Pendiente'"></span>
+											</td>
 											<td>
 												<div class="btn-group" role="group" aria-label="Acciones">
 													<a th:href="@{/historialLote/editarHistorialLote}"

@@ -66,7 +66,10 @@
 											<td th:text="${indice.observaciones}"></td>
 											<td>
 												<div class="btn-group" role="group" aria-label="Acciones">
-													<a th:href="@{/dictamenLote/editarDictamenLote}"
+													<a th:href="@{/dictamenLote/{id}/revisar(id=${indice.idDictamen})}"
+														class="btn btn-sm btn-outline-primary" title="Revisar / Aceptar / Rechazar">
+														<i class="bi bi-clipboard-check"></i>
+													</a> <a th:href="@{/dictamenLote/editarDictamenLote}"
 														class="btn btn-sm btn-outline-warning" title="Editar">
 														<i class="fa-solid fa-pen-to-square"></i>
 													</a> <a href="" class="btn btn-sm btn-outline-danger"

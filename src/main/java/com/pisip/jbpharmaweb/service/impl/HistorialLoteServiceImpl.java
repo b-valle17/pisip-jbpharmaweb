@@ -30,4 +30,13 @@ public class HistorialLoteServiceImpl implements IHistorialLoteService {
 		webClient.post().uri("/historial-lote").bodyValue(nuevo).retrieve().toBodilessEntity().block();
 	}
 
+	@Override
+	public List<HistorialLoteResponseDto> listarFinalizados(String estado) {
+		String uri = (estado == null || estado.isBlank())
+				? "/historial-lote/finalizados"
+				: "/historial-lote/finalizados?estado=" + estado;
+		return webClient.get().uri(uri).retrieve().bodyToFlux(HistorialLoteResponseDto.class)
+				.collectList().block();
+	}
+
 }
