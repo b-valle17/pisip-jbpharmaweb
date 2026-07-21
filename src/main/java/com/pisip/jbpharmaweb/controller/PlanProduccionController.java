@@ -7,8 +7,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.pisip.jbpharmaweb.model.dto.request.PlanProduccionRequestDto;
 import com.pisip.jbpharmaweb.model.dto.response.PlanProduccionResponseDto;
@@ -47,5 +49,16 @@ public class PlanProduccionController {
 	@GetMapping("/editarplan")
 	public String leerpaginaeditar() {
 		return "/planproduccion/editarplan";
+	}
+	
+	@PostMapping("/eliminar/{id}")
+	public String eliminarPlan(@PathVariable("id") Integer id, RedirectAttributes redirectAttributes) {
+	    try {
+	        servicioAPI.eliminarPlan(id);
+	        redirectAttributes.addFlashAttribute("success", "Plan de producción eliminado correctamente.");
+	    } catch (Exception e) {
+	        redirectAttributes.addFlashAttribute("error", "No se pudo eliminar el plan de producción.");
+	    }
+	    return "redirect:/planproduccion";
 	}
 }
