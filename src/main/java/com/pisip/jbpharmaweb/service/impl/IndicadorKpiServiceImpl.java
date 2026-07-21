@@ -7,6 +7,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 import com.pisip.jbpharmaweb.model.dto.request.IndicadorKpiRequestDto;
 import com.pisip.jbpharmaweb.model.dto.response.IndicadorKpiResponseDto;
+import com.pisip.jbpharmaweb.model.dto.response.IndicadorKpiResumenDto;
 import com.pisip.jbpharmaweb.service.IIndicadorKpiService;
 
 @Service
@@ -28,6 +29,12 @@ public class IndicadorKpiServiceImpl implements IIndicadorKpiService {
 	@Override
 	public void guardarIndicadorKpi(IndicadorKpiRequestDto nuevo) {
 		webClient.post().uri("/indicador-kpi").bodyValue(nuevo).retrieve().toBodilessEntity().block();
+	}
+
+	@Override
+	public IndicadorKpiResumenDto obtenerResumen() {
+		return webClient.get().uri("/indicador-kpi/resumen").retrieve().bodyToMono(IndicadorKpiResumenDto.class)
+				.block();
 	}
 
 }
