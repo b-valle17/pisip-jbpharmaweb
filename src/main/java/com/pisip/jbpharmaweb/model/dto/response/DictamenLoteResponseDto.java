@@ -13,4 +13,10 @@ public class DictamenLoteResponseDto {
 	private Date fechaDictamen;
 	private String estado;
 	private String observaciones;
+
+	// Datos del ensayo de laboratorio asociado (nulos si el lote aun no tiene ensayo registrado).
+	private Long idEnsayo;
+	private String codigoEnsayo;
+	private String estadoEnsayo;
+	private String observacionEnsayo;
 }

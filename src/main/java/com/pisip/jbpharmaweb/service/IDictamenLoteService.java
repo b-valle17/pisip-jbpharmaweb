@@ -11,4 +11,11 @@ public interface IDictamenLoteService {
 
 	public void guardarDictamenLote(DictamenLoteRequestDto nuevo);
 
+	/** Trae el dictamen junto con los datos del ensayo de laboratorio del mismo lote. */
+	public DictamenLoteResponseDto obtenerConEnsayo(int idDictamen);
+
+	public void aceptarDictamen(int idDictamen);
+
+	public void rechazarDictamen(int idDictamen, String motivo);
+
 }

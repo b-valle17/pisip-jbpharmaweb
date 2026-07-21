@@ -11,4 +11,7 @@ public interface IHistorialLoteService {
 
 	public void guardarHistorialLote(HistorialLoteRequestDto nuevo);
 
+	/** Lista solo los lotes cuyo dictamen ya fue ACEPTADO o RECHAZADO. estado es opcional (null = ambos). */
+	public List<HistorialLoteResponseDto> listarFinalizados(String estado);
+
 }

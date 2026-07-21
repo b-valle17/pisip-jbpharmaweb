@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.pisip.jbpharmaweb.model.dto.request.HistorialLoteRequestDto;
 import com.pisip.jbpharmaweb.model.dto.response.HistorialLoteResponseDto;
@@ -21,10 +22,13 @@ public class HistorialLoteController {
 	@Autowired
 	private IHistorialLoteService servicioAPI;
 
+	// Muestra solo los lotes ya aceptados/rechazados (con su estado), como pide el requerimiento.
+	// Filtro opcional: /historialLote?estado=ACEPTADO  o  /historialLote?estado=RECHAZADO
 	@GetMapping
-	public String leerpagina(Model model) {
-		List<HistorialLoteResponseDto> datosAPI = servicioAPI.listarHistorialLote();
+	public String leerpagina(@RequestParam(required = false) String estado, Model model) {
+		List<HistorialLoteResponseDto> datosAPI = servicioAPI.listarFinalizados(estado);
 		model.addAttribute("listahistoriallote", datosAPI);
+		model.addAttribute("estadoSeleccionado", estado);
 		return "/historialLote/listarHistorialLote";
 	}
 

@@ -1,0 +1,183 @@
+
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="/plantilla/plantillaui">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+</head>
+<body class="layout-fixed sidebar-expand-lg bg-body-tertiary">
+	<div class="app-wrapper">
+		<div layout:fragment="contenidopaginas">
+			<div class="app-content-header">
+				<div class="container-fluid">
+					<div class="row">
+						<div class="col-sm-6">
+							<h1 class="mb-0 fs-3">Lista Indicadores KPI</h1>
+						</div>
+						<div class="col-sm-6">
+							<nav aria-label="breadcrumb">
+								<ol class="breadcrumb float-sm-end">
+									<li class="breadcrumb-item"><a href="/index">Inicio</a></li>
+									<li class="breadcrumb-item active" aria-current="page">Indicadores KPI</li>
+								</ol>
+							</nav>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="app-content">
+				<div class="container-fluid">
+
+					<!-- Dashboard de metricas: SmallBox / InfoBox -->
+					<div class="row" th:if="${resumen != null}">
+						<div class="col-lg-3 col-6">
+							<div class="small-box text-bg-success">
+								<div class="inner">
+									<h3 th:text="${resumen.cumplimientoPlanMensual} + '%'">0%</h3>
+									<p>Cumplimiento del Plan Mensual</p>
+								</div>
+								<i class="small-box-icon bi bi-graph-up-arrow"></i>
+							</div>
+						</div>
+						<div class="col-lg-3 col-6">
+							<div class="small-box text-bg-info">
+								<div class="inner">
+									<h3 th:text="${resumen.totalLotesProducidos}">0</h3>
+									<p>Total de Lotes Producidos</p>
+								</div>
+								<i class="small-box-icon bi bi-boxes"></i>
+							</div>
+						</div>
+						<div class="col-lg-3 col-6">
+							<div class="small-box text-bg-warning">
+								<div class="inner">
+									<h3 th:text="${resumen.lotesEnCuarentena}">0</h3>
+									<p>Lotes en Cuarentena / En Ensayo</p>
+								</div>
+								<i class="small-box-icon bi bi-hourglass-split"></i>
+							</div>
+						</div>
+						<div class="col-lg-3 col-6">
+							<div class="info-box">
+								<span class="info-box-icon text-bg-secondary"><i class="bi bi-pie-chart"></i></span>
+								<div class="info-box-content">
+									<span class="info-box-text">Distribución por Estado</span>
+									<span class="info-box-number">
+										<span th:each="entry, iter : ${resumen.distribucionPorEstado}">
+											<span th:text="${entry.key} + ': ' + ${entry.value}"></span><span th:if="${!iter.last}">, </span>
+										</span>
+										<span th:if="${resumen.distribucionPorEstado == null or resumen.distribucionPorEstado.isEmpty()}">Sin datos</span>
+									</span>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="card">
+						<div class="card-header">
+							<a class="badge text-bg-info"
+								th:href="@{/indicadorKpi/crearIndicadorKpi}"
+								style="text-decoration: none;">Crear Indicador KPI</a>
+							<div class="card-tools">
+								<div class="input-group input-group-sm" style="width: 16rem">
+									<span class="input-group-text"> <i class="bi bi-search"
+										aria-hidden="true"></i>
+									</span> <input id="table-filter" type="search" class="form-control"
+										placeholder="Filter rows&hellip;" aria-label="Filter rows" />
+								</div>
+							</div>
+						</div>
+						<div class="card-body">
+							<div id="users-table">
+								<table class="table table-striped">
+									<thead>
+										<tr>
+											<th scope="col">ID</th>
+											<th scope="col">Nombre Indicador</th>
+											<th scope="col">Valor</th>
+											<th scope="col">Fecha Cálculo</th>
+											<th scope="col">Descripción</th>
+											<th scope="col">Acciones</th>
+										</tr>
+									</thead>
+									<tbody>
+										<tr th:each="indice : ${listaindicadorkpi}">
+											<td th:text="${indice.idKpi}" class="fw-semibold"></td>
+											<td th:text="${indice.nombreIndicador}"></td>
+											<td th:text="${indice.valor}"></td>
+											<td th:text="${indice.fechaCalculo}"></td>
+											<td th:text="${indice.descripcion}"></td>
+											<td>
+												<div class="btn-group" role="group" aria-label="Acciones">
+													<a th:href="@{/indicadorKpi/editarIndicadorKpi}"
+														class="btn btn-sm btn-outline-warning" title="Editar">
+														<i class="fa-solid fa-pen-to-square"></i>
+													</a> <a href="" class="btn btn-sm btn-outline-danger"
+														title="Eliminar"
+														onclick="return confirm('¿Estás seguro de que deseas eliminar este registro?')">
+														<i class="fa fa-trash" aria-hidden="true"></i>
+													</a>
+												</div>
+											</td>
+										</tr>
+									</tbody>
+								</table>
+							</div>
+						</div>
+						<div class="card-footer text-secondary small">
+							Pisip-JBpharma &mdash; Indicadores KPI
+						</div>
+					</div>
+				</div>
+			</div>
+	<!--begin::Footer-->
+	<footer class="app-footer">
+		<!--begin::To the end-->
+		<div class="float-end d-none d-sm-inline">Anything you want</div>
+		<!--end::To the end-->
+		<!--begin::Copyright-->
+		<strong> Copyright &copy; 2014-2026&nbsp; <a
+			href="https://adminlte.io" class="text-decoration-none">AdminLTE.io</a>.
+		</strong> All rights reserved.
+		<!--end::Copyright-->
+	</footer>
+	<!--end::Footer-->
+	</div>
+	<script
+		src="https://cdn.jsdelivr.net/npm/overlayscrollbars@2.11.0/browser/overlayscrollbars.browser.es6.min.js"
+		crossorigin="anonymous"></script>
+	<script
+		src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
+		crossorigin="anonymous"></script>
+	<script
+		src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.min.js"
+		crossorigin="anonymous"></script>
+	<script src="../js/adminlte.js"></script>
+	<script>
+      const SELECTOR_SIDEBAR_WRAPPER = '.sidebar-wrapper';
+      const Default = {
+        scrollbarTheme: 'os-theme-light',
+        scrollbarAutoHide: 'leave',
+        scrollbarClickScroll: true,
+      };
+      document.addEventListener('DOMContentLoaded', function () {
+        const sidebarWrapper = document.querySelector(SELECTOR_SIDEBAR_WRAPPER);
+        const isMobile = window.innerWidth <= 992;
+        if (
+          sidebarWrapper &&
+          OverlayScrollbarsGlobal?.OverlayScrollbars !== undefined &&
+          !isMobile
+        ) {
+          OverlayScrollbarsGlobal.OverlayScrollbars(sidebarWrapper, {
+            scrollbars: {
+              theme: Default.scrollbarTheme,
+              autoHide: Default.scrollbarAutoHide,
+              clickScroll: Default.scrollbarClickScroll,
+            },
+          });
+        }
+      });
+    </script>
+</body>
+</html>
