@@ -12,13 +12,18 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.pisip.jbpharmaweb.model.dto.request.PlanProduccionRequestDto;
 import com.pisip.jbpharmaweb.model.dto.response.PlanProduccionResponseDto;
+import com.pisip.jbpharmaweb.model.dto.response.UsuarioResponseDTO;
 import com.pisip.jbpharmaweb.service.IPlanProduccionService;
+import com.pisip.jbpharmaweb.service.IUsuarioService;
 
 @Controller
 @RequestMapping("/planproduccion")
 public class PlanProduccionController {
 	@Autowired
 	private IPlanProduccionService servicioAPI;
+	
+	@Autowired
+	private IUsuarioService usuarioService;
 	
 	@GetMapping
 	public String leerpagina(Model model) {
@@ -29,6 +34,9 @@ public class PlanProduccionController {
 	@GetMapping("/crearplan")
 	public String leerpaginacrear(Model model) {
 		model.addAttribute("plan", new PlanProduccionRequestDto());
+		List<UsuarioResponseDTO> listaUsuarios = usuarioService.listarUsuarios(); 
+		model.addAttribute("listausuarios", listaUsuarios); 
+		
 		return "/planproduccion/crearplan";
 	}
 	@PostMapping("/guardar")
