@@ -13,32 +13,6 @@
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title>AdminLTE 4 | Data Tables</title>
 
-<!--begin::Theme Init (prevents flash of incorrect theme on load, #6043)-->
-<script>
-      (() => {
-        'use strict';
-        const STORAGE_KEY = 'lte-theme';
-        let stored = null;
-        try {
-          stored = localStorage.getItem(STORAGE_KEY);
-        } catch {
-          // localStorage may be unavailable (private mode, sandboxed iframe).
-        }
-        const prefersDark = globalThis.matchMedia('(prefers-color-scheme: dark)').matches;
-        // Mirror the resolution in _scripts.astro: explicit "dark"/"light" win,
-        // otherwise ("auto" or unset) fall back to the OS preference.
-        let resolved = 'light';
-        if (stored === 'dark' || stored === 'light') {
-          resolved = stored;
-        } else if (prefersDark) {
-          resolved = 'dark';
-        }
-        document.documentElement.setAttribute('data-bs-theme', resolved);
-        document.documentElement.style.colorScheme = resolved;
-      })();
-    </script>
-<!--end::Theme Init-->
-
 <!--begin::Accessibility Meta Tags-->
 <meta name="viewport"
 	content="width=device-width, initial-scale=1.0, user-scalable=yes" />
@@ -110,75 +84,7 @@
 
 				<!--begin::End Navbar Links-->
 				<ul class="navbar-nav ms-auto">
-					<!--begin::Messages Dropdown Menu-->
-					<li class="nav-item dropdown"><a class="nav-link"
-						data-bs-toggle="dropdown" href="#" aria-label="Messages: 3 unread">
-							<i class="bi bi-chat-text"></i> <span
-							class="navbar-badge badge text-bg-danger">3</span>
-					</a>
-						<div class="dropdown-menu dropdown-menu-lg dropdown-menu-end">
-							<a href="#" class="dropdown-item"> <!--begin::Message-->
-								<div class="d-flex">
-									<div class="flex-shrink-0">
-										<img src="../assets/img/user1-128x128.jpg" alt=""
-											class="img-size-50 rounded-circle me-3" />
-									</div>
-									<div class="flex-grow-1">
-										<p class="dropdown-item-title">
-											Brad Diesel <span class="float-end fs-7 text-danger"><i
-												class="bi bi-star-fill"></i></span>
-										</p>
-										<p class="fs-7">Call me whenever you can...</p>
-										<p class="fs-7 text-secondary">
-											<i class="bi bi-clock-fill me-1"></i> 4 Hours Ago
-										</p>
-									</div>
-								</div> <!--end::Message-->
-							</a>
-							<div class="dropdown-divider"></div>
-							<a href="#" class="dropdown-item"> <!--begin::Message-->
-								<div class="d-flex">
-									<div class="flex-shrink-0">
-										<img src="../assets/img/user8-128x128.jpg" alt=""
-											class="img-size-50 rounded-circle me-3" />
-									</div>
-									<div class="flex-grow-1">
-										<p class="dropdown-item-title">
-											John Pierce <span class="float-end fs-7 text-secondary">
-												<i class="bi bi-star-fill"></i>
-											</span>
-										</p>
-										<p class="fs-7">I got your message bro</p>
-										<p class="fs-7 text-secondary">
-											<i class="bi bi-clock-fill me-1"></i> 4 Hours Ago
-										</p>
-									</div>
-								</div> <!--end::Message-->
-							</a>
-							<div class="dropdown-divider"></div>
-							<a href="#" class="dropdown-item"> <!--begin::Message-->
-								<div class="d-flex">
-									<div class="flex-shrink-0">
-										<img src="../assets/img/user3-128x128.jpg" alt=""
-											class="img-size-50 rounded-circle me-3" />
-									</div>
-									<div class="flex-grow-1">
-										<p class="dropdown-item-title">
-											Nora Silvester <span class="float-end fs-7 text-warning">
-												<i class="bi bi-star-fill"></i>
-											</span>
-										</p>
-										<p class="fs-7">The subject goes here</p>
-										<p class="fs-7 text-secondary">
-											<i class="bi bi-clock-fill me-1"></i> 4 Hours Ago
-										</p>
-									</div>
-								</div> <!--end::Message-->
-							</a>
-							<div class="dropdown-divider"></div>
-							<a href="#" class="dropdown-item dropdown-footer">See All
-								Messages</a>
-						</div></li>
+					
 					<!--end::Messages Dropdown Menu-->
 
 					<!--begin::Notifications Dropdown Menu-->
@@ -219,83 +125,43 @@
 							data-lte-icon="minimize" class="bi bi-fullscreen-exit d-none"></i>
 					</a></li>
 					<!--end::Fullscreen Toggle-->
-
-					<!--begin::Color Mode Toggle (#6010)-->
-					<li class="nav-item dropdown"><a class="nav-link" href="#"
-						id="bd-theme" aria-label="Toggle color scheme"
-						data-bs-toggle="dropdown" aria-expanded="false"> <i
-							class="bi bi-sun-fill" data-lte-theme-icon="light"></i> <i
-							class="bi bi-moon-fill d-none" data-lte-theme-icon="dark"></i> <i
-							class="bi bi-circle-half d-none" data-lte-theme-icon="auto"></i>
-					</a>
-						<ul class="dropdown-menu dropdown-menu-end"
-							aria-labelledby="bd-theme" style="--bs-dropdown-min-width: 8rem">
-							<li>
-								<button type="button"
-									class="dropdown-item d-flex align-items-center"
-									data-bs-theme-value="light" aria-pressed="false">
-									<i class="bi bi-sun-fill me-2"></i> Light <i
-										class="bi bi-check-lg ms-auto d-none"></i>
-								</button>
-							</li>
-							<li>
-								<button type="button"
-									class="dropdown-item d-flex align-items-center"
-									data-bs-theme-value="dark" aria-pressed="false">
-									<i class="bi bi-moon-fill me-2"></i> Dark <i
-										class="bi bi-check-lg ms-auto d-none"></i>
-								</button>
-							</li>
-							<li>
-								<button type="button"
-									class="dropdown-item d-flex align-items-center active"
-									data-bs-theme-value="auto" aria-pressed="true">
-									<i class="bi bi-circle-half me-2"></i> Auto <i
-										class="bi bi-check-lg ms-auto d-none"></i>
-								</button>
-							</li>
-						</ul></li>
 					<!--end::Color Mode Toggle-->
 
 					<!--begin::User Menu Dropdown-->
 					<li class="nav-item dropdown user-menu"><a href="#"
-						class="nav-link dropdown-toggle" data-bs-toggle="dropdown"> <img
-							src="../assets/img/user2-160x160.jpg"
-							class="user-image rounded-circle shadow" alt="Alexander Pierce" />
-							<span class="d-none d-md-inline">Alexander Pierce</span>
+						class="nav-link dropdown-toggle d-flex align-items-center gap-2"
+						data-bs-toggle="dropdown"> <!-- Ícono general de usuario --> <i
+							class="bi bi-person-circle fs-4"></i> <!-- Nombre del usuario y Rol entre paréntesis -->
+							<span class="d-none d-md-inline"> <span
+								th:text="${session.nombreUsuario != null ? session.nombreUsuario : session.usuarioLogueado}">Usuario</span>
+								<small th:if="${session.rolUsuario != null}"
+								th:text="'(' + ${session.rolUsuario} + ')'"
+								class="text-secondary ms-1"></small>
+						</span>
 					</a>
+
 						<ul class="dropdown-menu dropdown-menu-lg dropdown-menu-end">
-							<!--begin::User Image-->
-							<li class="user-header text-bg-primary"><img
-								src="../assets/img/user2-160x160.jpg"
-								class="rounded-circle shadow" alt="Alexander Pierce" />
-								<p>
-									Alexander Pierce - Web Developer <small>Member since
-										Nov. 2023</small>
-								</p></li>
-							<!--end::User Image-->
-							<!--begin::Menu Body-->
-							<li class="user-body">
-								<!--begin::Row-->
-								<div class="row">
-									<div class="col-4 text-center">
-										<a href="#">Followers</a>
-									</div>
-									<div class="col-4 text-center">
-										<a href="#">Sales</a>
-									</div>
-									<div class="col-4 text-center">
-										<a href="#">Friends</a>
-									</div>
-								</div> <!--end::Row-->
+							<!--begin::User Image / Header-->
+							<li
+								class="user-header text-bg-primary d-flex flex-column align-items-center justify-content-center">
+								<i class="bi bi-person-circle display-4 mb-2"></i>
+								<p class="mb-0">
+									<strong
+										th:text="${session.nombreUsuario != null ? session.nombreUsuario : session.usuarioLogueado}">Usuario</strong>
+								</p> <small class="badge bg-light text-dark mt-1"
+								th:text="${session.rolUsuario}"></small>
 							</li>
-							<!--end::Menu Body-->
+							<!--end::User Image / Header-->
+
 							<!--begin::Menu Footer-->
-							<li class="user-footer"><a href="#"
-								class="btn btn-outline-secondary">Profile</a> <a href="#"
-								class="btn btn-outline-danger float-end">Sign out</a></li>
+							<li class="user-footer"><a
+								th:href="@{/autenticacion/logout}"
+								class="btn btn-outline-danger w-100"> <i
+									class="bi bi-box-arrow-right me-1"></i> Cerrar Sesión
+							</a></li>
 							<!--end::Menu Footer-->
 						</ul></li>
+					<!--end::User Menu Dropdown-->
 					<!--end::User Menu Dropdown-->
 				</ul>
 				<!--end::End Navbar Links-->
@@ -306,44 +172,126 @@
 		<!--begin::Sidebar-->
 		<aside class="app-sidebar bg-body-secondary shadow"
 			data-bs-theme="dark">
-			<!--begin::Sidebar Brand-->
 			<div class="sidebar-brand">
-				<!--begin::Brand Link-->
-				<a href="../index.html" class="brand-link"> <!--begin::Brand Image-->
-					<img src="../assets/img/logo.png" alt="AdminLTE Logo"
-					class="brand-image opacity-75 shadow" /> <!--end::Brand Image--> <!--begin::Brand Text-->
-					<span class="brand-text fw-light">Pisip-JBpharma</span> <!--end::Brand Text-->
+				<a th:href="@{/}" class="brand-link"> <img
+					src="../assets/img/logo.png" alt="Logo"
+					class="brand-image opacity-75 shadow" /> <span
+					class="brand-text fw-light">JBpharma</span>
 				</a>
-				<!--end::Brand Link-->
 			</div>
-			<!--end::Sidebar Brand-->
-			<!--begin::Sidebar Wrapper-->
+
 			<div class="sidebar-wrapper">
 				<nav class="mt-2" aria-label="Main navigation">
-					<!--begin::Sidebar Menu-->
 					<ul class="nav sidebar-menu flex-column" data-lte-toggle="treeview"
 						data-accordion="false" id="navigation">
-						<li class="nav-item"><a href="../generate/theme.html"
-							class="nav-link"> <i class="nav-icon bi bi-speedometer"></i>
-								<p>Dashboard</p>
-						</a></li>
-						<li class="nav-item"><a th:href="@{/parametrocalidad}"
-							class="nav-link"> <i class="nav-icon bi bi-file-earmark"></i>
-								<p>Parametros Calidad</p>
-						</a></li>
-						<li class="nav-item"><a th:href="@{/producto}"
-							class="nav-link"> <i class="nav-icon bi bi-palette"></i>
-								<p>Productos</p>
-						</a></li>
-						<li class="nav-item"><a th:href="@{/usuario}"
-							class="nav-link"> <i class="nav-icon bi bi-palette"></i>
+
+						<!-- ========================================================= -->
+						<!-- 1. OPCIONES DE ADMINISTRADOR                              -->
+						<!-- ========================================================= -->
+						<li class="nav-item"
+							th:if="${session.rolUsuario == 'ADMINISTRADOR'}"><a
+							th:href="@{/usuario}" class="nav-link"> <i
+								class="nav-icon bi bi-people-fill"></i>
 								<p>Usuarios</p>
 						</a></li>
+
+						<!-- ========================================================= -->
+						<!-- 2. OPCIONES DE SUPERVISOR                                 -->
+						<!-- ========================================================= -->
+						<th:block th:if="${session.rolUsuario == 'SUPERVISOR'}">
+							<li class="nav-item"><a th:href="@{/parametrocalidad}"
+								class="nav-link"> <i class="nav-icon bi bi-sliders2"></i>
+									<p>Parámetros Calidad</p>
+							</a></li>
+							<li class="nav-item"><a th:href="@{/ordenproduccion}"
+								class="nav-link"> <i
+									class="nav-icon bi bi-gear-wide-connected"></i>
+									<p>Órdenes de Producción</p>
+							</a></li>
+							<li class="nav-item"><a th:href="@{/dictamenLote}"
+								class="nav-link"> <i class="nav-icon bi bi-patch-check-fill"></i>
+									<p>Dictamen Lote</p>
+							</a></li>
+							<li class="nav-item"><a th:href="@{/auditoriaLote}"
+								class="nav-link"> <i
+									class="nav-icon bi bi-clipboard-check-fill"></i>
+									<p>Auditoría Lote</p>
+							</a></li>
+							<li class="nav-item"><a th:href="@{/indicadorKpi}"
+								class="nav-link"> <i class="nav-icon bi bi-graph-up-arrow"></i>
+									<p>Indicadores KPI</p>
+							</a></li>
+							<li class="nav-item"><a th:href="@{/informeAuditoria}"
+								class="nav-link"> <i
+									class="nav-icon bi bi-file-earmark-bar-graph-fill"></i>
+									<p>Informe Auditoría</p>
+							</a></li>
+							<li class="nav-item"><a th:href="@{/historialLote}"
+								class="nav-link"> <i class="nav-icon bi bi-clock-history"></i>
+									<p>Historial Lote</p>
+							</a></li>
+							<li class="nav-item"><a th:href="@{/validaciones}"
+								class="nav-link"> <i class="nav-icon bi bi-stoplights-fill"></i>
+									<p>Parámetros de Validación</p>
+							</a></li>
+						</th:block>
+
+						<!-- ========================================================= -->
+						<!-- 3. OPCIONES DE GERENTE                                    -->
+						<!-- ========================================================= -->
+						<th:block th:if="${session.rolUsuario == 'GERENTE'}">
+							<li class="nav-item"><a th:href="@{/planproduccion}"
+								class="nav-link"> <i class="nav-icon bi bi-calendar3"></i>
+									<p>Planes de Producción</p>
+							</a></li>
+							<li class="nav-item"><a th:href="@{/indicadorKpi}"
+								class="nav-link"> <i class="nav-icon bi bi-graph-up-arrow"></i>
+									<p>Indicadores KPI</p>
+							</a></li>
+							<li class="nav-item"><a th:href="@{/informeAuditoria}"
+								class="nav-link"> <i
+									class="nav-icon bi bi-file-earmark-bar-graph-fill"></i>
+									<p>Informe Auditoría</p>
+							</a></li>
+							<li class="nav-item"><a th:href="@{/dictamenLote}"
+								class="nav-link"> <i class="nav-icon bi bi-patch-check-fill"></i>
+									<p>Dictamen Lote</p>
+							</a></li>
+						</th:block>
+
+						<!-- ========================================================= -->
+						<!-- 4. OPCIONES DE ANALISTA DE LABORATORIO                    -->
+						<!-- ========================================================= -->
+						<th:block th:if="${session.rolUsuario == 'ANALISTA'}">
+							<li class="nav-item"><a th:href="@{/ensayos}"
+								class="nav-link"> <i class="nav-icon bi bi-flask-fill"></i>
+									<p>Ensayos</p>
+							</a></li>
+							<li class="nav-item"><a th:href="@{/variables}"
+								class="nav-link"> <i class="nav-icon bi bi-diagram-3-fill"></i>
+									<p>Variables</p>
+							</a></li>
+							<li class="nav-item"><a th:href="@{/validaciones}"
+								class="nav-link"> <i class="nav-icon bi bi-stoplights-fill"></i>
+									<p>Validación Semafórica</p>
+							</a></li>
+							<li class="nav-item"><a th:href="@{/alertas}"
+								class="nav-link"> <i
+									class="nav-icon bi bi-exclamation-triangle-fill"></i>
+									<p>Alertas de Ensayo</p>
+							</a></li>
+						</th:block>
+
+						<!-- BOTÓN DE CERRAR SESIÓN (VISIBLE PARA TODOS) -->
+						<li class="nav-item mt-4"><a
+							th:href="@{/autenticacion/logout}" class="nav-link text-danger">
+								<i class="nav-icon bi bi-box-arrow-right"></i>
+								<p>Cerrar Sesión</p>
+						</a></li>
+
 					</ul>
-					<!--end::Sidebar Menu-->
 				</nav>
 			</div>
-			<!--end::Sidebar Wrapper-->
 		</aside>
 		<!--end::Sidebar-->
 		<main class="app-main">
@@ -352,18 +300,18 @@
 		<!--begin::Footer-->
 		<footer class="app-footer">
 			<!--begin::To the end-->
-			<div class="float-end d-none d-sm-inline">Anything you want</div>
 			<!--end::To the end-->
 			<!--begin::Copyright-->
-			<strong> Copyright &copy; 2014-2026&nbsp; <a
-				href="https://adminlte.io" class="text-decoration-none">AdminLTE.io</a>.
+			<strong> Copyright &copy; 2026&nbsp; <a
+				href="" class="text-decoration-none">JBpharma</a>.
 			</strong> All rights reserved.
 			<!--end::Copyright-->
 		</footer>
 		<!--end::Footer-->
 	</div>
 	<!--begin::Third Party Plugin(OverlayScrollbars)-->
-	<script src="https://kit.fontawesome.com/e9f58d382f.js" crossorigin="anonymous"></script>
+	<script src="https://kit.fontawesome.com/e9f58d382f.js"
+		crossorigin="anonymous"></script>
 	<script
 		src="https://cdn.jsdelivr.net/npm/overlayscrollbars@2.11.0/browser/overlayscrollbars.browser.es6.min.js"
 		crossorigin="anonymous"></script>

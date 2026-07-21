@@ -3,7 +3,7 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Pisip-JBpharmaWeb | Recuperar Contraseña</title>
+    <title>Pisip-JBpharmaWeb | Restablecer Contraseña</title>
 
     <!-- Google Fonts -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/source-sans-3@5.0.12/index.css" />
@@ -61,7 +61,7 @@
 
         .form-control:focus {
             box-shadow: none;
-            border-color: #0d6efd;
+            border-color: #198754;
         }
 
         .input-group-text {
@@ -74,20 +74,20 @@
             padding-right: 1rem;
         }
 
-        .btn-primary-custom {
+        .btn-success-custom {
             border-radius: 0.5rem;
             padding: 0.75rem;
             font-weight: 600;
             font-size: 1rem;
-            background-color: #0d6efd;
+            background-color: #198754;
             border: none;
             transition: all 0.2s ease-in-out;
         }
 
-        .btn-primary-custom:hover {
-            background-color: #0b5ed7;
+        .btn-success-custom:hover {
+            background-color: #157347;
             transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(13, 110, 253, 0.25);
+            box-shadow: 0 4px 12px rgba(25, 135, 84, 0.25);
         }
 
         .back-link {
@@ -98,13 +98,8 @@
         }
 
         .back-link:hover {
-            color: #0d6efd;
+            color: #dc3545;
             text-decoration: underline;
-        }
-
-        .alert-custom {
-            border-radius: 0.5rem;
-            font-size: 0.9rem;
         }
     </style>
 </head>
@@ -122,45 +117,34 @@
             <div class="card-body card-body-custom">
                 
                 <div class="text-center mb-4">
-                    <h5 class="fw-bold text-dark mb-1">Recuperar Contraseña</h5>
-                    <p class="text-muted small">Ingresa tu correo registrado para enviarte las instrucciones.</p>
+                    <h5 class="fw-bold text-dark mb-1">Nueva Contraseña</h5>
+                    <p class="text-muted small">Crea una nueva contraseña para restablecer tu acceso.</p>
                 </div>
-
-                <!-- 🔻 ALERTAS 🔻 -->
-                <div th:if="${errorCorreo}" class="alert alert-danger alert-dismissible fade show alert-custom mb-3" role="alert">
-                    <i class="bi bi-exclamation-triangle-fill me-2"></i>
-                    <span th:text="${errorCorreo}"></span>
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-
-                <div th:if="${mensajeExito}" class="alert alert-success alert-dismissible fade show alert-custom mb-3" role="alert">
-                    <i class="bi bi-check-circle-fill me-2"></i>
-                    <span th:text="${mensajeExito}"></span>
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-                <!-- 🔺 FIN ALERTAS 🔺 -->
 
                 <!-- FORMULARIO -->
-                <form th:action="@{/autenticacion/validar-correo}" method="post">
+                <form th:action="@{/autenticacion/actualizar-contrasena}" method="post">
+                    <!-- Campo Oculto con el Token -->
+                    <input type="hidden" name="token" th:value="${token}" />
+
                     <div class="mb-4">
-                        <label for="recoveryEmail" class="form-label small text-muted fw-semibold mb-1">Correo electrónico</label>
+                        <label for="newPassword" class="form-label small text-muted fw-semibold mb-1">Nueva Contraseña</label>
                         <div class="input-group">
-                            <input id="recoveryEmail" type="email" class="form-control" placeholder="nombre@ejemplo.com" name="correo" required />
-                            <span class="input-group-text"><i class="bi bi-envelope"></i></span>
+                            <input id="newPassword" type="password" class="form-control" placeholder="••••••••" name="nuevaContrasena" required />
+                            <span class="input-group-text"><i class="bi bi-lock-fill"></i></span>
                         </div>
                     </div>
 
                     <div class="d-grid mb-3">
-                        <button type="submit" class="btn btn-primary btn-primary-custom">
-                            Verificar Correo <i class="bi bi-send-fill ms-2"></i>
+                        <button type="submit" class="btn btn-success btn-success-custom">
+                            Guardar Nueva Contraseña <i class="bi bi-check-circle-fill ms-2"></i>
                         </button>
                     </div>
                 </form>
 
-                <!-- REGRESAR AL LOGIN -->
+                <!-- CANCELAR -->
                 <div class="text-center mt-4">
                     <a th:href="@{/autenticacion}" class="back-link">
-                        <i class="bi bi-arrow-left me-1"></i> Regresar al Inicio de Sesión
+                        <i class="bi bi-x-circle me-1"></i> Cancelar y regresar al Login
                     </a>
                 </div>
 
