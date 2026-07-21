@@ -34,7 +34,7 @@ public class AlertaEnsayoController {
 	public String nuevo(Model model) {
 		model.addAttribute("alerta", new AlertaEnsayoRequestDto());
 		model.addAttribute("validaciones", validacionServicio.listar());
-		return "alerta/detallealerta";
+		return "alertas/detallealerta";
 	}
 
 	@PostMapping("/guardar")
