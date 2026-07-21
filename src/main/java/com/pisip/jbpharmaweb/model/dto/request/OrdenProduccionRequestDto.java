@@ -14,6 +14,10 @@ public class OrdenProduccionRequestDto {
 	
 	private Integer idPlan;
 
+	private Integer idProducto;
+	
+	private Integer idUsuario;
+
 	private String numeroLote;
 
 	private BigDecimal cantidadLote;

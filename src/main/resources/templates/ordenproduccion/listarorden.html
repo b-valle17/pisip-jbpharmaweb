@@ -9,6 +9,7 @@
 .table-actions .btn {
 	margin-right: .25rem;
 }
+
 @media print {
 	body * {
 		visibility: hidden;
@@ -68,8 +69,8 @@
 					</div>
 					<div class="card-body">
 						<div class="d-flex gap-2 mb-3">
-							<a th:href="@{/ordenproduccion/crearorden}" href="./crearorden.html"
-								class="btn btn-sm btn-primary"> <i
+							<a th:href="@{/ordenproduccion/crearorden}"
+								href="./crearorden.html" class="btn btn-sm btn-primary"> <i
 								class="bi bi-plus-circle me-1" aria-hidden="true"></i> Nuevo
 								orden
 							</a>
@@ -99,7 +100,7 @@
 										<th scope="col">Cantidad(Kg)</th>
 										<th scope="col">Fecha Inicio</th>
 										<th scope="col">Fecha Fin</th>
-										<th scope="col">Estado</th>									
+										<th scope="col">Estado</th>
 										<th scope="col">Acciones</th>
 									</tr>
 								</thead>
@@ -109,14 +110,17 @@
 										<td th:text="${indice.cantidadLote}"></td>
 										<td th:text="${indice.fechaInicio}" class="text-center"></td>
 										<td th:text="${indice.fechaFin}" class="text-center"></td>
-										<td class="text-center">
-        <span th:if="${indice.estado == 'REGISTRADO'}" class="badge text-bg-primary">Registrado</span>
-        <span th:if="${indice.estado == 'EN_PROCESO'}" class="badge text-bg-warning">En Proceso</span>
-        <span th:if="${indice.estado == 'EN_REVISION'}" class="badge text-bg-info">En Revisión</span>
-        <!-- Opción de respaldo por si viene un estado inesperado -->
-        <span th:if="${indice.estado != 'REGISTRADO' and indice.estado != 'EN_PROCESO' and indice.estado != 'EN_REVISION'}" 
-              th:text="${indice.estado}" class="badge text-bg-secondary"></span>
-    </td>
+										<td class="text-center"><span
+											th:if="${indice.estado == 'COMPLETADO'}"
+											class="badge text-bg-success">COMPLETADO</span> <span
+											th:if="${indice.estado == 'EN PROCESO'}"
+											class="badge text-bg-warning">EN PROCESO</span> <span
+											th:if="${indice.estado == 'PLANIFICADO'}"
+											class="badge text-bg-info">PLANIFICADO</span> <span
+											th:if="${indice.estado == 'CONTROL DE CALIDAD'}"
+											class="badge text-bg-primary">CONTROL DE CALIDAD</span> <span
+											th:if="${indice.estado == 'CANCELADO'}"
+											class="badge text-bg-danger">CANCELADO</span></td>
 										<td class="text-center">
 											<div class="btn-group table-actions">
 												<a

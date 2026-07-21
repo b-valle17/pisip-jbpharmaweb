@@ -107,7 +107,17 @@
 										<td th:text="${indice.codigoPlan}"></td>
 										<td th:text="${indice.anio}"></td>
 										<td th:text="${indice.fechaEmision}" class="text-center"></td>
-										<td th:text="${indice.estado}"> </td>
+										<td class="text-center"><span
+											th:if="${indice.estado == 'COMPLETADO'}"
+											class="badge text-bg-success">COMPLETADO</span> <span
+											th:if="${indice.estado == 'EN PROCESO'}"
+											class="badge text-bg-warning">EN PROCESO</span> <span
+											th:if="${indice.estado == 'PLANIFICADO'}"
+											class="badge text-bg-info">PLANIFICADO</span> <span
+											th:if="${indice.estado == 'BORRADOR'}"
+											class="badge text-bg-secondary">BORRADOR</span> <span
+											th:if="${indice.estado == 'CANCELADO'}"
+											class="badge text-bg-danger">CANCELADO</span></td>
 										<td class="text-center">
 											<div class="btn-group table-actions">
 												<a
