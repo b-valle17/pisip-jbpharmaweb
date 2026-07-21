@@ -11,6 +11,8 @@ public class PlanProduccionRequestDto {
 	
 
 	private Integer idPlan;
+	
+	private Integer idUsuario;
 
 	private String codigoPlan;
 

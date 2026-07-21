@@ -51,6 +51,16 @@
                                             <input type="text" class="form-control" id="codigoPlan" placeholder="Ej: PLAN-2026-06" required th:field="*{codigoPlan}">
                                         </div>
                                         <div class="col-md-6">
+    <label class="form-label">Usuario / Responsable</label>
+    <select class="form-select" th:field="*{idUsuario}" required>
+        <option value="">Seleccione el Responsable</option>
+        <!-- Iteramos sobre la lista de usuarios enviada desde el controlador -->
+        <option th:each="indice : ${listausuarios}" 
+                th:value="${indice.idUsuario}" 
+                th:text="${indice.nombre}"></option>
+    </select>
+</div>
+                                        <div class="col-md-6">
                                             <label class="form-label">Mes</label>
                                             <input type="number" class="form-control" id="mes" min="1" max="12" placeholder="6" required th:field="*{mes}">
                                         </div>

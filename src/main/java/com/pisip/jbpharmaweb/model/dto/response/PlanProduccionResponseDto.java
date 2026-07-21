@@ -7,6 +7,7 @@ import lombok.Data;
 public class PlanProduccionResponseDto {
 	
 	private Integer idPlan;
+	private Integer idUsuario;
 	private String codigoPlan;
 	private Integer mes;
 	private Integer anio;
