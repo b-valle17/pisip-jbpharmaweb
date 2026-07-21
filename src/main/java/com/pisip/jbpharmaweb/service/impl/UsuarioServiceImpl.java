@@ -41,6 +41,12 @@ public class UsuarioServiceImpl implements IUsuarioService {
 					.bodyValue(loginRequest) // Enviamos el JSON en el cuerpo
 					.retrieve().bodyToMono(UsuarioResponseDTO.class).block(); // Bloqueamos síncronamente para Spring
 																				// MVC tradicional
+			// 🔻 NUEVA VALIDACIÓN: Si el usuario existe pero no tiene un rol asignado (es null o 0)
+	        if (response != null && (response.getIdRol() == null || response.getIdRol() == 0)) {
+	            // Retornamos un Optional con un indicador de error o lanzamos una excepción/Optional.empty()
+	            // para bloquear el acceso.
+	            return Optional.empty(); 
+	        }
 
 			return Optional.ofNullable(response);
 

@@ -30,8 +30,9 @@
 				<div class="container-fluid">
 					<div class="card">
 						<div class="card-header">
-							<a class="badge text-bg-info" th:href="@{/usuario/crearusuario}"
-								style="text-decoration: none;">Crear Usuario</a>
+							<a th:href="@{/usuario/crearusuario}"
+								class="btn btn-sm btn-outline-info" title="Crear Usuario"><i
+								class="fa-solid fa-plus"></i> Crear Usuario </a>
 							<div class="card-tools">
 								<div class="input-group input-group-sm" style="width: 16rem">
 									<span class="input-group-text"> <i class="bi bi-search"
@@ -114,7 +115,8 @@
 														th:action="@{/usuario/eliminar/{idUsuario}(idUsuario=${indice.idUsuario})}"
 														method="post" style="display: inline;"
 														onsubmit="return confirm('¿Estás seguro de que deseas eliminar este usuario?');">
-														<button type="submit" class="btn btn-sm btn-outline-danger">
+														<button type="submit"
+															class="btn btn-sm btn-outline-danger">
 															<i class="fa-solid fa-trash"></i>
 														</button>
 													</form>
