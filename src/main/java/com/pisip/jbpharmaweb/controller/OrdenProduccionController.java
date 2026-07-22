@@ -58,10 +58,20 @@ public class OrdenProduccionController {
     }
 	
 	@PostMapping("/guardar")
-    public String guardarOrden(@ModelAttribute OrdenProduccionRequestDto orden) {
-        servicioAPI.guardarOrden(orden); 
-        return "redirect:/ordenproduccion";
+    public String guardarOrden(@ModelAttribute("orden") OrdenProduccionRequestDto requestDto, 
+                               RedirectAttributes redirectAttributes) {
+        try {
+
+            servicioAPI.guardarOrden(requestDto);
+            redirectAttributes.addFlashAttribute("success", "Registro guardado correctamente.");
+            
+            return "redirect:/ordenproduccion";
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", "Error al guardar la orden de producción: " + e.getMessage());
+            return "redirect:/ordenproduccion/crearorden";
+        }
     }
+
 	
 	@PostMapping("/eliminar/{id}")
 	public String eliminarOrden(@PathVariable("id") Integer id, RedirectAttributes redirectAttributes) {
@@ -87,7 +97,6 @@ public class OrdenProduccionController {
 	    dto.setFechaFin(ordenExistente.getFechaFin());
 	    dto.setEstado(ordenExistente.getEstado());
 
-	    // Asignar las llaves foráneas desde los objetos anidados de la respuesta
 	    if (ordenExistente.getIdPlan() != null) {
 	        dto.setIdPlan(ordenExistente.getIdPlan());
 	    }
@@ -98,10 +107,9 @@ public class OrdenProduccionController {
 	        dto.setIdUsuario(ordenExistente.getIdUsuario());
 	    }
 
-	    // 3. Cargar en el modelo el DTO y las 3 listas requeridas para los <select>
 	    model.addAttribute("orden", dto);
 	    model.addAttribute("listaplan", planService.listarPlan());
-	    model.addAttribute("listaproductos", productoService.listarProductos()); // Ajusta al nombre de tu método de servicio
+	    model.addAttribute("listaproductos", productoService.listarProductos()); 
 	    model.addAttribute("listausuarios", usuarioService.listarUsuarios());
 
 	    return "/ordenproduccion/editarorden";
