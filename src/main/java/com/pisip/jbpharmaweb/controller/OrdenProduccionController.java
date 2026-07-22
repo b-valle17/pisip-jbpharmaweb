@@ -7,8 +7,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.pisip.jbpharmaweb.model.dto.request.OrdenProduccionRequestDto;
 import com.pisip.jbpharmaweb.model.dto.response.OrdenProduccionResponseDto;
@@ -53,13 +56,66 @@ public class OrdenProduccionController {
 
         return "/ordenproduccion/crearorden";
     }
+	
 	@PostMapping("/guardar")
     public String guardarOrden(@ModelAttribute OrdenProduccionRequestDto orden) {
         servicioAPI.guardarOrden(orden); 
         return "redirect:/ordenproduccion";
     }
+	
+	@PostMapping("/eliminar/{id}")
+	public String eliminarOrden(@PathVariable("id") Integer id, RedirectAttributes redirectAttributes) {
+	    try {
+	        servicioAPI.eliminarOrden(id);
+	        redirectAttributes.addFlashAttribute("success", "Órden de fabricación eliminado correctamente.");
+	    } catch (Exception e) {
+	        redirectAttributes.addFlashAttribute("error", "No se pudo eliminar la órden de fabricación.");
+	    }
+	    return "redirect:/ordenproduccion";
+	}
+	
 	@GetMapping("/editarorden")
-	public String leerpaginaeditar() {
-		return "/ordenproduccion/editarorden";
+	public String mostrarFormularioEditar(@RequestParam("idOrden") Integer idOrden, Model model) {
+
+	    OrdenProduccionResponseDto ordenExistente = servicioAPI.buscarPorId(idOrden);
+	    
+	    OrdenProduccionRequestDto dto = new OrdenProduccionRequestDto();
+	    dto.setIdOrden(ordenExistente.getIdOrden());
+	    dto.setNumeroLote(ordenExistente.getNumeroLote());
+	    dto.setCantidadLote(ordenExistente.getCantidadLote());
+	    dto.setFechaInicio(ordenExistente.getFechaInicio());
+	    dto.setFechaFin(ordenExistente.getFechaFin());
+	    dto.setEstado(ordenExistente.getEstado());
+
+	    // Asignar las llaves foráneas desde los objetos anidados de la respuesta
+	    if (ordenExistente.getIdPlan() != null) {
+	        dto.setIdPlan(ordenExistente.getIdPlan());
+	    }
+	    if (ordenExistente.getIdProducto() != null) {
+	        dto.setIdProducto(ordenExistente.getIdProducto());
+	    }
+	    if (ordenExistente.getIdUsuario() != null) {
+	        dto.setIdUsuario(ordenExistente.getIdUsuario());
+	    }
+
+	    // 3. Cargar en el modelo el DTO y las 3 listas requeridas para los <select>
+	    model.addAttribute("orden", dto);
+	    model.addAttribute("listaplan", planService.listarPlan());
+	    model.addAttribute("listaproductos", productoService.listarProductos()); // Ajusta al nombre de tu método de servicio
+	    model.addAttribute("listausuarios", usuarioService.listarUsuarios());
+
+	    return "/ordenproduccion/editarorden";
+	}
+
+	@PostMapping("/actualizar")
+	public String actualizarOrden(@ModelAttribute("orden") OrdenProduccionRequestDto ordenDto,
+	                              RedirectAttributes redirectAttributes) {
+	    try {
+	        servicioAPI.actualizarOrden(ordenDto.getIdOrden(), ordenDto);
+	        redirectAttributes.addFlashAttribute("success", "Órden de producción actualizada con éxito.");
+	    } catch (Exception e) {
+	        redirectAttributes.addFlashAttribute("error", "Error al actualizar la orden de producción.");
+	    }
+	    return "redirect:/ordenproduccion";
 	}
 }

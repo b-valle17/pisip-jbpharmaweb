@@ -55,7 +55,9 @@
 
 				<div class="card" id="printable-area">
 					<div class="card-header">
-						<h3 class="card-title">Gestión de Planes de Producción</h3>
+					<a th:href="@{/planproduccion/crearplan}"
+								class="btn btn-sm btn-outline-info" title="Crear Plan"><i
+								class="fa-solid fa-plus"></i> Crear Plan </a>
 						<div class="card-tools">
 							<div class="input-group input-group-sm" style="width: 16rem">
 								<span class="input-group-text"> <i class="bi bi-search"
@@ -69,11 +71,6 @@
 					</div>
 					<div class="card-body">
 						<div class="d-flex gap-2 mb-3">
-							<a th:href="@{/planproduccion/crearplan}" href="./crearplan.html"
-								class="btn btn-sm btn-primary"> <i
-								class="bi bi-plus-circle me-1" aria-hidden="true"></i> Nuevo
-								plan
-							</a>
 
 							<button id="export-csv" type="button"
 								class="btn btn-sm btn-outline-secondary">
@@ -122,9 +119,9 @@
 										<td class="text-center">
 											<div class="btn-group table-actions">
 												<a
-													th:href="@{/planproduccion/editar/{id}(id=${indice.idPlan})}"
+													th:href="@{/planproduccion/editarplan(idPlan=${indice.idPlan})}"
 													class="btn btn-sm btn-outline-warning" title="Editar Plan">
-													<i class="bi bi-pencil"></i>
+													<i class="fa-solid fa-pen-to-square"></i>
 												</a>
 												<form
 													th:action="@{/planproduccion/eliminar/{id}(id=${indice.idPlan})}"
@@ -132,7 +129,7 @@
 													<button type="submit" class="btn btn-sm btn-outline-danger"
 														title="Eliminar"
 														onclick="return confirm('¿Seguro que desea eliminar este plan?')">
-														<i class="bi bi-trash"></i>
+														<i class="fa-solid fa-trash"></i>
 													</button>
 												</form>
 											</div>
