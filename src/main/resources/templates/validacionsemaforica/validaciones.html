@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org"
     xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-    layout:decorate="~{plantilla/plantillauli}">
+    layout:decorate="~{plantilla/plantillaui}">
 <head>
     <meta charset="UTF-8">
     <title>Validaciones semafóricas</title>
@@ -22,16 +22,26 @@
             <div class="card-body">
                 <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
                 <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
-                <input id="buscador" type="search" class="form-control mb-3" placeholder="Buscar" autocomplete="off">
+                <div class="alert alert-light border mb-3">
+                    <strong>Significado del semáforo:</strong>
+                    <span class="badge text-bg-success ms-2">VERDE</span> dentro del rango óptimo;
+                    <span class="badge text-bg-warning ms-2">AMARILLO</span> dentro del rango, pero próximo a un límite;
+                    <span class="badge text-bg-danger ms-2">ROJO</span> fuera de los límites de calidad.
+                </div>
+                <input id="buscador" type="search" class="form-control mb-3" placeholder="Buscar por ensayo, variable, parámetro, resultado o mensaje" autocomplete="off">
                 <div class="table-responsive">
                     <table id="tabla" class="table table-hover align-middle">
                         <thead>
-                            <tr><th>Variable</th><th>Parámetro</th><th>Resultado</th><th>Mensaje</th><th>Fecha</th><th>Acciones</th></tr>
+                            <tr><th>Ensayo</th><th>Variable</th><th>Parámetro</th><th>Resultado</th><th>Mensaje</th><th>Fecha</th><th>Acciones</th></tr>
                         </thead>
                         <tbody>
                             <tr class="fila" th:each="v : ${validaciones}">
-                                <td th:text="${v.idVariable}"></td>
-                                <td th:text="${v.idParametro}"></td>
+                                <td th:with="variable=${variablesPorId[v.idVariable]}, ensayo=${variable != null ? ensayosPorId[variable.idEnsayo] : null}"
+                                    th:text="${ensayo != null ? ensayo.codigoEnsayo : 'Ensayo no disponible'}"></td>
+                                <td th:with="variable=${variablesPorId[v.idVariable]}"
+                                    th:text="${variable != null ? variable.nombreVariable : 'Variable #' + v.idVariable}"></td>
+                                <td th:with="parametro=${parametrosPorId[v.idParametro]}"
+                                    th:text="${parametro != null ? parametro['nombreParametro'] : 'Parámetro #' + v.idParametro}"></td>
                                 <td>
                                     <span class="badge"
                                         th:classappend="${v.resultado == 'VERDE'} ? ' text-bg-success' : (${v.resultado == 'AMARILLO' or v.resultado == 'ADVERTENCIA'} ? ' text-bg-warning' : (${v.resultado == 'ROJO'} ? ' text-bg-danger' : ' text-bg-secondary'))"
@@ -47,8 +57,8 @@
                                         onclick="prepararEliminacionValidacion(this)"><i class="bi bi-trash"></i></button>
                                 </td>
                             </tr>
-                            <tr id="sinResultadosValidaciones" style="display:none"><td colspan="6" class="text-center text-muted">No se encontraron validaciones.</td></tr>
-                            <tr th:if="${validaciones == null or #lists.isEmpty(validaciones)}"><td colspan="6" class="text-center text-muted">No existen validaciones.</td></tr>
+                            <tr id="sinResultadosValidaciones" style="display:none"><td colspan="7" class="text-center text-muted">No se encontraron validaciones.</td></tr>
+                            <tr th:if="${validaciones == null or #lists.isEmpty(validaciones)}"><td colspan="7" class="text-center text-muted">No existen validaciones.</td></tr>
                         </tbody>
                     </table>
                 </div>

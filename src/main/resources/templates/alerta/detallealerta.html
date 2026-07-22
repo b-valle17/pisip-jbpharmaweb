@@ -1,126 +1,208 @@
 <!doctype html>
 <html lang="es"
-	xmlns:th="http://www.thymeleaf.org"
-	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-	layout:decorate="~{plantilla/plantillauli}">
+    xmlns:th="http://www.thymeleaf.org"
+    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{plantilla/plantillaui}">
 <head>
-	<meta charset="UTF-8">
-	<title>Alerta de ensayo</title>
+    <meta charset="UTF-8">
+    <title>Alerta de ensayo</title>
 </head>
 <body>
-	<h3 layout:fragment="titulo">Alerta de ensayo</h3>
+    <h3 layout:fragment="titulo">Alerta de ensayo</h3>
 
-	<ol layout:fragment="breadcrumb" class="breadcrumb float-sm-end">
-		<li class="breadcrumb-item"><a th:href="@{/dashboard}">Inicio</a></li>
-		<li class="breadcrumb-item"><a th:href="@{/alertas}">Notificaciones</a></li>
-		<li class="breadcrumb-item active"
-			th:text="${alerta.idAlerta != null ? 'Editar' : 'Nueva'}">
-			Nueva
-		</li>
-	</ol>
+    <ol layout:fragment="breadcrumb" class="breadcrumb float-sm-end">
+        <li class="breadcrumb-item"><a th:href="@{/dashboard}">Inicio</a></li>
+        <li class="breadcrumb-item"><a th:href="@{/alertas}">Alertas de ensayo</a></li>
+        <li class="breadcrumb-item active" th:text="${alerta.idAlerta != null ? 'Editar' : 'Nueva'}">Nueva</li>
+    </ol>
 
-	<div layout:fragment="contenidopaginas">
-		<form th:action="${alerta.idAlerta != null}
-				? @{/alertas/{id}/actualizar(id=${alerta.idAlerta})}
-				: @{/alertas/guardar}"
-			th:object="${alerta}"
-			method="post">
+    <div layout:fragment="contenidopaginas">
+        <form th:action="${alerta.idAlerta != null}
+                ? @{/alertas/{id}/actualizar(id=${alerta.idAlerta})}
+                : @{/alertas/guardar}"
+            th:object="${alerta}" method="post">
 
-			<input type="hidden"
-				th:if="${alerta.idAlerta != null}"
-				th:field="*{idAlerta}">
+            <input type="hidden" th:if="${alerta.idAlerta != null}" th:field="*{idAlerta}">
 
-			<div class="card content-card">
-				<div class="card-header">
-					<h5 class="card-title mb-0"
-						th:text="${alerta.idAlerta != null
-							? 'Actualizar notificación'
-							: 'Registrar notificación'}">
-						Registrar notificación
-					</h5>
-				</div>
+            <div class="card content-card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0"
+                        th:text="${alerta.idAlerta != null ? 'Actualizar alerta' : 'Registrar alerta'}">
+                        Registrar alerta
+                    </h5>
+                </div>
 
-				<div class="card-body">
-					<div class="row g-3">
+                <div class="card-body">
+                    <div class="alert alert-light border mb-3">
+                        <strong>Interpretación:</strong>
+                        <span class="badge text-bg-success ms-2">VERDE</span> cumple el rango óptimo;
+                        <span class="badge text-bg-warning ms-2">AMARILLO</span> está próximo a un límite;
+                        <span class="badge text-bg-danger ms-2">ROJO</span> está fuera del rango permitido.
+                    </div>
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label for="idEnsayoUi" class="form-label">Ensayo</label>
+                            <select id="idEnsayoUi" class="form-select" required>
+                                <option value="">Seleccione un ensayo con validación previa</option>
+                                <option th:each="ensayo : ${ensayos}"
+                                    th:value="${ensayo.idEnsayo}"
+                                    th:attr="data-responsable=${ensayo.responsable}"
+                                    th:text="${ensayo.codigoEnsayo + ' - ' + ensayo.responsable}">
+                                </option>
+                            </select>
+                            <div class="form-text">Solo se muestran ensayos que ya poseen una validación semafórica.</div>
+                        </div>
 
-						<div class="col-md-4">
-							<label for="idValidacion" class="form-label">Validación</label>
-							<select id="idValidacion"
-								class="form-select"
-								th:field="*{idValidacion}"
-								required>
-								<option value="">Seleccione una validación</option>
-								<option th:each="validacion : ${validaciones}"
-									th:value="${validacion.idValidacion}"
-									th:text="${'Validación ' + validacion.idValidacion
-										+ ' - ' + validacion.resultado}">
-								</option>
-							</select>
-						</div>
+                        <div class="col-md-6">
+                            <label for="responsableEnsayo" class="form-label">Responsable del ensayo</label>
+                            <input type="text" id="responsableEnsayo" class="form-control" readonly>
+                        </div>
 
-						<div class="col-md-4">
-							<label for="tipoAlerta" class="form-label">Tipo</label>
-							<select id="tipoAlerta"
-								class="form-select"
-								th:field="*{tipoAlerta}"
-								required>
-								<option value="">Seleccione</option>
-								<option value="EMAIL">EMAIL</option>
-								<option value="SISTEMA">SISTEMA</option>
-							</select>
-						</div>
+                        <div class="col-md-6">
+                            <label for="idValidacion" class="form-label">Validación relacionada</label>
+                            <select id="idValidacion" class="form-select" th:field="*{idValidacion}" required>
+                                <option value="">Seleccione primero un ensayo</option>
+                                <option th:each="validacion : ${validaciones}"
+                                    th:value="${validacion.idValidacion}"
+                                    th:attr="data-variable=${validacion.idVariable},data-resultado=${validacion.resultado},data-razon=${validacion.mensaje}"
+                                    th:text="${'Validación ' + validacion.idValidacion + ' - ' + validacion.resultado}">
+                                </option>
+                            </select>
+                        </div>
 
-						<div class="col-md-4">
-							<label for="destinatario" class="form-label">Destinatario</label>
-							<input type="email"
-								id="destinatario"
-								class="form-control"
-								th:field="*{destinatario}"
-								required>
-						</div>
+                        <div class="col-md-6">
+                            <label for="razonValidacion" class="form-label">Razón de la alerta</label>
+                            <textarea id="razonValidacion" class="form-control" rows="2" readonly></textarea>
+                        </div>
 
-						<div class="col-md-6">
-							<label for="asunto" class="form-label">Asunto</label>
-							<input type="text"
-								id="asunto"
-								class="form-control"
-								th:field="*{asunto}"
-								required>
-						</div>
+                        <div class="col-md-4">
+                            <label for="tipoAlerta" class="form-label">Tipo</label>
+                            <select id="tipoAlerta" class="form-select" th:field="*{tipoAlerta}" required>
+                                <option value="EMAIL">EMAIL</option>
+                                <option value="SISTEMA">SISTEMA</option>
+                            </select>
+                        </div>
 
-						<div class="col-md-6">
-							<label for="estadoEnvio" class="form-label">Estado</label>
-							<select id="estadoEnvio"
-								class="form-select"
-								th:field="*{estadoEnvio}"
-								required>
-								<option value="PENDIENTE">PENDIENTE</option>
-								<option value="ENVIADO">ENVIADO</option>
-								<option value="ERROR">ERROR</option>
-							</select>
-						</div>
+                        <div class="col-md-4">
+                            <label for="estadoEnvio" class="form-label">Estado</label>
+                            <select id="estadoEnvio" class="form-select" th:field="*{estadoEnvio}" required>
+                                <option value="PENDIENTE">PENDIENTE</option>
+                                <option value="ENVIADO">ENVIADO</option>
+                                <option value="ERROR">ERROR</option>
+                            </select>
+                        </div>
 
-						<div class="col-12">
-							<label for="mensaje" class="form-label">Mensaje</label>
-							<textarea id="mensaje"
-								class="form-control"
-								rows="4"
-								th:field="*{mensaje}"
-								required></textarea>
-						</div>
-					</div>
-				</div>
+                        <div class="col-md-4">
+                            <label for="destinatario" class="form-label">Destinatario</label>
+                            <input type="email" id="destinatario" class="form-control" th:field="*{destinatario}" required>
+                        </div>
 
-				<div class="card-footer text-end">
-					<a th:href="@{/alertas}" class="btn btn-outline-secondary">Cancelar</a>
-					<button type="submit" class="btn btn-primary">
-						<i class="bi bi-save me-1"></i>Guardar
-					</button>
-				</div>
-			</div>
-		</form>
-	</div>
+                        <div class="col-12">
+                            <label for="asunto" class="form-label">Asunto</label>
+                            <input type="text" id="asunto" class="form-control" th:field="*{asunto}" required>
+                        </div>
 
-	<th:block layout:fragment="scripts"></th:block>
+                        <div class="col-12">
+                            <label for="mensaje" class="form-label">Mensaje</label>
+                            <textarea id="mensaje" class="form-control" rows="4" th:field="*{mensaje}" required></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card-footer text-end">
+                    <a th:href="@{/alertas}" class="btn btn-outline-secondary">Cancelar</a>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-save me-1"></i>Guardar
+                    </button>
+                </div>
+            </div>
+        </form>
+
+        <div id="variablesData" class="d-none">
+            <span th:each="variable : ${variables}"
+                th:attr="data-variable=${variable.idVariable},data-ensayo=${variable.idEnsayo}"></span>
+        </div>
+    </div>
+
+    <th:block layout:fragment="scripts">
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                const ensayoSelect = document.getElementById('idEnsayoUi');
+                const validacionSelect = document.getElementById('idValidacion');
+                const responsable = document.getElementById('responsableEnsayo');
+                const razon = document.getElementById('razonValidacion');
+                const asunto = document.getElementById('asunto');
+                const mensaje = document.getElementById('mensaje');
+
+                const ensayoPorVariable = {};
+                document.querySelectorAll('#variablesData [data-variable]').forEach(function (elemento) {
+                    ensayoPorVariable[elemento.dataset.variable] = elemento.dataset.ensayo;
+                });
+
+                const opcionesValidacion = Array.from(validacionSelect.querySelectorAll('option[data-variable]'));
+                const validacionInicial = validacionSelect.value;
+
+                function actualizarDetalleValidacion(autocompletar) {
+                    const opcion = validacionSelect.options[validacionSelect.selectedIndex];
+                    const textoRazon = opcion && opcion.dataset.razon ? opcion.dataset.razon : '';
+                    const resultado = opcion && opcion.dataset.resultado ? opcion.dataset.resultado : '';
+                    razon.value = textoRazon;
+
+                    if (autocompletar && opcion && opcion.value) {
+                        if (!asunto.value.trim()) {
+                            asunto.value = 'Alerta de calidad - ' + resultado;
+                        }
+                        if (!mensaje.value.trim()) {
+                            mensaje.value = textoRazon;
+                        }
+                    }
+                }
+
+                function filtrarValidaciones(conservarSeleccion) {
+                    const idEnsayo = ensayoSelect.value;
+                    const seleccionAnterior = conservarSeleccion ? validacionSelect.value : '';
+                    let primeraDisponible = '';
+
+                    opcionesValidacion.forEach(function (opcion) {
+                        const corresponde = idEnsayo && ensayoPorVariable[opcion.dataset.variable] === idEnsayo;
+                        opcion.hidden = !corresponde;
+                        opcion.disabled = !corresponde;
+                        if (corresponde && !primeraDisponible) primeraDisponible = opcion.value;
+                    });
+
+                    const seleccionEsValida = opcionesValidacion.some(function (opcion) {
+                        return opcion.value === seleccionAnterior && !opcion.disabled;
+                    });
+                    validacionSelect.value = seleccionEsValida ? seleccionAnterior : primeraDisponible;
+                    actualizarDetalleValidacion(!conservarSeleccion);
+                }
+
+                function actualizarEnsayo() {
+                    const opcion = ensayoSelect.options[ensayoSelect.selectedIndex];
+                    responsable.value = opcion && opcion.dataset.responsable ? opcion.dataset.responsable : '';
+                    filtrarValidaciones(false);
+                }
+
+                ensayoSelect.addEventListener('change', actualizarEnsayo);
+                validacionSelect.addEventListener('change', function () {
+                    actualizarDetalleValidacion(true);
+                });
+
+                if (validacionInicial) {
+                    const opcionInicial = opcionesValidacion.find(function (opcion) {
+                        return opcion.value === validacionInicial;
+                    });
+                    if (opcionInicial) {
+                        ensayoSelect.value = ensayoPorVariable[opcionInicial.dataset.variable] || '';
+                    }
+                }
+
+                const opcionEnsayoInicial = ensayoSelect.options[ensayoSelect.selectedIndex];
+                responsable.value = opcionEnsayoInicial && opcionEnsayoInicial.dataset.responsable
+                    ? opcionEnsayoInicial.dataset.responsable : '';
+                filtrarValidaciones(true);
+            });
+        </script>
+    </th:block>
 </body>
 </html>

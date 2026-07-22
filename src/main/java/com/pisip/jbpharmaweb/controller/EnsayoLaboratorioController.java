@@ -1,17 +1,21 @@
 package com.pisip.jbpharmaweb.controller;
 
 import java.util.List;
-import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.pisip.jbpharmaweb.model.dto.request.EnsayoLaboratorioRequestDto;
 import com.pisip.jbpharmaweb.model.dto.response.EnsayoLaboratorioResponseDto;
+import com.pisip.jbpharmaweb.model.dto.response.OrdenProduccionResponseDto;
+import com.pisip.jbpharmaweb.model.dto.response.ProductoResponseDto;
 import com.pisip.jbpharmaweb.service.iEnsayoLaboratorioService;
 
 @Controller
@@ -31,12 +35,22 @@ public class EnsayoLaboratorioController {
 	@GetMapping
 	public String listar(Model model) {
 		model.addAttribute("ensayos", servicio.listar());
+		List<OrdenProduccionResponseDto> ordenes = listarOrdenes();
+		List<ProductoResponseDto> productos = listarProductos();
+		model.addAttribute("ordenesPorId", ordenes.stream()
+				.collect(Collectors.toMap(OrdenProduccionResponseDto::getIdOrden, Function.identity(), (a, b) -> a)));
+		model.addAttribute("productosPorId", productos.stream()
+				.collect(Collectors.toMap(ProductoResponseDto::getIdProducto, Function.identity(), (a, b) -> a)));
 		return "ensayo/listaensayo";
 	}
 
 	@GetMapping("/nuevo")
 	public String nuevo(Model model) {
-		model.addAttribute("ensayo", new EnsayoLaboratorioRequestDto());
+        if (!model.containsAttribute("ensayoError")) {
+            model.addAttribute("ensayo", new EnsayoLaboratorioRequestDto());
+        } else {
+            model.addAttribute("ensayo", model.getAttribute("ensayoError"));
+        }
 		cargarRelaciones(model);
 		return "ensayo/crearensayo";
 	}
@@ -50,9 +64,15 @@ public class EnsayoLaboratorioController {
 		dto.setIdEnsayo(null);
 		dto.setCodigoEnsayo(null);
 
-		servicio.guardar(dto);
-		ra.addFlashAttribute("success", "Registro guardado correctamente.");
-		return "redirect:/ensayos";
+        try {
+            servicio.guardar(dto);
+            ra.addFlashAttribute("success", "Registro guardado correctamente.");
+            return "redirect:/ensayos";
+        } catch (Exception ex) {
+            ra.addFlashAttribute("error", "No se pudo guardar el ensayo: " + extraerMensaje(ex));
+            ra.addFlashAttribute("ensayoError", dto);
+            return "redirect:/ensayos/nuevo";
+        }
 	}
 
 	@GetMapping("/{id}/editar")
@@ -74,9 +94,14 @@ public class EnsayoLaboratorioController {
 			@ModelAttribute("ensayo") EnsayoLaboratorioRequestDto dto,
 			RedirectAttributes ra) {
 
-		servicio.actualizar(id, dto);
-		ra.addFlashAttribute("success", "Registro actualizado correctamente.");
-		return "redirect:/ensayos";
+        try {
+            servicio.actualizar(id, dto);
+            ra.addFlashAttribute("success", "Registro actualizado correctamente.");
+            return "redirect:/ensayos";
+        } catch (Exception ex) {
+            ra.addFlashAttribute("error", "No se pudo actualizar el ensayo: " + extraerMensaje(ex));
+            return "redirect:/ensayos/" + id + "/editar";
+        }
 	}
 
 	@PostMapping("/{id}/eliminar")
@@ -87,18 +112,47 @@ public class EnsayoLaboratorioController {
 	}
 
 	private void cargarRelaciones(Model model) {
-		model.addAttribute("ordenes", listar("/api/ordenProduccion"));
-		model.addAttribute("productos", listar("/api/productos"));
+		model.addAttribute("ordenes", listarOrdenes());
+		model.addAttribute("productos", listarProductos());
 	}
 
-	private List<Map<String, Object>> listar(String ruta) {
-		return webClient.get()
-				.uri(ruta)
-				.retrieve()
-				.bodyToMono(new ParameterizedTypeReference<List<Map<String, Object>>>() {})
-				.blockOptional()
-				.orElseGet(List::of);
+	private List<OrdenProduccionResponseDto> listarOrdenes() {
+		return webClient.get().uri("/ordenProduccion").retrieve()
+				.bodyToMono(new ParameterizedTypeReference<List<OrdenProduccionResponseDto>>() {})
+				.blockOptional().orElseGet(List::of);
 	}
+
+	private List<ProductoResponseDto> listarProductos() {
+		return webClient.get().uri("/productos").retrieve()
+				.bodyToMono(new ParameterizedTypeReference<List<ProductoResponseDto>>() {})
+				.blockOptional().orElseGet(List::of);
+	}
+
+    private String extraerMensaje(Exception ex) {
+        Throwable causa = ex;
+        while (causa != null) {
+            if (causa instanceof WebClientResponseException webEx) {
+                String cuerpo = webEx.getResponseBodyAsString();
+                if (cuerpo != null && !cuerpo.isBlank()) {
+                    int inicio = cuerpo.indexOf("\"message\"");
+                    if (inicio >= 0) {
+                        int dosPuntos = cuerpo.indexOf(':', inicio);
+                        int primeraComilla = cuerpo.indexOf('\"', dosPuntos + 1);
+                        int segundaComilla = cuerpo.indexOf('\"', primeraComilla + 1);
+                        if (primeraComilla >= 0 && segundaComilla > primeraComilla) {
+                            return cuerpo.substring(primeraComilla + 1, segundaComilla);
+                        }
+                    }
+                    return cuerpo;
+                }
+                return webEx.getStatusText();
+            }
+            if (causa.getCause() == null) break;
+            causa = causa.getCause();
+        }
+        String mensaje = causa != null ? causa.getMessage() : ex.getMessage();
+        return mensaje == null || mensaje.isBlank() ? ex.getClass().getSimpleName() : mensaje;
+    }
 
 	private void copiar(EnsayoLaboratorioResponseDto r, EnsayoLaboratorioRequestDto d) {
 		d.setIdEnsayo(r.getIdEnsayo());

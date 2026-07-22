@@ -2,7 +2,7 @@
 <html lang="es"
 	xmlns:th="http://www.thymeleaf.org"
 	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-	layout:decorate="~{plantilla/plantillauli}">
+	layout:decorate="~{plantilla/plantillaui}">
 <head>
 	<meta charset="UTF-8">
 	<title>Validación semafórica</title>
@@ -43,69 +43,49 @@
 				<div class="card-body">
 					<div class="row g-3">
 
-						<div class="col-md-4">
-							<label for="idVariable" class="form-label">Variable de ensayo</label>
-							<select id="idVariable"
-								class="form-select"
-								th:field="*{idVariable}"
-								required>
-								<option value="">Seleccione una variable</option>
-								<option th:each="variable : ${variables}"
-									th:value="${variable.idVariable}"
-									th:text="${variable.nombreVariable
-										+ ' - ' + variable.valorObtenido
-										+ ' ' + variable.unidadMedida}">
-								</option>
-							</select>
-						</div>
+                        <div class="col-md-4">
+                            <label for="idEnsayo" class="form-label">Ensayo de laboratorio</label>
+                            <select id="idEnsayo" name="idEnsayo" class="form-select" required>
+                                <option value="">Seleccione un ensayo</option>
+                                <option th:each="ensayo : ${ensayos}"
+                                    th:value="${ensayo.idEnsayo}"
+                                    th:attr="data-producto=${ensayo.idProducto}"
+                                    th:selected="${ensayoSeleccionado != null and ensayoSeleccionado == ensayo.idEnsayo}"
+                                    th:text="${ensayo.codigoEnsayo + ' - ' + ensayo.responsable}">
+                                </option>
+                            </select>
+                        </div>
 
-						<div class="col-md-4">
-							<label for="idParametro" class="form-label">Parámetro de calidad</label>
-							<select id="idParametro"
-								class="form-select"
-								th:field="*{idParametro}"
-								required>
-								<option value="">Seleccione un parámetro</option>
-								<option th:each="parametro : ${parametros}"
-									th:value="${parametro.idParametro}"
-									th:text="${parametro.nombreParametro != null
-										? parametro.nombreParametro
-										: 'Parámetro ' + parametro.idParametro}">
-								</option>
-							</select>
-						</div>
+                        <div class="col-md-4">
+                            <label for="idVariable" class="form-label">Variable relacionada</label>
+                            <select id="idVariable" class="form-select" th:field="*{idVariable}" required>
+                                <option value="">Seleccione primero un ensayo</option>
+                                <option th:each="variable : ${variables}"
+                                    th:value="${variable.idVariable}"
+                                    th:attr="data-ensayo=${variable.idEnsayo},data-nombre=${variable.nombreVariable},data-unidad=${variable.unidadMedida}"
+                                    th:text="${variable.nombreVariable + ' - ' + variable.valorObtenido + ' ' + variable.unidadMedida}">
+                                </option>
+                            </select>
+                        </div>
 
-						<div class="col-md-4">
-							<label for="resultado" class="form-label">Resultado</label>
-							<select id="resultado"
-								class="form-select"
-								th:field="*{resultado}"
-								required>
-								<option value="">Seleccione</option>
-								<option value="VERDE">VERDE</option>
-								<option value="AMARILLO">AMARILLO</option>
-								<option value="ROJO">ROJO</option>
-								<option value="OK">OK</option>
-								<option value="ADVERTENCIA">ADVERTENCIA</option>
-								<option value="ERROR">ERROR</option>
-							</select>
-						</div>
+                        <div class="col-md-4">
+                            <label for="idParametro" class="form-label">Parámetro correspondiente</label>
+                            <select id="idParametro" class="form-select" th:field="*{idParametro}" required>
+                                <option value="">Se seleccionará automáticamente</option>
+                                <option th:each="parametro : ${parametros}"
+                                    th:value="${parametro.idParametro}"
+                                    th:attr="data-producto=${parametro.idProducto},data-nombre=${parametro.nombreParametro},data-unidad=${parametro.unidadMedida}"
+                                    th:text="${parametro.nombreParametro + ' [' + parametro.limiteMinimo + ' - ' + parametro.limiteMaximo + '] ' + parametro.unidadMedida}">
+                                </option>
+                            </select>
+                        </div>
 
-						<div class="col-12">
-							<label for="mensaje" class="form-label">Mensaje</label>
-							<textarea id="mensaje"
-								class="form-control"
-								rows="3"
-								th:field="*{mensaje}"></textarea>
-						</div>
-
-						<div class="col-md-6">
-							<label for="fechaValidacion" class="form-label">Fecha</label>
-							<input type="datetime-local"
-								id="fechaValidacion"
-								class="form-control"
-								th:field="*{fechaValidacion}">
-						</div>
+                        <div class="col-12">
+                            <div class="alert alert-info mb-0">
+                                <i class="bi bi-info-circle me-1"></i>
+                                El resultado, el mensaje y la fecha se calculan automáticamente comparando el valor obtenido con los límites del parámetro. Verde indica rango óptimo; amarillo, proximidad del 10 % a un límite; rojo, valor fuera del rango.
+                            </div>
+                        </div>
 					</div>
 				</div>
 
@@ -119,18 +99,66 @@
 		</form>
 	</div>
 
-	<th:block layout:fragment="scripts">
-		<script>
-			document.addEventListener("DOMContentLoaded", function () {
-				const fecha = document.getElementById("fechaValidacion");
-				if (fecha && !fecha.value) {
-					const ahora = new Date();
-					const desfase = ahora.getTimezoneOffset() * 60000;
-					fecha.value = new Date(ahora.getTime() - desfase)
-						.toISOString().slice(0, 16);
-				}
-			});
-		</script>
-	</th:block>
+    <th:block layout:fragment="scripts">
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                const ensayo = document.getElementById("idEnsayo");
+                const variable = document.getElementById("idVariable");
+                const parametro = document.getElementById("idParametro");
+                const variableOriginal = variable.value;
+                const parametroOriginal = parametro.value;
+
+                function normalizar(texto) {
+                    return (texto || "").trim().toLowerCase();
+                }
+
+                function filtrarVariables() {
+                    const idEnsayo = ensayo.value;
+                    let primera = "";
+                    Array.from(variable.options).forEach(function (op, indice) {
+                        if (indice === 0) return;
+                        const visible = op.dataset.ensayo === idEnsayo;
+                        op.hidden = !visible;
+                        op.disabled = !visible;
+                        if (visible && !primera) primera = op.value;
+                    });
+                    const originalValido = Array.from(variable.options).some(op =>
+                        op.value === variableOriginal && !op.disabled);
+                    variable.value = originalValido ? variableOriginal : primera;
+                    seleccionarParametro();
+                }
+
+                function seleccionarParametro() {
+                    const opcionEnsayo = ensayo.options[ensayo.selectedIndex];
+                    const idProducto = opcionEnsayo ? opcionEnsayo.dataset.producto : "";
+                    const opcionVariable = variable.options[variable.selectedIndex];
+                    const nombreVariable = normalizar(opcionVariable ? opcionVariable.dataset.nombre : "");
+                    const unidadVariable = normalizar(opcionVariable ? opcionVariable.dataset.unidad : "");
+                    let mejor = "";
+                    let alternativo = "";
+
+                    Array.from(parametro.options).forEach(function (op, indice) {
+                        if (indice === 0) return;
+                        const mismoProducto = op.dataset.producto === idProducto;
+                        op.hidden = !mismoProducto;
+                        op.disabled = !mismoProducto;
+                        if (!mismoProducto) return;
+                        if (!alternativo) alternativo = op.value;
+                        const mismoNombre = normalizar(op.dataset.nombre) === nombreVariable;
+                        const mismaUnidad = normalizar(op.dataset.unidad) === unidadVariable;
+                        if (!mejor && (mismoNombre || mismaUnidad)) mejor = op.value;
+                    });
+
+                    const originalValido = Array.from(parametro.options).some(op =>
+                        op.value === parametroOriginal && !op.disabled);
+                    parametro.value = originalValido ? parametroOriginal : (mejor || alternativo);
+                }
+
+                ensayo.addEventListener("change", filtrarVariables);
+                variable.addEventListener("change", seleccionarParametro);
+                filtrarVariables();
+            });
+        </script>
+    </th:block>
 </body>
 </html>
