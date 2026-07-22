@@ -17,27 +17,27 @@ public class EnsayoLaboratorioServiceImpl implements iEnsayoLaboratorioService {
 	}
 
 	public List<EnsayoLaboratorioResponseDto> listar() {
-		return webClient.get().uri("/api/ensayos").retrieve()
+		return webClient.get().uri("/ensayos").retrieve()
 				.bodyToMono(new ParameterizedTypeReference<List<EnsayoLaboratorioResponseDto>>() {
 				}).blockOptional().orElseGet(List::of);
 	}
 
 	public Optional<EnsayoLaboratorioResponseDto> buscarPorId(long id) {
-		return webClient.get().uri("/api/ensayos/{id}", id).retrieve().bodyToMono(EnsayoLaboratorioResponseDto.class)
+		return webClient.get().uri("/ensayos/{id}", id).retrieve().bodyToMono(EnsayoLaboratorioResponseDto.class)
 				.blockOptional();
 	}
 
 	public EnsayoLaboratorioResponseDto guardar(EnsayoLaboratorioRequestDto dto) {
-		return webClient.post().uri("/api/ensayos").bodyValue(dto).retrieve().bodyToMono(EnsayoLaboratorioResponseDto.class)
+		return webClient.post().uri("/ensayos").bodyValue(dto).retrieve().bodyToMono(EnsayoLaboratorioResponseDto.class)
 				.block();
 	}
 
 	public EnsayoLaboratorioResponseDto actualizar(long id, EnsayoLaboratorioRequestDto dto) {
-		return webClient.put().uri("/api/ensayos/{id}", id).bodyValue(dto).retrieve()
+		return webClient.put().uri("/ensayos/{id}", id).bodyValue(dto).retrieve()
 				.bodyToMono(EnsayoLaboratorioResponseDto.class).block();
 	}
 
 	public void eliminar(long id) {
-		webClient.delete().uri("/api/ensayos/{id}", id).retrieve().toBodilessEntity().block();
+		webClient.delete().uri("/ensayos/{id}", id).retrieve().toBodilessEntity().block();
 	}
 }

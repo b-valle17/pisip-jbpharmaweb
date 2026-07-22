@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org"
     xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-    layout:decorate="~{plantilla/plantillauli}">
+    layout:decorate="~{plantilla/plantillaui}">
 <head>
     <meta charset="UTF-8">
     <title>Ensayos de laboratorio</title>
@@ -47,8 +47,8 @@
                         <tbody>
                             <tr class="fila-ensayo" th:each="e : ${ensayos}">
                                 <td th:text="${e.codigoEnsayo}">ENS-000</td>
-                                <td th:text="${e.idOrden}">-</td>
-                                <td th:text="${e.idProducto}">-</td>
+                                <td th:text="${ordenesPorId[e.idOrden] != null ? ordenesPorId[e.idOrden].numeroLote : 'Orden ' + e.idOrden}">-</td>
+                                <td th:text="${productosPorId[e.idProducto] != null ? productosPorId[e.idProducto].nombreProducto : 'Producto ' + e.idProducto}">-</td>
                                 <td th:text="${e.fechaEnsayo != null ? #temporals.format(e.fechaEnsayo, 'dd/MM/yyyy HH:mm') : '-'}">-</td>
                                 <td th:text="${e.responsable}">Responsable</td>
                                 <td>

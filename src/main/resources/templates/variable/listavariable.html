@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org"
     xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-    layout:decorate="~{plantilla/plantillauli}">
+    layout:decorate="~{plantilla/plantillaui}">
 <head>
     <meta charset="UTF-8">
     <title>Variables de ensayo</title>
@@ -42,7 +42,7 @@
                         </thead>
                         <tbody>
                             <tr class="fila-variable" th:each="v : ${variables}">
-                                <td th:text="${v.idEnsayo}"></td>
+                                <td th:text="${ensayosPorId[v.idEnsayo] != null ? ensayosPorId[v.idEnsayo].codigoEnsayo : 'Ensayo #' + v.idEnsayo}"></td>
                                 <td th:text="${v.nombreVariable}"></td>
                                 <td th:text="${v.valorObtenido}"></td>
                                 <td th:text="${v.unidadMedida}"></td>

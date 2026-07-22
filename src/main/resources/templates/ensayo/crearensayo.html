@@ -2,7 +2,7 @@
 <html lang="es"
 	xmlns:th="http://www.thymeleaf.org"
 	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-	layout:decorate="~{plantilla/plantillauli}">
+	layout:decorate="~{plantilla/plantillaui}">
 <head>
 	<meta charset="UTF-8">
 	<title>Nuevo ensayo</title>
@@ -17,6 +17,11 @@
 	</ol>
 
 	<div layout:fragment="contenidopaginas">
+		<div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="bi bi-exclamation-triangle me-1"></i>
+            <span th:text="${error}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
 		<form th:action="@{/ensayos/guardar}"
 			th:object="${ensayo}"
 			method="post">
@@ -38,6 +43,7 @@
 								<option value="">Seleccione una orden</option>
 								<option th:each="orden : ${ordenes}"
 									th:value="${orden.idOrden}"
+                                    th:attr="data-producto=${orden.idProducto}"
 									th:text="${orden.numeroLote != null
 										? orden.numeroLote + ' (ID ' + orden.idOrden + ')'
 										: 'Orden ' + orden.idOrden}">
@@ -72,10 +78,11 @@
 						<div class="col-md-4">
 							<label for="fechaEnsayo" class="form-label">Fecha</label>
 							<input type="datetime-local"
-								id="fechaEnsayo"
-								class="form-control"
-								th:field="*{fechaEnsayo}"
-								required>
+                                id="fechaEnsayo"
+                                name="fechaEnsayo"
+                                class="form-control"
+                                th:value="${ensayo.fechaEnsayo}"
+                                required>
 						</div>
 
 						<div class="col-md-5">
@@ -134,6 +141,22 @@
 	<th:block layout:fragment="scripts">
 		<script>
 			document.addEventListener("DOMContentLoaded", function () {
+                const ordenSelect = document.getElementById("idOrden");
+                const productoSelect = document.getElementById("idProducto");
+                function sincronizarProducto() {
+                    if (!ordenSelect || !productoSelect) return;
+                    const opcion = ordenSelect.options[ordenSelect.selectedIndex];
+                    const idProducto = opcion ? opcion.dataset.producto : null;
+                    if (idProducto) {
+                        productoSelect.value = idProducto;
+                        productoSelect.dispatchEvent(new Event("change"));
+                    }
+                }
+                if (ordenSelect) {
+                    ordenSelect.addEventListener("change", sincronizarProducto);
+                    sincronizarProducto();
+                }
+
 				const fecha = document.getElementById("fechaEnsayo");
 				if (fecha && !fecha.value) {
 					const ahora = new Date();

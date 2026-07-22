@@ -2,6 +2,8 @@ package com.pisip.jbpharmaweb.controller;
 
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Controller;
@@ -13,6 +15,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.pisip.jbpharmaweb.model.dto.request.ValidacionSemaforicaRequestDto;
 import com.pisip.jbpharmaweb.model.dto.response.ValidacionSemaforicaResponseDto;
 import com.pisip.jbpharmaweb.service.iEnsayoVariableService;
+import com.pisip.jbpharmaweb.service.iEnsayoLaboratorioService;
 import com.pisip.jbpharmaweb.service.iValidacionSemaforicaService;
 
 @Controller
@@ -21,20 +24,35 @@ public class ValidacionSemaforicaController {
 
 	private final iValidacionSemaforicaService servicio;
 	private final iEnsayoVariableService variableServicio;
+	private final iEnsayoLaboratorioService ensayoServicio;
 	private final WebClient webClient;
 
 	public ValidacionSemaforicaController(
 			iValidacionSemaforicaService servicio,
 			iEnsayoVariableService variableServicio,
-			WebClient webClient) {
+            iEnsayoLaboratorioService ensayoServicio,
+            WebClient webClient) {
 		this.servicio = servicio;
 		this.variableServicio = variableServicio;
+		this.ensayoServicio = ensayoServicio;
 		this.webClient = webClient;
 	}
 
 	@GetMapping
 	public String listar(Model model) {
-		model.addAttribute("validaciones", servicio.listar());
+		var validaciones = servicio.listar();
+		var variables = variableServicio.listar();
+		var ensayos = ensayoServicio.listar();
+		var parametros = listarParametros();
+
+		model.addAttribute("validaciones", validaciones);
+		model.addAttribute("variablesPorId", variables.stream()
+				.collect(Collectors.toMap(v -> v.getIdVariable(), Function.identity(), (a, b) -> a)));
+		model.addAttribute("ensayosPorId", ensayos.stream()
+				.collect(Collectors.toMap(e -> e.getIdEnsayo(), Function.identity(), (a, b) -> a)));
+		model.addAttribute("parametrosPorId", parametros.stream()
+				.filter(p -> p.get("idParametro") != null)
+				.collect(Collectors.toMap(p -> Integer.valueOf(String.valueOf(p.get("idParametro"))), Function.identity(), (a, b) -> a)));
 		return "validacionsemaforica/validaciones";
 	}
 
@@ -50,11 +68,14 @@ public class ValidacionSemaforicaController {
 			@ModelAttribute("validacion") ValidacionSemaforicaRequestDto dto,
 			RedirectAttributes ra) {
 
-		dto.setIdValidacion(null);
-		servicio.guardar(dto);
-
-		ra.addFlashAttribute("success", "Registro guardado correctamente.");
-		return "redirect:/validaciones";
+        dto.setIdValidacion(null);
+        try {
+            servicio.guardar(dto);
+            ra.addFlashAttribute("success", "Ensayo evaluado correctamente.");
+        } catch (Exception ex) {
+            ra.addFlashAttribute("error", "No se pudo evaluar el ensayo: " + extraerMensaje(ex));
+        }
+        return "redirect:/validaciones";
 	}
 
 	@GetMapping("/{id}/editar")
@@ -76,9 +97,13 @@ public class ValidacionSemaforicaController {
 			@ModelAttribute("validacion") ValidacionSemaforicaRequestDto dto,
 			RedirectAttributes ra) {
 
-		servicio.actualizar(id, dto);
-		ra.addFlashAttribute("success", "Registro actualizado correctamente.");
-		return "redirect:/validaciones";
+        try {
+            servicio.actualizar(id, dto);
+            ra.addFlashAttribute("success", "Validación recalculada correctamente.");
+        } catch (Exception ex) {
+            ra.addFlashAttribute("error", "No se pudo recalcular la validación: " + extraerMensaje(ex));
+        }
+        return "redirect:/validaciones";
 	}
 
 	@PostMapping("/{id}/eliminar")
@@ -88,19 +113,35 @@ public class ValidacionSemaforicaController {
 		return "redirect:/validaciones";
 	}
 
-	private void cargarRelaciones(Model model) {
-		model.addAttribute("variables", variableServicio.listar());
-		model.addAttribute("parametros", listarParametros());
-	}
+    private void cargarRelaciones(Model model) {
+        model.addAttribute("ensayos", ensayoServicio.listar());
+        model.addAttribute("variables", variableServicio.listar());
+        model.addAttribute("parametros", listarParametros());
+
+        Object validacionObj = model.getAttribute("validacion");
+        if (validacionObj instanceof ValidacionSemaforicaRequestDto validacion
+                && validacion.getIdVariable() != null) {
+            variableServicio.listar().stream()
+                    .filter(v -> validacion.getIdVariable().equals(v.getIdVariable()))
+                    .findFirst()
+                    .ifPresent(v -> model.addAttribute("ensayoSeleccionado", v.getIdEnsayo()));
+        }
+    }
 
 	private List<Map<String, Object>> listarParametros() {
 		return webClient.get()
-				.uri("/api/parametros-calidad")
+				.uri("/parametros-calidad")
 				.retrieve()
 				.bodyToMono(new ParameterizedTypeReference<List<Map<String, Object>>>() {})
 				.blockOptional()
 				.orElseGet(List::of);
 	}
+
+    private String extraerMensaje(Exception ex) {
+        Throwable causa = ex;
+        while (causa.getCause() != null) causa = causa.getCause();
+        return causa.getMessage() == null ? ex.getClass().getSimpleName() : causa.getMessage();
+    }
 
 	private void copiar(ValidacionSemaforicaResponseDto r, ValidacionSemaforicaRequestDto d) {
 		d.setIdValidacion(r.getIdValidacion());

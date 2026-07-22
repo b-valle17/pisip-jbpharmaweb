@@ -17,27 +17,27 @@ public class ValidacionSemaforicaServiceImpl implements iValidacionSemaforicaSer
 	}
 
 	public List<ValidacionSemaforicaResponseDto> listar() {
-		return webClient.get().uri("/api/validaciones").retrieve()
+		return webClient.get().uri("/validaciones").retrieve()
 				.bodyToMono(new ParameterizedTypeReference<List<ValidacionSemaforicaResponseDto>>() {
 				}).blockOptional().orElseGet(List::of);
 	}
 
 	public Optional<ValidacionSemaforicaResponseDto> buscarPorId(long id) {
-		return webClient.get().uri("/api/validaciones/{id}", id).retrieve()
+		return webClient.get().uri("/validaciones/{id}", id).retrieve()
 				.bodyToMono(ValidacionSemaforicaResponseDto.class).blockOptional();
 	}
 
 	public ValidacionSemaforicaResponseDto guardar(ValidacionSemaforicaRequestDto dto) {
-		return webClient.post().uri("/api/validaciones").bodyValue(dto).retrieve()
+		return webClient.post().uri("/validaciones").bodyValue(dto).retrieve()
 				.bodyToMono(ValidacionSemaforicaResponseDto.class).block();
 	}
 
 	public ValidacionSemaforicaResponseDto actualizar(long id, ValidacionSemaforicaRequestDto dto) {
-		return webClient.put().uri("/api/validaciones/{id}", id).bodyValue(dto).retrieve()
+		return webClient.put().uri("/validaciones/{id}", id).bodyValue(dto).retrieve()
 				.bodyToMono(ValidacionSemaforicaResponseDto.class).block();
 	}
 
 	public void eliminar(long id) {
-		webClient.delete().uri("/api/validaciones/{id}", id).retrieve().toBodilessEntity().block();
+		webClient.delete().uri("/validaciones/{id}", id).retrieve().toBodilessEntity().block();
 	}
 }
