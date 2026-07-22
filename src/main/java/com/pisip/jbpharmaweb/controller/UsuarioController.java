@@ -80,7 +80,9 @@ public class UsuarioController {
 	    formDto.setCorreo(res.getCorreo());
 	    formDto.setEstadoUsuario(res.isEstadoUsuario());
 	    formDto.setIdRol(res.getIdRol());
-	    // La contraseña suele dejarse vacía o tratarse aparte por seguridad
+	    
+	 // ⚠️ NO asignamos el hash aquí por seguridad
+	    formDto.setContrasenaHash(null);
 
 	    model.addAttribute("usuario", formDto);
 	    model.addAttribute("roles", servicioAPI.listarRoles()); // Necesario para el <select>

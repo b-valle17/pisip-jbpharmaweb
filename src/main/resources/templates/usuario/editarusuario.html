@@ -64,12 +64,10 @@
 										</div>
 
 										<div class="mb-3">
-											<label for="contrasena" class="form-label">Contraseña</label>
-											<!-- FALTABA EL th:field (Normalmente apunta a contrasenaHash) -->
-											<input type="password" class="form-control" id="contrasena"
-												th:field="*{contrasenaHash}" />
-											<div id="limitemaximoHelp" class="form-text">En este
-												campo debe escribir la contraseña</div>
+											<label for="contrasenaHash" class="form-label">Contraseña</label>
+											<input type="password" class="form-control"
+												id="contrasenaHash" th:field="*{contrasenaHash}"
+												placeholder="Déjalo en blanco para mantener la contraseña actual">
 										</div>
 
 										<div class="mb-3 form-check">
