@@ -1,0 +1,130 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="/plantilla/plantillaui">
+<head>
+<title>Registrar Plan de Producción | JB Pharma</title>
+
+<style>
+.metric-card .icon {
+	font-size: 2rem;
+	opacity: .75;
+}
+
+.table-actions .btn {
+	margin-right: .25rem;
+}
+
+.status-dot {
+	width: .65rem;
+	height: .65rem;
+	display: inline-block;
+	border-radius: 50%;
+	margin-right: .35rem;
+}
+
+.page-help {
+	font-size: .92rem;
+}
+</style>
+</head>
+<body>
+
+	<div layout:fragment="contenidopaginas">
+
+		<div class="app-content-header">
+			<div class="container-fluid">
+				<div class="row">
+					<div class="col-sm-6">
+						<h1 class="mb-0 fs-3">Registrar nuevo Plan de Producción</h1>
+					</div>
+					<div class="col-sm-6">
+						<ol class="breadcrumb float-sm-end">
+							<li class="breadcrumb-item"><a href="./index.html">Inicio</a></li>
+							<li class="breadcrumb-item"><a th:href="@{/planproduccion}"
+								href="./listarplan.html">PlanDeProduccion</a></li>
+							<li class="breadcrumb-item active">RegistrarNuevoPlan</li>
+						</ol>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="app-content">
+			<div class="container-fluid">
+				<div class="row">
+					<div class="col-lg-8">
+						<div class="card card-primary card-outline">
+							<div class="card-header">
+								<h3 class="card-title">Nuevo Plan Mensual</h3>
+							</div>
+							<form th:action="@{/planproduccion/guardar}" th:object="${plan}"
+								method="post">
+								<div class="card-body">
+									<div class="row g-3">
+										<div class="col-md-6">
+											<label class="form-label">Código del Plan</label> <input
+												type="text" class="form-control" id="codigoPlan"
+												placeholder="Ej: PLAN-2026-06" required
+												th:field="*{codigoPlan}">
+										</div>
+										<div class="col-md-6">
+											<label class="form-label">Usuario Responsable</label> <select
+												class="form-select" th:field="*{idUsuario}" required>
+												<option value="">Seleccione un Usuario</option>
+												<option th:each="indice : ${listausuarios}"
+													th:value="${indice.idUsuario}" th:text="${indice.nombre}"></option>
+											</select>
+										</div>
+										<div class="col-md-6">
+											<label class="form-label">Mes</label> <input type="number"
+												class="form-control" id="mes" min="1" max="12"
+												placeholder="6" required th:field="*{mes}">
+										</div>
+										<div class="col-md-6">
+											<label class="form-label">Año</label> <input type="number"
+												class="form-control" id="anio" min="2025" max="2027"
+												placeholder="2026" required th:field="*{anio}">
+										</div>
+										<div class="col-md-6">
+											<label class="form-label">Fecha de Emisión</label> <input
+												type="date" class="form-control" id="fechaEmision" required
+												th:field="*{fechaEmision}">
+										</div>
+										<div class="col-12">
+											<label class="form-label">Descripción Operativa</label>
+											<textarea class="form-control" id="descripcion" rows="3"
+												placeholder="Línea de producción asignada..."
+												th:field="*{descripcion}"></textarea>
+										</div>
+										<div class="col-md-6">
+											<label class="form-label">Estado de la Orden</label> <select
+												class="form-select" th:field="*{estado}" required>
+												<option value="">Seleccione</option>
+												<option value="COMPLETADO">COMPLETADO</option>
+												<option value="EN PROCESO">EN PROCESO</option>
+												<option value="PLANIFICADO">PLANIFICADO</option>
+												<option value="BORRADOR">BORRADOR</option>
+												<option value="CANCELADO">CANCELADO</option>
+											</select>
+										</div>
+
+									</div>
+								</div>
+								<div class="card-footer d-flex gap-2">
+									<button class="btn btn-primary" type="submit">
+										<i class="bi bi-save me-1"></i>Guardar y continuar
+									</button>
+									<a class="btn btn-outline-secondary"
+										th:href="@{/planproduccion}" href="./listarplan.html">Cancelar</a>
+								</div>
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+</body>
+</html>
