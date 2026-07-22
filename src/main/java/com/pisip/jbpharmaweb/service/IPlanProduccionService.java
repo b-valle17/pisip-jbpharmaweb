@@ -10,5 +10,11 @@ public interface IPlanProduccionService {
 	public List<PlanProduccionResponseDto> listarPlan();
 	
 	public void guardarPlan(PlanProduccionRequestDto nuevo);
+	
+	void eliminarPlan(Integer idPlan);
+	
+	PlanProduccionResponseDto buscarPorId(Integer idPlan); 
+	
+    void actualizarPlan(Integer id, PlanProduccionRequestDto dto);
 
 }

@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.pisip.jbpharmaweb.model.dto.request.UsuarioRequestDTO;
@@ -50,9 +51,16 @@ public class UsuarioController {
 	}
 	
 	@PostMapping("/guardar")
-	public String guardarUsuario(@ModelAttribute UsuarioRequestDTO usuario) {
-		servicioAPI.guardarUsuario(usuario);
-		return "redirect:/usuario";
+	public String guardarUsuario(@ModelAttribute UsuarioRequestDTO usuario, RedirectAttributes redirectAttributes) {
+	    try {
+	        servicioAPI.guardarUsuario(usuario);
+	        redirectAttributes.addFlashAttribute("mensajeExito", "Usuario registrado exitosamente.");
+		} catch (WebClientResponseException e) {
+	        // Si la API devuelve error 400 Bad Request por correo duplicado
+	        redirectAttributes.addFlashAttribute("mensajeError", "El correo ingresado ya se encuentra registrado.");
+	        return "redirect:/usuario/crearusuario";
+	    }
+	    return "redirect:/usuario";
 	}
 	
 	@GetMapping("/editarusuario")

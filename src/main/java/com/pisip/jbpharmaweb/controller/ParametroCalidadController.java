@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.pisip.jbpharmaweb.model.dto.request.ParametroCalidadRequestDto;
@@ -51,9 +52,31 @@ public class ParametroCalidadController {
 	}
 
 	@PostMapping("/guardar")
-	public String guardarParametro(@ModelAttribute ParametroCalidadRequestDto parametro) {
-		servicioAPI.guardarParametro(parametro);
-		return "redirect:/parametrocalidad";
+	public String guardarParametro(@ModelAttribute ParametroCalidadRequestDto parametro, 
+	                               RedirectAttributes redirectAttributes) {
+
+	    parametro.setIdParametro(null);
+
+	    // Validar que el límite mínimo no sea mayor al máximo
+	    if (parametro.getLimiteMinimo() != null && parametro.getLimiteMaximo() != null) {
+	        if (parametro.getLimiteMinimo().compareTo(parametro.getLimiteMaximo()) > 0) {
+	            redirectAttributes.addFlashAttribute("error", 
+	                "El límite mínimo no puede ser mayor que el límite máximo.");
+	            return "redirect:/parametrocalidad/crearparametro";
+	        }
+	    }
+
+	    try {
+	        servicioAPI.guardarParametro(parametro);
+	        redirectAttributes.addFlashAttribute("success", "Parámetro guardado correctamente.");
+	        return "redirect:/parametrocalidad";
+	    } catch (WebClientResponseException e) {
+	        redirectAttributes.addFlashAttribute("error", "No se pudo guardar el parámetro: " + extraerMensajeError(e));
+	        return "redirect:/parametrocalidad/crearparametro";
+	    } catch (Exception e) {
+	        redirectAttributes.addFlashAttribute("error", "No se pudo guardar el parámetro.");
+	        return "redirect:/parametrocalidad/crearparametro";
+	    }
 	}
 
 	@GetMapping("/editarparametro")
@@ -83,9 +106,29 @@ public class ParametroCalidadController {
 	}
 
 	@PostMapping("/actualizar")
-	public String actualizarParametro(@ModelAttribute ParametroCalidadRequestDto parametro) {
-		servicioAPI.actualizarParametro(parametro.getIdParametro(), parametro);
-		return "redirect:/parametrocalidad";
+	public String actualizarParametro(@ModelAttribute ParametroCalidadRequestDto parametro, 
+	                                   RedirectAttributes redirectAttributes) {
+
+	    // Validar que el límite mínimo no sea mayor al máximo
+	    if (parametro.getLimiteMinimo() != null && parametro.getLimiteMaximo() != null) {
+	        if (parametro.getLimiteMinimo().compareTo(parametro.getLimiteMaximo()) > 0) {
+	            redirectAttributes.addFlashAttribute("error", 
+	                "El límite mínimo no puede ser mayor que el límite máximo.");
+	            return "redirect:/parametrocalidad/editarparametro?idParametro=" + parametro.getIdParametro();
+	        }
+	    }
+
+	    try {
+	        servicioAPI.actualizarParametro(parametro.getIdParametro(), parametro);
+	        redirectAttributes.addFlashAttribute("success", "Parámetro actualizado correctamente.");
+	        return "redirect:/parametrocalidad";
+	    } catch (WebClientResponseException e) {
+	        redirectAttributes.addFlashAttribute("error", "No se pudo actualizar el parámetro: " + extraerMensajeError(e));
+	        return "redirect:/parametrocalidad/editarparametro?idParametro=" + parametro.getIdParametro();
+	    } catch (Exception e) {
+	        redirectAttributes.addFlashAttribute("error", "No se pudo actualizar el parámetro.");
+	        return "redirect:/parametrocalidad/editarparametro?idParametro=" + parametro.getIdParametro();
+	    }
 	}
 
 	@PostMapping("/eliminar/{idParametro}")
@@ -93,10 +136,17 @@ public class ParametroCalidadController {
 		try {
 			servicioAPI.eliminarParametro(idParametro);
 			redirectAttributes.addFlashAttribute("success", "Parametro eliminado correctamente.");
+		} catch (WebClientResponseException e) {
+			redirectAttributes.addFlashAttribute("error", "No se pudo eliminar el parametro: " + extraerMensajeError(e));
 		} catch (Exception e) {
 			redirectAttributes.addFlashAttribute("error", "No se pudo eliminar el parametro.");
 		}
 		return "redirect:/parametrocalidad"; // Redirige de vuelta al listado
+	}
+
+	private String extraerMensajeError(WebClientResponseException e) {
+		String responseBody = e.getResponseBodyAsString();
+		return (responseBody == null || responseBody.isBlank()) ? e.getStatusText() : responseBody;
 	}
 
 }
