@@ -124,15 +124,19 @@
 										<td class="text-center">
 											<div class="btn-group table-actions">
 												<a
-													th:href="@{/ordenproduccion/editar/{id}(id=${indice.idOrden})}"
+													th:href="@{/ordenproduccion/editarorden(idOrden=${indice.idOrden})}"
 													class="btn btn-sm btn-outline-warning" title="Editar Orden">
-													<i class="bi bi-pencil"></i>
-												</a> <a
-													th:href="@{/ordenproduccion/eliminar/{id}(id=${indice.idOrden})}"
-													class="btn btn-sm btn-outline-danger" title="Eliminar"
-													onClick="return confirm('¿Seguro que desea eliminar esta órden?')">
-													<i class="bi bi-trash"></i>
-												</a>
+													<i class="fa-solid fa-pen-to-square"></i>
+												</a> 
+												<form
+													th:action="@{/ordenproduccion/eliminar/{id}(id=${indice.idOrden})}"
+													method="post" style="display: inline;">
+													<button type="submit" class="btn btn-sm btn-outline-danger"
+														title="Eliminar"
+														onclick="return confirm('¿Seguro que desea eliminar esta orden?')">
+														<i class="fa-solid fa-trash"></i>
+													</button>
+												</form>
 											</div>
 										</td>
 									</tr>

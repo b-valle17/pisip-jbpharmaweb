@@ -38,4 +38,23 @@ public class PlanProduccionServiceImpl implements IPlanProduccionService{
 	            .toBodilessEntity()
 	            .block();
 	}
+	
+	@Override
+	public PlanProduccionResponseDto buscarPorId(Integer idPlan) {
+	    return webClient.get()
+	            .uri("/planProduccion/{id}", idPlan)
+	            .retrieve()
+	            .bodyToMono(PlanProduccionResponseDto.class)
+	            .block();
+	}
+
+	@Override
+	public void actualizarPlan(Integer id, PlanProduccionRequestDto dto) {
+	    webClient.put()
+	            .uri("/planProduccion/{id}", id)
+	            .bodyValue(dto)
+	            .retrieve()
+	            .toBodilessEntity()
+	            .block();
+	}
 }

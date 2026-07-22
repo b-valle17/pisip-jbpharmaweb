@@ -30,5 +30,34 @@ public class OrdenProduccionServiceImpl implements IOrdenProduccionService{
 	public void guardarOrden(OrdenProduccionRequestDto nuevo) {
 		webClient.post().uri("/ordenProduccion").bodyValue(nuevo).retrieve().toBodilessEntity().block();			
 	}
+
+	@Override
+	public void eliminarOrden(Integer idOrden) {
+		 webClient.delete()
+         .uri("/ordenProduccion/{id}", idOrden)
+         .retrieve()
+         .toBodilessEntity()
+         .block();
+		
+	}
+
+	@Override
+	public OrdenProduccionResponseDto buscarPorId(Integer idOrden) {
+		 return webClient.get()
+		            .uri("/ordenProduccion/{id}", idOrden)
+		            .retrieve()
+		            .bodyToMono(OrdenProduccionResponseDto.class)
+		            .block();
+	}
+
+	@Override
+	public void actualizarOrden(Integer id, OrdenProduccionRequestDto dto) {
+		webClient.put()
+        .uri("/ordenProduccion/{id}", id)
+        .bodyValue(dto)
+        .retrieve()
+        .toBodilessEntity()
+        .block();
+	}
 	
 }

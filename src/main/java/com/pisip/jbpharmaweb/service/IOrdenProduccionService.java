@@ -10,4 +10,10 @@ public interface IOrdenProduccionService {
 	public List<OrdenProduccionResponseDto> listarOrden();
 	
 	public void guardarOrden(OrdenProduccionRequestDto nuevo);
+	
+	void eliminarOrden(Integer idOrden);
+	
+	OrdenProduccionResponseDto buscarPorId(Integer idOrden);
+	
+    void actualizarOrden(Integer idOrden, OrdenProduccionRequestDto dto);
 }
