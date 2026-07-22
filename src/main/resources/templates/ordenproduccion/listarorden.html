@@ -1,13 +1,23 @@
 <!doctype html>
 <html xmlns:th="http://www.thymeleaf.org"
 	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-	layout:decorate="/plantilla/plantillaui">
+	layout:decorate="~{plantilla/plantillaui}">
 <head>
 <title>Orden de Producción | JB Pharma</title>
 
 <style>
 .table-actions .btn {
 	margin-right: .25rem;
+}
+
+/* Estilos para la tabla Ficha Técnica dentro del Modal */
+.style-table-ficha th {
+	font-size: 0.88rem;
+	letter-spacing: 0.3px;
+}
+
+.style-table-ficha td {
+	font-size: 0.9rem;
 }
 
 @media print {
@@ -42,7 +52,8 @@
 					</div>
 					<div class="col-sm-6">
 						<ol class="breadcrumb float-sm-end">
-							<li class="breadcrumb-item"><a href="./index.html">Inicio</a></li>
+							<li class="breadcrumb-item"><a th:href="@{/ordenproduccion}"
+								href="./listaorden.html">Inicio</a></li>
 							<li class="breadcrumb-item active">OrdenDeProduccion</li>
 						</ol>
 					</div>
@@ -55,7 +66,9 @@
 
 				<div class="card" id="printable-area">
 					<div class="card-header">
-						<h3 class="card-title">Gestión de Órdenes de Fabricación</h3>
+						<a th:href="@{/ordenproduccion/crearorden}"
+								class="btn btn-sm btn-outline-info" title="Crear Orden"><i
+								class="fa-solid fa-plus"></i> Crear Orden </a>
 						<div class="card-tools">
 							<div class="input-group input-group-sm" style="width: 16rem">
 								<span class="input-group-text"> <i class="bi bi-search"
@@ -69,12 +82,7 @@
 					</div>
 					<div class="card-body">
 						<div class="d-flex gap-2 mb-3">
-							<a th:href="@{/ordenproduccion/crearorden}"
-								href="./crearorden.html" class="btn btn-sm btn-primary"> <i
-								class="bi bi-plus-circle me-1" aria-hidden="true"></i> Nuevo
-								orden
-							</a>
-
+							
 							<button id="export-csv" type="button"
 								class="btn btn-sm btn-outline-secondary">
 								<i class="bi bi-filetype-csv me-1" aria-hidden="true"></i>
@@ -93,15 +101,15 @@
 
 						<!-- Estructura de tabla HTML -->
 						<div class="table-responsive">
-							<table class="table table-striped">
+							<table class="table table-striped" id="ordenes-table">
 								<thead>
 									<tr>
 										<th scope="col">Número de Lote</th>
 										<th scope="col">Cantidad(Kg)</th>
 										<th scope="col">Fecha Inicio</th>
 										<th scope="col">Fecha Fin</th>
-										<th scope="col">Estado</th>
-										<th scope="col">Acciones</th>
+										<th scope="col" class="text-center">Estado</th>
+										<th scope="col" class="text-center">Acciones</th>
 									</tr>
 								</thead>
 								<tbody>
@@ -123,6 +131,21 @@
 											class="badge text-bg-danger">CANCELADO</span></td>
 										<td class="text-center">
 											<div class="btn-group table-actions">
+												<!-- 👁️ BOTÓN VER DETALLES -->
+												<button type="button"
+													class="btn btn-sm btn-outline-info btn-detalles"
+													title="Ver Detalles" 
+													th:data-lote="${indice.numeroLote}"
+													th:data-cantidad="${indice.cantidadLote}"
+													th:data-inicio="${indice.fechaInicio}"
+													th:data-fin="${indice.fechaFin}"
+													th:data-estado="${indice.estado}"
+													th:data-producto="${indice.producto != null ? indice.producto.nombre : 'Ergotamina Tartrato'}"
+													th:data-plan="${indice.planProduccion != null ? indice.planProduccion.codigoPlan : 'PLAN-2026-06'}"
+													th:data-usuario="${indice.usuario != null ? indice.usuario.nombre : 'Carlos Gómez (Gerente)'}">
+													<i class="fa-solid fa-eye"></i>
+												</button>
+
 												<a
 													th:href="@{/ordenproduccion/editarorden(idOrden=${indice.idOrden})}"
 													class="btn btn-sm btn-outline-warning" title="Editar Orden">
@@ -150,6 +173,72 @@
 			</div>
 		</div>
 
+		<!-- 📌 MODAL DE DETALLES DE LA ORDEN DE PRODUCCIÓN (FICHA TÉCNICA) -->
+		<div class="modal fade" id="modalDetalles" tabindex="-1"
+			aria-labelledby="modalDetallesLabel" aria-hidden="true">
+			<div class="modal-dialog modal-lg modal-dialog-centered">
+				<div class="modal-content">
+					<div class="modal-header bg-dark text-white py-2">
+						<h5 class="modal-title fs-6 fw-bold" id="modalDetallesLabel">
+							<i class="fa-solid fa-boxes-stacked me-2"></i>FICHA TÉCNICA - ORDEN DE PRODUCCIÓN <span id="modal-lote-title"></span>
+						</h5>
+						<button type="button" class="btn-close btn-close-white"
+							data-bs-dismiss="modal" aria-label="Close"></button>
+					</div>
+					<div class="modal-body p-3">
+						<div class="table-responsive">
+							<table class="table table-bordered border-secondary align-middle mb-0 text-center style-table-ficha">
+								<tbody>
+									<tr>
+										<th class="bg-secondary text-white w-20 text-start" scope="row">N° de Lote</th>
+										<td colspan="2" id="modal-lote" class="fw-bold text-start"></td>
+										<th class="bg-secondary text-white w-15 text-start">Estado</th>
+										<td id="modal-estado-td" class="fw-bold">
+											<span id="modal-estado" class="badge"></span>
+										</td>
+									</tr>
+									<tr>
+										<th class="bg-secondary text-white text-start" scope="row">Producto</th>
+										<td colspan="2" id="modal-producto" class="text-start fw-bold text-dark"></td>
+										<th class="bg-secondary text-white text-start">Tamaño Lote</th>
+										<td id="modal-cantidad" class="fw-bold"></td>
+									</tr>
+									<tr>
+										<th class="bg-secondary text-white text-start" scope="row">Cliente</th>
+										<td colspan="2" class="text-start fw-bold text-dark">James Brown Pharma</td>
+										<th class="bg-secondary text-white text-start">Ciudad</th>
+										<td class="fw-bold">Quito</td>
+									</tr>
+									<tr>
+										<th class="bg-secondary text-white text-start" scope="row">Dirección</th>
+										<td colspan="4" class="text-start fw-bold text-dark">Pifo, Av. Interoceánica Km 23 1/2 Sector el Rosal</td>
+									</tr>
+									<tr>
+										<th class="bg-secondary text-white text-start" scope="row">Plan Asociado</th>
+										<td colspan="2" id="modal-plan" class="text-start fw-semibold"></td>
+										<th class="bg-secondary text-white text-start">Responsable</th>
+										<td id="modal-usuario" class="fw-semibold"></td>
+									</tr>
+									<tr>
+										<th class="bg-secondary text-white text-start" scope="row">Fecha Fabricación</th>
+										<td colspan="2" id="modal-inicio" class="fw-semibold"></td>
+										<th class="bg-secondary text-white text-start">Fecha Fin</th>
+										<td id="modal-fin" class="fw-semibold"></td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+					</div>
+					<div class="modal-footer py-2">
+						<button type="button" class="btn btn-sm btn-secondary"
+							data-bs-dismiss="modal">
+							<i class="fa-solid fa-xmark me-1"></i>Cerrar
+						</button>
+					</div>
+				</div>
+			</div>
+		</div>
+
 		<!-- Lógica para Filtro, Exportación e Impresión -->
 		<script>
             document.addEventListener('DOMContentLoaded', () => {
@@ -157,18 +246,73 @@
                 const table = document.getElementById('ordenes-table');
                 const rows = table.getElementsByTagName('tbody')[0].getElementsByTagName('tr');
 
-                // 1. Filtro global en tiempo real 
+                // Helper para formatear fechas a dd/MM/yyyy en UTC
+                function formatearFechaISO(fechaStr) {
+                    if (!fechaStr) return '-';
+                    const dateObj = new Date(fechaStr);
+                    if (isNaN(dateObj.getTime())) return fechaStr;
+
+                    const dia = String(dateObj.getUTCDate()).padStart(2, '0');
+                    const mes = String(dateObj.getUTCMonth() + 1).padStart(2, '0');
+                    const anio = dateObj.getUTCFullYear();
+                    return `${dia}/${mes}/${anio}`;
+                }
+
+                // 1. Formatear Fechas de Inicio y Fin en la Tabla
+                document.querySelectorAll('#ordenes-table tbody tr').forEach(row => {
+                    const cellInicio = row.cells[2];
+                    const cellFin = row.cells[3];
+                    if (cellInicio) cellInicio.textContent = formatearFechaISO(cellInicio.textContent.trim());
+                    if (cellFin) cellFin.textContent = formatearFechaISO(cellFin.textContent.trim());
+                });
+
+                // 2. Filtro global en tiempo real 
                 filterInput.addEventListener('input', function() {
                     const value = this.value.toLowerCase().trim();
-                    
                     for (let i = 0; i < rows.length; i++) {
                         const rowText = rows[i].textContent.toLowerCase();
-                        if (rowText.includes(value)) {
-                            rows[i].style.display = '';
-                        } else {
-                            rows[i].style.display = 'none';
-                        }
+                        rows[i].style.display = rowText.includes(value) ? '' : 'none';
                     }
+                });
+
+                // 3. Lógica para Abrir Modal de Detalles (Ficha Técnica de la Orden)
+                const modalElement = document.getElementById('modalDetalles');
+                const modalDetalles = new bootstrap.Modal(modalElement);
+
+                document.querySelectorAll('.btn-detalles').forEach(button => {
+                    button.addEventListener('click', function() {
+                        const lote = this.getAttribute('data-lote');
+                        const cantidad = this.getAttribute('data-cantidad');
+                        const inicio = this.getAttribute('data-inicio');
+                        const fin = this.getAttribute('data-fin');
+                        const estado = this.getAttribute('data-estado');
+                        const producto = this.getAttribute('data-producto');
+                        const plan = this.getAttribute('data-plan');
+                        const usuario = this.getAttribute('data-usuario');
+
+                        // Cargar datos en la Ficha Técnica de la Orden
+                        document.getElementById('modal-lote-title').textContent = lote;
+                        document.getElementById('modal-lote').textContent = lote;
+                        document.getElementById('modal-cantidad').textContent = cantidad + ' Kg';
+                        document.getElementById('modal-producto').textContent = producto;
+                        document.getElementById('modal-plan').textContent = plan;
+                        document.getElementById('modal-usuario').textContent = usuario;
+                        document.getElementById('modal-inicio').textContent = formatearFechaISO(inicio);
+                        document.getElementById('modal-fin').textContent = formatearFechaISO(fin);
+
+                        // Formato del Badge de Estado
+                        const modalEstado = document.getElementById('modal-estado');
+                        modalEstado.textContent = estado;
+                        modalEstado.className = 'badge ';
+
+                        if (estado === 'COMPLETADO') modalEstado.classList.add('text-bg-success');
+                        else if (estado === 'EN PROCESO') modalEstado.classList.add('text-bg-warning');
+                        else if (estado === 'PLANIFICADO') modalEstado.classList.add('text-bg-info');
+                        else if (estado === 'CONTROL DE CALIDAD') modalEstado.classList.add('text-bg-primary');
+                        else if (estado === 'CANCELADO') modalEstado.classList.add('text-bg-danger');
+
+                        modalDetalles.show();
+                    });
                 });
 
                 // Helper para extraer los datos visibles de la tabla en un array limpio
@@ -178,17 +322,17 @@
                         if (rows[i].style.display !== 'none') {
                             const cells = rows[i].getElementsByTagName('td');
                             data.push({
-                                codigo: cells[0].textContent.trim(),
-                                periodo: cells[1].textContent.trim(),
-                                emision: cells[2].textContent.trim(),
-                                estado: cells[3].textContent.trim()
+                                lote: cells[0].textContent.trim(),
+                                cantidad: cells[1].textContent.trim(),
+                                inicio: cells[2].textContent.trim(),
+                                fin: cells[3].textContent.trim(),
+                                estado: cells[4].textContent.trim()
                             });
                         }
                     }
                     return data;
                 }
 
-                // Helper para descargar archivos en el navegador
                 function downloadFile(content, fileName, contentType) {
                     const a = document.createElement("a");
                     const file = new Blob([content], { type: contentType });
@@ -197,26 +341,25 @@
                     a.click();
                 }
 
-                // 2. Exportar a CSV
+                // Exportar a CSV
                 document.getElementById('export-csv').addEventListener('click', () => {
                     const data = getTableData();
-                    let csvContent = "\uFEFFCódigo,Período,Emisión,Estado\n"; // \uFEFF fuerza UTF-8 en Excel
+                    let csvContent = "\uFEFFN° Lote,Cantidad (Kg),Fecha Inicio,Fecha Fin,Estado\n";
                     
                     data.forEach(row => {
-                        csvContent += `"${row.codigo}","${row.periodo}","${row.emision}","${row.estado}"\n`;
+                        csvContent += `"${row.lote}","${row.cantidad}","${row.inicio}","${row.fin}","${row.estado}"\n`;
                     });
                     
                     downloadFile(csvContent, "ordenes_produccion.csv", "text/csv;charset=utf-8;");
                 });
 
-                // 3. Exportar a JSON
+                // Exportar a JSON
                 document.getElementById('export-json').addEventListener('click', () => {
                     const data = getTableData();
-                    const jsonContent = JSON.stringify(data, null, 2);
-                    downloadFile(jsonContent, "ordenes_produccion.json", "application/json");
+                    downloadFile(JSON.stringify(data, null, 2), "ordenes_produccion.json", "application/json");
                 });
 
-                // 4. Imprimir la Tabla de manera nativa y limpia
+                // Imprimir la Tabla
                 document.getElementById('print-table').addEventListener('click', () => {
                     window.print();
                 });

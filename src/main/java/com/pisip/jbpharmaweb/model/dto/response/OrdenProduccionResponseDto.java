@@ -17,4 +17,8 @@ public class OrdenProduccionResponseDto {
 	private Date fechaFin;
 	private String estado;
 	private String codigoPlan;
+	
+	private ProductoResponseDto producto;
+    private PlanProduccionResponseDto planProduccion;
+    private UsuarioResponseDTO usuario;
 }

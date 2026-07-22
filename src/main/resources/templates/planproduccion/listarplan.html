@@ -1,13 +1,23 @@
 <!doctype html>
 <html xmlns:th="http://www.thymeleaf.org"
 	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-	layout:decorate="/plantilla/plantillaui">
+	layout:decorate="~{plantilla/plantillaui}">
 <head>
 <title>Plan de Producción | JB Pharma</title>
 
 <style>
 .table-actions .btn {
 	margin-right: .25rem;
+}
+
+/* Estilos para la tabla Ficha Técnica dentro del Modal */
+.style-table-ficha th {
+	font-size: 0.88rem;
+	letter-spacing: 0.3px;
+}
+
+.style-table-ficha td {
+	font-size: 0.9rem;
 }
 
 @media print {
@@ -42,7 +52,8 @@
 					</div>
 					<div class="col-sm-6">
 						<ol class="breadcrumb float-sm-end">
-							<li class="breadcrumb-item"><a href="./index.html">Inicio</a></li>
+							<li class="breadcrumb-item"><a th:href="@{/planproduccion}"
+								href="./listaplan.html">Inicio</a></li>
 							<li class="breadcrumb-item active">PlanDeProduccion</li>
 						</ol>
 					</div>
@@ -55,9 +66,9 @@
 
 				<div class="card" id="printable-area">
 					<div class="card-header">
-					<a th:href="@{/planproduccion/crearplan}"
-								class="btn btn-sm btn-outline-info" title="Crear Plan"><i
-								class="fa-solid fa-plus"></i> Crear Plan </a>
+						<a th:href="@{/planproduccion/crearplan}"
+							class="btn btn-sm btn-outline-info" title="Crear Plan"><i
+							class="fa-solid fa-plus"></i> Crear Plan </a>
 						<div class="card-tools">
 							<div class="input-group input-group-sm" style="width: 16rem">
 								<span class="input-group-text"> <i class="bi bi-search"
@@ -90,20 +101,21 @@
 
 						<!-- Estructura de tabla HTML -->
 						<div class="table-responsive">
-							<table class="table table-striped">
+							<table class="table table-striped" id="planes-table">
 								<thead>
 									<tr>
 										<th scope="col">Código</th>
 										<th scope="col">Periodo</th>
 										<th scope="col">Emisión</th>
 										<th scope="col">Estado</th>
-										<th scope="col">Acciones</th>
+										<th scope="col" class="text-center">Acciones</th>
 									</tr>
 								</thead>
 								<tbody>
 									<tr th:each="indice : ${listaplan}">
 										<td th:text="${indice.codigoPlan}"></td>
-										<td th:text="${indice.anio}"></td>
+										<td
+											th:text="${indice.mes != null ? indice.mes + '/' + indice.anio : '-'}">01/2026</td>
 										<td th:text="${indice.fechaEmision}" class="text-center"></td>
 										<td class="text-center"><span
 											th:if="${indice.estado == 'COMPLETADO'}"
@@ -118,11 +130,24 @@
 											class="badge text-bg-danger">CANCELADO</span></td>
 										<td class="text-center">
 											<div class="btn-group table-actions">
+												
+												<button type="button"
+													class="btn btn-sm btn-outline-info btn-detalles"
+													title="Ver Detalles" th:data-codigo="${indice.codigoPlan}"
+													th:data-periodo="${indice.mes != null ? indice.mes + '/' + indice.anio : '-'}"
+													th:data-emision="${indice.fechaEmision}"
+													th:data-estado="${indice.estado}"
+													th:data-usuario="${indice.usuario != null ? indice.usuario.nombre : 'Carlos Gómez (Gerente)'}"
+													th:data-descripcion="${indice.descripcion != null and indice.descripcion != '' ? indice.descripcion : 'Sin descripción registrada'}">
+													<i class="fa-solid fa-eye"></i>
+												</button>
+
 												<a
 													th:href="@{/planproduccion/editarplan(idPlan=${indice.idPlan})}"
 													class="btn btn-sm btn-outline-warning" title="Editar Plan">
 													<i class="fa-solid fa-pen-to-square"></i>
 												</a>
+
 												<form
 													th:action="@{/planproduccion/eliminar/{id}(id=${indice.idPlan})}"
 													method="post" style="display: inline;">
@@ -145,78 +170,221 @@
 			</div>
 		</div>
 
-		<!-- Lógica para Filtro, Exportación e Impresión -->
+		
+		<div class="modal fade" id="modalDetalles" tabindex="-1"
+			aria-labelledby="modalDetallesLabel" aria-hidden="true">
+			<div class="modal-dialog modal-lg modal-dialog-centered">
+				<div class="modal-content">
+					<div class="modal-header bg-dark text-white py-2">
+						<h5 class="modal-title fs-6 fw-bold" id="modalDetallesLabel">
+							<i class="fa-solid fa-clipboard-list me-2"></i>FICHA TÉCNICA - PLAN DE PRODUCCIÓN <span id="modal-codigo"></span>
+						</h5>
+						<button type="button" class="btn-close btn-close-white"
+							data-bs-dismiss="modal" aria-label="Close"></button>
+					</div>
+					<div class="modal-body p-3">
+						<!-- Tabla Estructurada al estilo Ficha Farmacéutica -->
+						<div class="table-responsive">
+							<table class="table table-bordered border-secondary align-middle mb-0 text-center style-table-ficha">
+								<tbody>
+									<tr>
+										<th class="bg-secondary text-white w-20 text-start" scope="row">Código Plan</th>
+										<td colspan="2" id="modal-codigo-val" class="fw-bold text-start"></td>
+										<th class="bg-secondary text-white w-15 text-start">Estado</th>
+										<td id="modal-estado-td" class="fw-bold">
+											<span id="modal-estado" class="badge"></span>
+										</td>
+									</tr>
+									<tr>
+										<th class="bg-secondary text-white text-start" scope="row">Cliente</th>
+										<td colspan="2" class="text-start fw-bold text-dark">James Brown Pharma</td>
+										<th class="bg-secondary text-white text-start">Ciudad</th>
+										<td class="fw-bold">Quito</td>
+									</tr>
+									<tr>
+										<th class="bg-secondary text-white text-start" scope="row">Dirección</th>
+										<td colspan="4" class="text-start fw-bold text-dark">Pifo, Av. Interoceánica Km 23 1/2 Sector el Rosal</td>
+									</tr>
+									<tr>
+										<th class="bg-secondary text-white text-start" scope="row">Usuario Responsable</th>
+										<td colspan="4" id="modal-usuario" class="text-start fw-bold text-dark"></td>
+									</tr>
+									<tr>
+										<th class="bg-secondary text-white text-start" scope="row">Período</th>
+										<td id="modal-periodo" class="fw-semibold"></td>
+										<th class="bg-secondary text-white text-start">Fecha Emisión</th>
+										<td colspan="2" id="modal-emision" class="fw-semibold"></td>
+									</tr>
+									<tr>
+										<th class="bg-secondary text-white text-start align-top" scope="row">Descripción Operativa</th>
+										<td colspan="4" id="modal-descripcion" class="text-start" style="min-height: 60px;"></td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+					</div>
+					<div class="modal-footer py-2">
+						<button type="button" class="btn btn-sm btn-secondary"
+							data-bs-dismiss="modal">
+							<i class="fa-solid fa-xmark me-1"></i>Cerrar
+						</button>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- Lógica JavaScript -->
 		<script>
-            document.addEventListener('DOMContentLoaded', () => {
-                const filterInput = document.getElementById('table-filter');
-                const table = document.getElementById('planes-table');
-                const rows = table.getElementsByTagName('tbody')[0].getElementsByTagName('tr');
+    document.addEventListener('DOMContentLoaded', () => {
+        const filterInput = document.getElementById('table-filter');
+        const table = document.getElementById('planes-table');
+        const rows = table.getElementsByTagName('tbody')[0].getElementsByTagName('tr');
 
-                // 1. Filtro global en tiempo real 
-                filterInput.addEventListener('input', function() {
-                    const value = this.value.toLowerCase().trim();
-                    
-                    for (let i = 0; i < rows.length; i++) {
-                        const rowText = rows[i].textContent.toLowerCase();
-                        if (rowText.includes(value)) {
-                            rows[i].style.display = '';
-                        } else {
-                            rows[i].style.display = 'none';
-                        }
-                    }
-                });
+        function formatearFechaISO(fechaStr) {
+            if (!fechaStr) return '-';
+            const dateObj = new Date(fechaStr);
+            if (isNaN(dateObj.getTime())) return fechaStr;
 
-                // Helper para extraer los datos visibles de la tabla en un array limpio
-                function getTableData() {
-                    const data = [];
-                    for (let i = 0; i < rows.length; i++) {
-                        if (rows[i].style.display !== 'none') {
-                            const cells = rows[i].getElementsByTagName('td');
-                            data.push({
-                                codigo: cells[0].textContent.trim(),
-                                periodo: cells[1].textContent.trim(),
-                                emision: cells[2].textContent.trim(),
-                                estado: cells[3].textContent.trim()
-                            });
-                        }
+            const dia = String(dateObj.getUTCDate()).padStart(2, '0');
+            const mes = String(dateObj.getUTCMonth() + 1).padStart(2, '0');
+            const anio = dateObj.getUTCFullYear();
+            return `${dia}/${mes}/${anio}`;
+        }
+
+        // 1. Formatear Período y Fecha de Emisión en la Tabla
+        const mesesNombres = [
+            "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
+            "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"
+        ];
+
+        document.querySelectorAll('#planes-table tbody tr').forEach(row => {
+            // Columna Período (segunda columna)
+            const cellPeriodo = row.cells[1];
+            if (cellPeriodo) {
+                const textoOriginal = cellPeriodo.textContent.trim();
+                if (textoOriginal.includes('/')) {
+                    const partes = textoOriginal.split('/');
+                    const mesNum = parseInt(partes[0], 10);
+                    const anioNum = partes[1];
+
+                    if (mesNum >= 1 && mesNum <= 12) {
+                        cellPeriodo.textContent = mesesNombres[mesNum - 1] + ' ' + anioNum;
                     }
-                    return data;
+                }
+            }
+
+            // Columna Fecha Emisión 
+            const cellEmision = row.cells[2];
+            if (cellEmision) {
+                const fechaOriginal = cellEmision.textContent.trim();
+                cellEmision.textContent = formatearFechaISO(fechaOriginal);
+            }
+        });
+
+        // 2. Filtro global en tiempo real 
+        filterInput.addEventListener('input', function() {
+            const value = this.value.toLowerCase().trim();
+            for (let i = 0; i < rows.length; i++) {
+                const rowText = rows[i].textContent.toLowerCase();
+                rows[i].style.display = rowText.includes(value) ? '' : 'none';
+            }
+        });
+
+        // 3. Lógica para Abrir Modal con Detalles (Ficha Técnica)
+        const modalElement = document.getElementById('modalDetalles');
+        const modalDetalles = new bootstrap.Modal(modalElement);
+
+        document.querySelectorAll('.btn-detalles').forEach(button => {
+            button.addEventListener('click', function() {
+                const codigo = this.getAttribute('data-codigo');
+                const periodoRaw = this.getAttribute('data-periodo');
+                const emisionRaw = this.getAttribute('data-emision');
+                const estado = this.getAttribute('data-estado');
+                const usuario = this.getAttribute('data-usuario');
+                const descripcion = this.getAttribute('data-descripcion');
+
+                // Transformar Período
+                let periodoTexto = periodoRaw;
+                if (periodoRaw && periodoRaw.includes('/')) {
+                    const partes = periodoRaw.split('/');
+                    const mesNum = parseInt(partes[0], 10);
+                    const anioNum = partes[1];
+                    if (mesNum >= 1 && mesNum <= 12) {
+                        periodoTexto = mesesNombres[mesNum - 1] + " " + anioNum;
+                    }
                 }
 
-                // Helper para descargar archivos en el navegador
-                function downloadFile(content, fileName, contentType) {
-                    const a = document.createElement("a");
-                    const file = new Blob([content], { type: contentType });
-                    a.href = URL.createObjectURL(file);
-                    a.download = fileName;
-                    a.click();
-                }
+                // Cargar datos en la Ficha
+                document.getElementById('modal-codigo').textContent = codigo;
+                document.getElementById('modal-codigo-val').textContent = codigo;
+                document.getElementById('modal-usuario').textContent = usuario;
+                document.getElementById('modal-periodo').textContent = periodoTexto;
+                document.getElementById('modal-emision').textContent = formatearFechaISO(emisionRaw);
+                document.getElementById('modal-descripcion').textContent = descripcion;
 
-                // 2. Exportar a CSV
-                document.getElementById('export-csv').addEventListener('click', () => {
-                    const data = getTableData();
-                    let csvContent = "\uFEFFCódigo,Período,Emisión,Estado\n"; // \uFEFF fuerza UTF-8 en Excel
-                    
-                    data.forEach(row => {
-                        csvContent += `"${row.codigo}","${row.periodo}","${row.emision}","${row.estado}"\n`;
-                    });
-                    
-                    downloadFile(csvContent, "planes_produccion.csv", "text/csv;charset=utf-8;");
-                });
+                // Formato del Badge de Estado
+                const modalEstado = document.getElementById('modal-estado');
+                modalEstado.textContent = estado;
+                modalEstado.className = 'badge ';
 
-                // 3. Exportar a JSON
-                document.getElementById('export-json').addEventListener('click', () => {
-                    const data = getTableData();
-                    const jsonContent = JSON.stringify(data, null, 2);
-                    downloadFile(jsonContent, "planes_produccion.json", "application/json");
-                });
+                if (estado === 'COMPLETADO') modalEstado.classList.add('text-bg-success');
+                else if (estado === 'EN PROCESO') modalEstado.classList.add('text-bg-warning');
+                else if (estado === 'PLANIFICADO') modalEstado.classList.add('text-bg-info');
+                else if (estado === 'BORRADOR') modalEstado.classList.add('text-bg-secondary');
+                else if (estado === 'CANCELADO') modalEstado.classList.add('text-bg-danger');
 
-                // 4. Imprimir la Tabla de manera nativa y limpia
-                document.getElementById('print-table').addEventListener('click', () => {
-                    window.print();
-                });
+                modalDetalles.show();
             });
-        </script>
+        });
+
+        // Helper para extraer los datos para exportar e imprimir
+        function getTableData() {
+            const data = [];
+            for (let i = 0; i < rows.length; i++) {
+                if (rows[i].style.display !== 'none') {
+                    const cells = rows[i].getElementsByTagName('td');
+                    data.push({
+                        codigo: cells[0].textContent.trim(),
+                        periodo: cells[1].textContent.trim(),
+                        emision: cells[2].textContent.trim(),
+                        estado: cells[3].textContent.trim()
+                    });
+                }
+            }
+            return data;
+        }
+
+        // Helper para descargar archivos
+        function downloadFile(content, fileName, contentType) {
+            const a = document.createElement("a");
+            const file = new Blob([content], { type: contentType });
+            a.href = URL.createObjectURL(file);
+            a.download = fileName;
+            a.click();
+        }
+
+        // 4. Exportar a CSV
+        document.getElementById('export-csv').addEventListener('click', () => {
+            const data = getTableData();
+            let csvContent = "\uFEFFCódigo,Período,Emisión,Estado\n";
+            data.forEach(row => {
+                csvContent += `"${row.codigo}","${row.periodo}","${row.emision}","${row.estado}"\n`;
+            });
+            downloadFile(csvContent, "planes_produccion.csv", "text/csv;charset=utf-8;");
+        });
+
+        // 5. Exportar a JSON
+        document.getElementById('export-json').addEventListener('click', () => {
+            const data = getTableData();
+            downloadFile(JSON.stringify(data, null, 2), "planes_produccion.json", "application/json");
+        });
+
+        // 6. Imprimir
+        document.getElementById('print-table').addEventListener('click', () => {
+            window.print();
+        });
+    });
+</script>
 	</div>
 
 </body>
