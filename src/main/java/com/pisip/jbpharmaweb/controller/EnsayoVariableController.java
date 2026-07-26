@@ -1,5 +1,8 @@
 package com.pisip.jbpharmaweb.controller;
 
+import java.util.function.Function;
+import java.util.stream.Collectors;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -27,6 +30,8 @@ public class EnsayoVariableController {
 	@GetMapping
 	public String listar(Model model) {
 		model.addAttribute("variables", servicio.listar());
+		model.addAttribute("ensayosPorId", ensayoServicio.listar().stream()
+				.collect(Collectors.toMap(e -> e.getIdEnsayo(), Function.identity(), (a, b) -> a)));
 		return "variable/listavariable";
 	}
 

@@ -43,9 +43,18 @@ public class PlanProduccionController {
 		return "/planproduccion/crearplan";
 	}
 	@PostMapping("/guardar")
-	public String guardarPlan(@ModelAttribute PlanProduccionRequestDto plan) {
-		servicioAPI.guardarPlan(plan);
-		return "redirect:/planproduccion";
+	public String guardarPlan(@ModelAttribute("plan") PlanProduccionRequestDto requestDto, 
+	                          RedirectAttributes redirectAttributes) {
+	    try {
+	    
+	        servicioAPI.guardarPlan(requestDto);
+	        redirectAttributes.addFlashAttribute("success", "Registro guardado correctamente.");
+	        
+	        return "redirect:/planproduccion";
+	    } catch (Exception e) {
+	        redirectAttributes.addFlashAttribute("error", "Error al guardar el plan de producción.");
+	        return "redirect:/planproduccion/crearplan";
+	    }
 	}
 	
 	@PostMapping("/eliminar/{id}")

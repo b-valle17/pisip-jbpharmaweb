@@ -2,7 +2,7 @@
 <html lang="es"
 	xmlns:th="http://www.thymeleaf.org"
 	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-	layout:decorate="~{plantilla/plantillauli}">
+	layout:decorate="~{plantilla/plantillaui}">
 <head>
 	<meta charset="UTF-8">
 	<title>Editar ensayo</title>
@@ -17,6 +17,11 @@
 	</ol>
 
 	<div layout:fragment="contenidopaginas">
+		<div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="bi bi-exclamation-triangle me-1"></i>
+            <span th:text="${error}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
 		<form th:action="@{/ensayos/{id}/actualizar(id=${ensayo.idEnsayo})}"
 			th:object="${ensayo}"
 			method="post">
@@ -42,6 +47,7 @@
 								<option value="">Seleccione una orden</option>
 								<option th:each="orden : ${ordenes}"
 									th:value="${orden.idOrden}"
+                                    th:attr="data-producto=${orden.idProducto}"
 									th:text="${orden.numeroLote != null
 										? orden.numeroLote + ' (ID ' + orden.idOrden + ')'
 										: 'Orden ' + orden.idOrden}">
@@ -77,10 +83,11 @@
 						<div class="col-md-4">
 							<label for="fechaEnsayo" class="form-label">Fecha ensayo</label>
 							<input type="datetime-local"
-								id="fechaEnsayo"
-								class="form-control"
-								th:field="*{fechaEnsayo}"
-								required>
+                                id="fechaEnsayo"
+                                name="fechaEnsayo"
+                                class="form-control"
+                                th:value="${ensayo.fechaEnsayo}"
+                                required>
 						</div>
 
 						<div class="col-md-5">
@@ -125,5 +132,20 @@
 			</div>
 		</form>
 	</div>
+    <th:block layout:fragment="scripts">
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                const ordenSelect = document.getElementById("idOrden");
+                const productoSelect = document.getElementById("idProducto");
+                function sincronizarProducto() {
+                    const opcion = ordenSelect.options[ordenSelect.selectedIndex];
+                    const idProducto = opcion ? opcion.dataset.producto : "";
+                    if (idProducto) productoSelect.value = idProducto;
+                }
+                ordenSelect.addEventListener("change", sincronizarProducto);
+                sincronizarProducto();
+            });
+        </script>
+    </th:block>
 </body>
 </html>

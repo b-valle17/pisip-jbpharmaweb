@@ -35,7 +35,7 @@
 <!--begin::Accessibility Features-->
 <!-- Skip links will be dynamically added by accessibility.js -->
 <meta name="supported-color-schemes" content="light dark" />
-<link rel="preload" href="../css/adminlte.css" as="style" />
+<link rel="preload" th:href="@{/css/adminlte.css}" as="style" />
 <!--end::Accessibility Features-->
 
 <!--begin::Fonts-->
@@ -58,7 +58,7 @@
 <!--end::Third Party Plugin(Bootstrap Icons)-->
 
 <!--begin::Required Plugin(AdminLTE)-->
-<link rel="stylesheet" href="../css/adminlte.css" />
+<link rel="stylesheet" th:href="@{/css/adminlte.css}" />
 <!--end::Required Plugin(AdminLTE)-->
 
 <link rel="stylesheet"
@@ -66,6 +66,8 @@
 	crossorigin="anonymous" />
 <script data-cfasync="false"
 	nonce="e65ecad8-741a-445e-bd6e-d602685797a2">try{(function(w,d){!function(cm,cn,co,cp){if(cm.zaraz)console.error("zaraz is loaded twice");else{cm[co]=cm[co]||{};cm[co].executed=[];cm.zaraz={deferred:[],listeners:[]};cm.zaraz._v="20";cm.zaraz._n="e65ecad8-741a-445e-bd6e-d602685797a2";cm.zaraz.q=[];cm.zaraz._f=function(cq){return async function(){var cr=Array.prototype.slice.call(arguments);cm.zaraz.q.push({m:cq,a:cr})}};for(const cs of["track","set","debug"])cm.zaraz[cs]=cm.zaraz._f(cs);cm.zaraz.init=()=>{var ct=cn.getElementsByTagName(cp)[0],cu=cn.createElement(cp),cv=cn.getElementsByTagName("title")[0];cv&&(cm[co].t=cn.getElementsByTagName("title")[0].text);cm[co].x=Math.random();cm[co].w=cm.screen.width;cm[co].h=cm.screen.height;cm[co].j=cm.innerHeight;cm[co].e=cm.innerWidth;cm[co].l=cm.location.href;cm[co].r=cn.referrer;cm[co].k=cm.screen.colorDepth;cm[co].n=cn.characterSet;cm[co].o=(new Date).getTimezoneOffset();if(cm.dataLayer)for(const cw of Object.entries(Object.entries(dataLayer).reduce((cx,cy)=>({...cx[1],...cy[1]}),{})))zaraz.set(cw[0],cw[1],{scope:"page"});cm[co].q=[];for(;cm.zaraz.q.length;){const cz=cm.zaraz.q.shift();cm[co].q.push(cz)}cu.defer=!0;for(const cA of[localStorage,sessionStorage])Object.keys(cA||{}).filter(cC=>cC.startsWith("_zaraz_")).forEach(cB=>{try{cm[co]["z_"+cB.slice(7)]=JSON.parse(cA.getItem(cB))}catch{cm[co]["z_"+cB.slice(7)]=cA.getItem(cB)}});cu.referrerPolicy="origin";cu.src="/cdn-cgi/zaraz/s.js?z="+btoa(encodeURIComponent(JSON.stringify(cm[co])));ct.parentNode.insertBefore(cu,ct)};["complete","interactive"].includes(cn.readyState)?zaraz.init():cm.addEventListener("DOMContentLoaded",zaraz.init)}}(w,d,"zarazData","script");window.zaraz._p=async k=>new Promise(l=>{if(k){k.e&&k.e.forEach(m=>{try{const n=d.querySelector("script[nonce]"),o=n?.nonce||n?.getAttribute("nonce"),p=d.createElement("script");o&&(p.nonce=o);p.innerHTML=m;p.onload=()=>{d.head.removeChild(p)};d.head.appendChild(p)}catch(q){console.error(`Error executing script: ${m}\n`,q)}});Promise.allSettled((k.f||[]).map(r=>fetch(r[0],r[1])))}l()});zaraz._p({"e":["(function(w,d){})(window,document)"]});})(window,document)}catch(e){throw fetch("/cdn-cgi/zaraz/t"),e;};</script>
+
+	<th:block layout:fragment="css"></th:block>
 </head>
 <body class="layout-fixed sidebar-expand-lg bg-body-tertiary">
 	<div class="app-wrapper">
@@ -174,7 +176,9 @@
 			data-bs-theme="dark">
 			<div class="sidebar-brand">
 				<a th:href="@{/}" class="brand-link"> <img
-					src="../assets/img/logo.png" alt="Logo"
+
+					th:src="@{/assets/img/logo.png}" alt="Logo"
+
 					class="brand-image opacity-75 shadow" /> <span
 					class="brand-text fw-light">JBpharma</span>
 				</a>
@@ -230,9 +234,15 @@
 								class="nav-link"> <i class="nav-icon bi bi-clock-history"></i>
 									<p>Historial Lote</p>
 							</a></li>
+
+							<li class="nav-item"><a th:href="@{/validaciones}"
+								class="nav-link"> <i class="nav-icon bi bi-stoplights-fill"></i>
+									<p>Parámetros de Validación</p>
+
 							<li class="nav-item"><a th:href="@{/producto}"
 								class="nav-link"> <i class="nav-icon bi bi-capsule"></i>
 									<p>Producto</p>
+
 							</a></li>
 						</th:block>
 
@@ -295,7 +305,23 @@
 		</aside>
 		<!--end::Sidebar-->
 		<main class="app-main">
-			<div layout:fragment="contenidopaginas"></div>
+			<div class="app-content-header">
+				<div class="container-fluid">
+					<div class="row align-items-center">
+						<div class="col-sm-6">
+							<h3 class="mb-0" layout:fragment="titulo">JB Pharma</h3>
+						</div>
+						<div class="col-sm-6">
+							<ol class="breadcrumb float-sm-end" layout:fragment="breadcrumb">
+								<li class="breadcrumb-item"><a th:href="@{/}">Inicio</a></li>
+							</ol>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="app-content">
+				<div class="container-fluid" layout:fragment="contenidopaginas"></div>
+			</div>
 		</main>
 		<!--begin::Footer-->
 		<footer class="app-footer">
@@ -327,7 +353,7 @@
 		crossorigin="anonymous"></script>
 	<!--end::Required Plugin(Bootstrap 5)-->
 	<!--begin::Required Plugin(AdminLTE)-->
-	<script src="../js/adminlte.js"></script>
+	<script th:src="@{/js/adminlte.js}"></script>
 	<!--end::Required Plugin(AdminLTE)-->
 	<!--begin::OverlayScrollbars Configure-->
 	<script>
@@ -373,5 +399,7 @@
 		integrity="sha512-ZE9pZaUXND66v380QUtch/5sE9tPFh2zg45pR2PB0CVkCtOREv2AJKkSidISWkysEuQ0EH8faUU5du78bx87UQ=="
 		data-cf-beacon='{"version":"2024.11.0","token":"2437d112162f4ec4b63c3ca0eb38fb20","r":1,"server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}'
 		crossorigin="anonymous"></script>
+
+	<th:block layout:fragment="scripts"></th:block>
 </body>
 </html>
