@@ -20,5 +20,7 @@ public class UsuarioRequestDTO {
     private Date fechaCreacion;
     
     private Integer idRol;
+    
+    private boolean esNuevo = true; // Por defecto true al crear
 
 }

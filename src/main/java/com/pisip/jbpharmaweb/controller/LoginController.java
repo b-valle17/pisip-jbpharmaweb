@@ -78,6 +78,14 @@ public class LoginController {
 			if (usuario.getIdRol() == null || usuario.getIdRol() <= 0) {
 				return "redirect:/autenticacion?noRol=true";
 			}
+			
+			// ---------------------------------------------------------------------
+	        // NUEVA VALIDACIÓN: SI ES USUARIO NUEVO, REDIRIGIR A CAMBIO DE CLAVE
+	        // ---------------------------------------------------------------------
+	        if (usuario.isEsNuevo()) {
+	            session.setAttribute("idUsuarioPrimerIngreso", usuario.getIdUsuario());
+	            return "redirect:/autenticacion/primer-cambio-clave";
+	        }
 
 			List<RolResponseDto> listaRoles = servicioAPI.listarRoles();
 			Map<Integer, String> mapaRoles = listaRoles.stream()
@@ -201,5 +209,54 @@ public class LoginController {
 		TOKENS_RESTABLECIMIENTO.remove(token);
 
 		return "redirect:/autenticacion?resetSuccess=true";
+	}
+	
+	// Cargar la vista HTML del primer cambio de contraseña
+	@GetMapping("/primer-cambio-clave")
+	public String mostrarPrimerCambioClave(HttpSession session, Model model) {
+	    // Si no pasó por el login previo, lo rebotamos al login
+	    if (session.getAttribute("idUsuarioPrimerIngreso") == null) {
+	        return "redirect:/autenticacion";
+	    }
+	    return "autenticacion/primer_cambio"; // Nombre de tu plantilla HTML (ej. primer_cambio.html)
+	}
+
+	// Procesar el cambio de contraseña y cambiar esNuevo a false
+	@PostMapping("/guardar-primer-cambio")
+	public String guardarPrimerCambioClave(@RequestParam("nuevaContrasena") String nuevaContrasena,
+	                                       HttpSession session) {
+
+	    Integer idUsuario = (Integer) session.getAttribute("idUsuarioPrimerIngreso");
+
+	    if (idUsuario == null) {
+	        return "redirect:/autenticacion";
+	    }
+
+	    Optional<UsuarioResponseDTO> opt = servicioAPI.obtenerUsuarioPorId(idUsuario);
+	    if (opt.isPresent()) {
+	        UsuarioResponseDTO actual = opt.get();
+
+	        // Mapeamos al DTO de actualización
+	        com.pisip.jbpharmaweb.model.dto.request.UsuarioRequestDTO req = new com.pisip.jbpharmaweb.model.dto.request.UsuarioRequestDTO();
+	        req.setIdUsuario(actual.getIdUsuario());
+	        req.setNombre(actual.getNombre());
+	        req.setCorreo(actual.getCorreo());
+	        req.setEstadoUsuario(actual.isEstadoUsuario());
+	        req.setIdRol(actual.getIdRol());
+	        req.setContrasenaHash(nuevaContrasena);
+	        
+	        // ---------------------------------------------------------------------
+	        // CAMBIAMOS LA BANDERA A FALSE
+	        // ---------------------------------------------------------------------
+	        req.setEsNuevo(false); 
+
+	        servicioAPI.actualizarUsuario(idUsuario, req);
+	    }
+
+	    // Limpiamos la variable temporal de la sesión
+	    session.removeAttribute("idUsuarioPrimerIngreso");
+
+	    // Redirigimos al login con mensaje de éxito
+	    return "redirect:/autenticacion?resetSuccess=true";
 	}
 }

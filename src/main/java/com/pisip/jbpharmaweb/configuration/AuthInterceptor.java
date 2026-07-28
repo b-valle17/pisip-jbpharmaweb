@@ -11,6 +11,13 @@ public class AuthInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+    	// ----------------------------------------------------------------------
+        // 1. INSTRUCCIÓN PARA BORRAR / DESHABILITAR CACHÉ DEL NAVEGADOR
+        // ----------------------------------------------------------------------
+        response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate"); // HTTP 1.1
+        response.setHeader("Pragma", "no-cache"); // HTTP 1.0
+        response.setDateHeader("Expires", 0); // Proxies
+        // ----------------------------------------------------------------------
         HttpSession session = request.getSession(false);
 
         // Verificar si la sesión existe y si hay un usuario logueado

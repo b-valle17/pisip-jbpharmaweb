@@ -16,4 +16,5 @@ public class UsuarioResponseDTO {
     private boolean estadoUsuario;
     private Date fechaCreacion;
     private Integer idRol;
+    private boolean esNuevo = true; // Por defecto true al crear
 }
