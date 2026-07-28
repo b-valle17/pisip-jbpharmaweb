@@ -15,15 +15,6 @@
 						<div class="col-sm-6">
 							<h1 class="mb-0 fs-3">Crear Producto</h1>
 						</div>
-						<div class="col-sm-6">
-							<nav aria-label="breadcrumb">
-								<ol class="breadcrumb float-sm-end">
-									<li class="breadcrumb-item"><a href="#">Home</a></li>
-									<li class="breadcrumb-item"><a href="#">Forms</a></li>
-									<li class="breadcrumb-item active" aria-current="page">Elements</li>
-								</ol>
-							</nav>
-						</div>
 					</div>
 				</div>
 			</div>
@@ -44,14 +35,18 @@
 										<div class="mb-3">
 											<label for="exampleInputEmail1" class="form-label">Nombre
 												producto</label> <input type="text" class="form-control"
-												id="exampleInputEmail1" aria-describedby="nombreHelp" th:field="*{nombreProducto}"/>
+												id="nombreProducto" th:field="*{nombreProducto}"
+												pattern="[A-Za-zÁÉÍÓÚáéíóúÑñ ]+"
+												title="Solo se permiten letras y espacios" minlength="3"
+												maxlength="100" required />
 											<div id="nombreHelp" class="form-text">En este campo
 												debe escribir el nombre del producto</div>
 										</div>
 										<div class="mb-3">
 											<label for="exampleInputEmail1" class="form-label">Descripcion
 												del producto</label> <input type="text" class="form-control"
-												id="exampleInputEmail1" aria-describedby="limiteminimoHelp" th:field="*{descripcion}"/>
+												id="exampleInputEmail1" aria-describedby="limiteminimoHelp"
+												th:field="*{descripcion}" />
 											<div id="limiteminimoHelp" class="form-text">En este
 												campo debe escribir la descripcion del producto</div>
 										</div>
@@ -99,6 +94,9 @@
 	<!--end::Required Plugin(AdminLTE)-->
 	<!--begin::OverlayScrollbars Configure-->
 	<script>
+	document.getElementById("nombreProducto").addEventListener("input", function () {
+	    this.value = this.value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ\s]/g, "");
+	});
       const SELECTOR_SIDEBAR_WRAPPER = '.sidebar-wrapper';
       const Default = {
         scrollbarTheme: 'os-theme-light',
