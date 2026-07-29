@@ -1,10 +1,10 @@
-
 <!doctype html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org"
 	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-	layout:decorate="/plantilla/plantillaui">
+	layout:decorate="~{plantilla/plantillaui}">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Editar Dictamen Lote</title>
 </head>
 <body class="layout-fixed sidebar-expand-lg bg-body-tertiary">
 	<div class="app-wrapper">
@@ -19,7 +19,8 @@
 							<nav aria-label="breadcrumb">
 								<ol class="breadcrumb float-sm-end">
 									<li class="breadcrumb-item"><a href="/index">Inicio</a></li>
-									<li class="breadcrumb-item"><a href="/dictamenLote">Dictamen Lote</a></li>
+									<li class="breadcrumb-item"><a href="/dictamenLote">Dictamen
+											Lote</a></li>
 									<li class="breadcrumb-item active" aria-current="page">Editar</li>
 								</ol>
 							</nav>
@@ -27,28 +28,95 @@
 					</div>
 				</div>
 			</div>
+
 			<div class="app-content">
 				<div class="container-fluid">
-					<div class="row g-4">
-						<div class="col-12">
-							<div class="callout callout-warning">Edición pendiente de conectar (igual que Producto).</div>
+					<div class="card card-warning card-outline mb-4">
+						<div class="card-header">
+							<h3 class="card-title">Formulario de Edición</h3>
 						</div>
+
+						<!-- Formulario conectado a /dictamenLote/actualizar -->
+						<form th:action="@{/dictamenLote/actualizar}"
+							th:object="${dictamenLote}" method="post">
+							<div class="card-body">
+
+								<!-- Campo oculto con el ID del Dictamen para saber cuál actualizar -->
+								<input type="hidden" th:field="*{idDictamen}" />
+
+								<!-- Select Orden de Producción -->
+								<div class="mb-3">
+									<label for="idOrdenProduccion" class="form-label">Orden
+										de Producción</label> <select class="form-select"
+										id="idOrdenProduccion" th:field="*{idOrdenProduccion}"
+										required>
+										<option value="" disabled>-- Seleccione una Orden --</option>
+										<option th:each="orden : ${ordenesProduccion}"
+											th:value="${orden.idOrden}"
+											th:text="${'Orden #' + orden.idOrden + ' - Lote: ' + orden.numeroLote}">
+										</option>
+									</select>
+								</div>
+
+								<!-- Select Inspector -->
+								<div class="mb-3">
+									<label for="idUsuarioInspector" class="form-label">Usuario
+										Inspector</label> <select class="form-select" id="idUsuarioInspector"
+										th:field="*{idUsuarioInspector}" required>
+										<option value="" disabled>-- Seleccione un Inspector
+											--</option>
+										<option th:each="usuario : ${usuariosInspectores}"
+											th:value="${usuario.idUsuario}" th:text="${usuario.nombre}">
+										</option>
+									</select>
+								</div>
+
+								<!-- Fecha Dictamen -->
+								<div class="mb-3">
+									<label for="fechaDictamen" class="form-label">Fecha
+										Dictamen</label> <input type="date" class="form-control"
+										id="fechaDictamen" th:field="*{fechaDictamen}" required />
+								</div>
+
+								<!-- Estado -->
+								<div class="mb-3">
+									<label for="estado" class="form-label">Estado</label> <select
+										class="form-select" id="estado" th:field="*{estado}" required>
+										<option value="PENDIENTE">PENDIENTE</option>
+										<option value="APROBADO">APROBADO</option>
+										<option value="RECHAZADO">RECHAZADO</option>
+									</select>
+								</div>
+
+								<!-- Observaciones -->
+								<div class="mb-3">
+									<label for="observaciones" class="form-label">Observaciones</label>
+									<textarea class="form-control" id="observaciones"
+										th:field="*{observaciones}" rows="3"></textarea>
+								</div>
+
+							</div>
+
+							<div class="card-footer">
+								<button type="submit" class="btn btn-warning">
+									<i class="bi bi-pencil-square"></i> Actualizar
+								</button>
+								<a href="/dictamenLote" class="btn btn-secondary">Cancelar</a>
+							</div>
+						</form>
 					</div>
 				</div>
 			</div>
-	<!--begin::Footer-->
-	<footer class="app-footer">
-		<!--begin::To the end-->
-		<div class="float-end d-none d-sm-inline">Anything you want</div>
-		<!--end::To the end-->
-		<!--begin::Copyright-->
-		<strong> Copyright &copy; 2014-2026&nbsp; <a
-			href="https://adminlte.io" class="text-decoration-none">AdminLTE.io</a>.
-		</strong> All rights reserved.
-		<!--end::Copyright-->
-	</footer>
-	<!--end::Footer-->
+
+			<footer class="app-footer">
+				<div class="float-end d-none d-sm-inline">Anything you want</div>
+				<strong> Copyright &copy; 2014-2026&nbsp; <a
+					href="https://adminlte.io" class="text-decoration-none">AdminLTE.io</a>.
+				</strong> All rights reserved.
+			</footer>
+		</div>
 	</div>
+
 	<script
 		src="https://cdn.jsdelivr.net/npm/overlayscrollbars@2.11.0/browser/overlayscrollbars.browser.es6.min.js"
 		crossorigin="anonymous"></script>
@@ -59,30 +127,5 @@
 		src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.min.js"
 		crossorigin="anonymous"></script>
 	<script src="../js/adminlte.js"></script>
-	<script>
-      const SELECTOR_SIDEBAR_WRAPPER = '.sidebar-wrapper';
-      const Default = {
-        scrollbarTheme: 'os-theme-light',
-        scrollbarAutoHide: 'leave',
-        scrollbarClickScroll: true,
-      };
-      document.addEventListener('DOMContentLoaded', function () {
-        const sidebarWrapper = document.querySelector(SELECTOR_SIDEBAR_WRAPPER);
-        const isMobile = window.innerWidth <= 992;
-        if (
-          sidebarWrapper &&
-          OverlayScrollbarsGlobal?.OverlayScrollbars !== undefined &&
-          !isMobile
-        ) {
-          OverlayScrollbarsGlobal.OverlayScrollbars(sidebarWrapper, {
-            scrollbars: {
-              theme: Default.scrollbarTheme,
-              autoHide: Default.scrollbarAutoHide,
-              clickScroll: Default.scrollbarClickScroll,
-            },
-          });
-        }
-      });
-    </script>
 </body>
 </html>

@@ -107,7 +107,7 @@
 			</div>
 
 			<!-- Modal para capturar el motivo del rechazo -->
-			<div class="modal fade" id="modalRechazo" tabindex="-1" aria-hidden="true">
+			<div class="modal fade" id="modalRechazo" tabindex="-1" aria-hidden="true" th:if="${session.rolUsuario != 'GERENTE'}">
 				<div class="modal-dialog">
 					<form th:action="@{/dictamenLote/{id}/rechazar(id=${dictamen.idDictamen})}" method="post">
 						<div class="modal-content">

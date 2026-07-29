@@ -67,7 +67,7 @@
 <script data-cfasync="false"
 	nonce="e65ecad8-741a-445e-bd6e-d602685797a2">try{(function(w,d){!function(cm,cn,co,cp){if(cm.zaraz)console.error("zaraz is loaded twice");else{cm[co]=cm[co]||{};cm[co].executed=[];cm.zaraz={deferred:[],listeners:[]};cm.zaraz._v="20";cm.zaraz._n="e65ecad8-741a-445e-bd6e-d602685797a2";cm.zaraz.q=[];cm.zaraz._f=function(cq){return async function(){var cr=Array.prototype.slice.call(arguments);cm.zaraz.q.push({m:cq,a:cr})}};for(const cs of["track","set","debug"])cm.zaraz[cs]=cm.zaraz._f(cs);cm.zaraz.init=()=>{var ct=cn.getElementsByTagName(cp)[0],cu=cn.createElement(cp),cv=cn.getElementsByTagName("title")[0];cv&&(cm[co].t=cn.getElementsByTagName("title")[0].text);cm[co].x=Math.random();cm[co].w=cm.screen.width;cm[co].h=cm.screen.height;cm[co].j=cm.innerHeight;cm[co].e=cm.innerWidth;cm[co].l=cm.location.href;cm[co].r=cn.referrer;cm[co].k=cm.screen.colorDepth;cm[co].n=cn.characterSet;cm[co].o=(new Date).getTimezoneOffset();if(cm.dataLayer)for(const cw of Object.entries(Object.entries(dataLayer).reduce((cx,cy)=>({...cx[1],...cy[1]}),{})))zaraz.set(cw[0],cw[1],{scope:"page"});cm[co].q=[];for(;cm.zaraz.q.length;){const cz=cm.zaraz.q.shift();cm[co].q.push(cz)}cu.defer=!0;for(const cA of[localStorage,sessionStorage])Object.keys(cA||{}).filter(cC=>cC.startsWith("_zaraz_")).forEach(cB=>{try{cm[co]["z_"+cB.slice(7)]=JSON.parse(cA.getItem(cB))}catch{cm[co]["z_"+cB.slice(7)]=cA.getItem(cB)}});cu.referrerPolicy="origin";cu.src="/cdn-cgi/zaraz/s.js?z="+btoa(encodeURIComponent(JSON.stringify(cm[co])));ct.parentNode.insertBefore(cu,ct)};["complete","interactive"].includes(cn.readyState)?zaraz.init():cm.addEventListener("DOMContentLoaded",zaraz.init)}}(w,d,"zarazData","script");window.zaraz._p=async k=>new Promise(l=>{if(k){k.e&&k.e.forEach(m=>{try{const n=d.querySelector("script[nonce]"),o=n?.nonce||n?.getAttribute("nonce"),p=d.createElement("script");o&&(p.nonce=o);p.innerHTML=m;p.onload=()=>{d.head.removeChild(p)};d.head.appendChild(p)}catch(q){console.error(`Error executing script: ${m}\n`,q)}});Promise.allSettled((k.f||[]).map(r=>fetch(r[0],r[1])))}l()});zaraz._p({"e":["(function(w,d){})(window,document)"]});})(window,document)}catch(e){throw fetch("/cdn-cgi/zaraz/t"),e;};</script>
 
-	<th:block layout:fragment="css"></th:block>
+<th:block layout:fragment="css"></th:block>
 </head>
 <body class="layout-fixed sidebar-expand-lg bg-body-tertiary">
 	<div class="app-wrapper">
@@ -86,7 +86,7 @@
 
 				<!--begin::End Navbar Links-->
 				<ul class="navbar-nav ms-auto">
-					
+
 					<!--end::Messages Dropdown Menu-->
 
 					<!--begin::Notifications Dropdown Menu-->
@@ -176,9 +176,7 @@
 			data-bs-theme="dark">
 			<div class="sidebar-brand">
 				<a th:href="@{/}" class="brand-link"> <img
-
 					th:src="@{/assets/img/logo.png}" alt="Logo"
-
 					class="brand-image opacity-75 shadow" /> <span
 					class="brand-text fw-light">JBpharma</span>
 				</a>
@@ -225,11 +223,6 @@
 								class="nav-link"> <i class="nav-icon bi bi-graph-up-arrow"></i>
 									<p>Indicadores KPI</p>
 							</a></li>
-							<li class="nav-item"><a th:href="@{/informeAuditoria}"
-								class="nav-link"> <i
-									class="nav-icon bi bi-file-earmark-bar-graph-fill"></i>
-									<p>Informe Auditoría</p>
-							</a></li>
 							<li class="nav-item"><a th:href="@{/historialLote}"
 								class="nav-link"> <i class="nav-icon bi bi-clock-history"></i>
 									<p>Historial Lote</p>
@@ -239,11 +232,11 @@
 								class="nav-link"> <i class="nav-icon bi bi-stoplights-fill"></i>
 									<p>Parámetros de Validación</p>
 
-							<li class="nav-item"><a th:href="@{/producto}"
-								class="nav-link"> <i class="nav-icon bi bi-capsule"></i>
-									<p>Producto</p>
+									<li class="nav-item"><a th:href="@{/producto}"
+										class="nav-link"> <i class="nav-icon bi bi-capsule"></i>
+											<p>Producto</p>
 
-							</a></li>
+									</a></li>
 						</th:block>
 
 						<!-- ========================================================= -->
@@ -257,11 +250,6 @@
 							<li class="nav-item"><a th:href="@{/indicadorKpi}"
 								class="nav-link"> <i class="nav-icon bi bi-graph-up-arrow"></i>
 									<p>Indicadores KPI</p>
-							</a></li>
-							<li class="nav-item"><a th:href="@{/informeAuditoria}"
-								class="nav-link"> <i
-									class="nav-icon bi bi-file-earmark-bar-graph-fill"></i>
-									<p>Informe Auditoría</p>
 							</a></li>
 							<li class="nav-item"><a th:href="@{/dictamenLote}"
 								class="nav-link"> <i class="nav-icon bi bi-patch-check-fill"></i>
@@ -328,8 +316,8 @@
 			<!--begin::To the end-->
 			<!--end::To the end-->
 			<!--begin::Copyright-->
-			<strong> Copyright &copy; 2026&nbsp; <a
-				href="" class="text-decoration-none">JBpharma</a>.
+			<strong> Copyright &copy; 2026&nbsp; <a href=""
+				class="text-decoration-none">JBpharma</a>.
 			</strong> All rights reserved.
 			<!--end::Copyright-->
 		</footer>

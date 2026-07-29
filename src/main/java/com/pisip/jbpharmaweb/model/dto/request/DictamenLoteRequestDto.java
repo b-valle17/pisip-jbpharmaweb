@@ -7,9 +7,9 @@ import lombok.Data;
 @Data
 public class DictamenLoteRequestDto {
 
-	private int idOrdenProduccion;
+	private Integer idOrdenProduccion;
 
-	private int idUsuarioInspector;
+	private Integer idUsuarioInspector;
 
 	private Date fechaDictamen;
 
