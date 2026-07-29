@@ -26,135 +26,123 @@
 .page-help {
 	font-size: .92rem;
 }
+
+.card-custom-warning {
+	border-top: 3px solid #8b0000;
+}
 </style>
 </head>
 <body>
+	<h3 layout:fragment="titulo">Editar Órden de Fabricación</h3>
+
+	<ol layout:fragment="breadcrumb" class="breadcrumb float-sm-end">
+		<li class="breadcrumb-item"><a th:href="@{/ordenproduccion}">Inicio</a></li>
+		<li class="breadcrumb-item"><a th:href="@{/ordenproduccion}">OrdenDeFabricacion</a></li>
+		<li class="breadcrumb-item active">EditarOrden</li>
+	</ol>
 
 	<div layout:fragment="contenidopaginas">
-		<div class="app-content-header">
-			<div class="container-fluid">
-				<div class="row">
-					<div class="col-sm-6">
-						<h1 class="mb-0 fs-3">Editar Órden de Fabricación</h1>
+		<div class="row">
+			<div class="col-lg-8">
+				<div class="card content-card card-custom-warning">
+					<div class="card-header">
+						<h5 class="card-title mb-0">
+							Modificar Órden #<span th:text="${orden.idOrden}"></span>
+						</h5>
 					</div>
-					<div class="col-sm-6">
-						<ol class="breadcrumb float-sm-end">
-							<li class="breadcrumb-item"><a href="./index.html">Inicio</a></li>
-							<li class="breadcrumb-item"><a th:href="@{/ordenproduccion}">OrdenDeFabricacion</a></li>
-							<li class="breadcrumb-item active">EditarOrden</li>
-						</ol>
-					</div>
-				</div>
-			</div>
-		</div>
 
-		<div class="app-content">
-			<div class="container-fluid">
-				<div class="row">
-					<div class="col-lg-8">
-						<div class="card card-warning card-outline">
-							<div class="card-header">
-								<h3 class="card-title">Modificar Órden #<span th:text="${orden.idOrden}"></span></h3>
+					<form th:action="@{/ordenproduccion/actualizar}"
+						th:object="${orden}" method="post">
+
+						<input type="hidden" th:field="*{idOrden}" />
+						<input type="hidden" th:field="*{numeroLote}" />
+						<input type="hidden" th:field="*{idUsuario}" />
+						<input type="hidden" th:field="*{fechaInicio}" />
+						<input type="hidden" th:field="*{fechaFin}" />
+
+						<div class="card-body">
+							<div class="row g-3">
+
+								<!-- Número de Lote-->
+								<div class="col-md-6">
+									<label class="form-label fw-bold">Número de Lote</label> 
+									<input type="text" class="form-control"
+										th:value="${orden.numeroLote}" disabled />
+								</div>
+
+								<!-- Plan Asociado -->
+								<div class="col-md-6">
+									<label class="form-label fw-bold">Plan Asociado</label> 
+									<select class="form-select" th:field="*{idPlan}" required>
+										<option value="">Seleccione un Plan</option>
+										<option th:each="indice : ${listaplan}"
+											th:value="${indice.idPlan}" th:text="${indice.codigoPlan}"
+											th:selected="${indice.idPlan == orden.idPlan}"></option>
+									</select>
+								</div>
+
+								<!-- Producto -->
+								<div class="col-md-6">
+									<label class="form-label fw-bold">Producto</label> 
+									<select class="form-select" th:field="*{idProducto}" required>
+										<option value="">Seleccione un Producto</option>
+										<option th:each="indice : ${listaproductos}"
+											th:value="${indice.idProducto}"
+											th:text="${indice.nombreProducto}"
+											th:selected="${indice.idProducto == orden.idProducto}"></option>
+									</select>
+								</div>
+
+								<!-- Usuario Responsable -->
+								<div class="col-md-6">
+									<label class="form-label fw-bold">Usuario Responsable</label> 
+									<select class="form-select" disabled>
+										<option th:each="indice : ${listausuarios}"
+											th:value="${indice.idUsuario}" th:text="${indice.nombre}"
+											th:selected="${indice.idUsuario == orden.idUsuario}"></option>
+									</select>
+								</div>
+
+								<!-- Tamaño de Lote (KG) -->
+								<div class="col-md-6">
+									<label class="form-label fw-bold">Tamaño de Lote (KG)</label> 
+									<input type="number" step="0.001" class="form-control"
+										id="cantidadLote" min="1" placeholder="3" required
+										th:field="*{cantidadLote}">
+								</div>
+
+								<!-- Fecha Inicio  -->
+								<div class="col-md-6">
+									<label class="form-label fw-bold">Fecha Inicio</label> 
+									<input type="datetime-local" class="form-control"
+										th:value="${orden.fechaInicio != null ? #temporals.format(orden.fechaInicio, 'yyyy-MM-dd') + 'T' + #temporals.format(orden.fechaInicio, 'HH:mm') : ''}"
+										disabled />
+								</div>
+		
+								<!-- Estado de la Orden -->
+								<div class="col-md-6">
+									<label class="form-label fw-bold">Estado de la Orden</label> 
+									<select class="form-select" th:field="*{estado}" required>
+										<option value="EN PROCESO">EN PROCESO</option>
+										<option value="CONTROL DE CALIDAD">CONTROL DE CALIDAD</option>
+										<option value="COMPLETADO">COMPLETADO</option>
+										<option value="CANCELADO">CANCELADO</option>
+									</select>
+								</div>
+
 							</div>
-							
-							<!-- Formulario de Actualización -->
-							<form th:action="@{/ordenproduccion/actualizar}"
-								th:object="${orden}" method="post">
-								
-								<!-- Campo Oculto ID Órden -->
-								<input type="hidden" th:field="*{idOrden}" />
-
-								<div class="card-body">
-									<div class="row g-3">
-										
-										<!-- Número de Lote -->
-										<div class="col-md-6">
-											<label class="form-label">Número de Lote</label> 
-											<input type="text" class="form-control" id="numeroLote"
-												placeholder="Ej: LOT-121" required th:field="*{numeroLote}">
-										</div>
-
-										<!-- Plan Asociado -->
-										<div class="col-md-6">
-											<label class="form-label">Plan Asociado</label> 
-											<select class="form-select" th:field="*{idPlan}" required>
-												<option value="">Seleccione un Plan</option>
-												<option th:each="indice : ${listaplan}"
-													th:value="${indice.idPlan}" 
-													th:text="${indice.codigoPlan}"
-													th:selected="${indice.idPlan == orden.idPlan}"></option>
-											</select>
-										</div>
-
-										<!-- Producto -->
-										<div class="col-md-6">
-											<label class="form-label">Producto</label> 
-											<select class="form-select" th:field="*{idProducto}" required>
-												<option value="">Seleccione un Producto</option>
-												<option th:each="indice : ${listaproductos}"
-													th:value="${indice.idProducto}" 
-													th:text="${indice.nombreProducto}"
-													th:selected="${indice.idProducto == orden.idProducto}"></option>
-											</select>
-										</div>
-
-										<!-- Usuario Responsable -->
-										<div class="col-md-6">
-											<label class="form-label">Usuario Responsable</label> 
-											<select class="form-select" th:field="*{idUsuario}" required>
-												<option value="">Seleccione un Usuario</option>
-												<option th:each="indice : ${listausuarios}"
-													th:value="${indice.idUsuario}" 
-													th:text="${indice.nombre}"
-													th:selected="${indice.idUsuario == orden.idUsuario}"></option>
-											</select>
-										</div>
-
-										<!-- Tamaño de Lote (KG) -->
-										<div class="col-md-6">
-											<label class="form-label">Tamaño de Lote (KG)</label> 
-											<input type="number" step="0.001" class="form-control" id="cantidadLote" min="1"
-												placeholder="3" required th:field="*{cantidadLote}">
-										</div>
-
-										<!-- Fecha Inicio -->
-										<div class="col-md-6">
-											<label class="form-label">Fecha Inicio</label> 
-											<input type="date" class="form-control" id="fechaInicio" required
-												th:field="*{fechaInicio}">
-										</div>
-
-										<!-- Fecha Fin -->
-										<div class="col-md-6">
-											<label class="form-label">Fecha Fin</label> 
-											<input type="date" class="form-control" id="fechaFin" required
-												th:field="*{fechaFin}">
-										</div>
-
-										<!-- Estado de la Orden -->
-										<div class="col-md-6">
-											<label class="form-label">Estado de la Orden</label> 
-											<select class="form-select" th:field="*{estado}" required>
-												<option value="">Seleccione</option>
-												<option value="EN PROCESO">EN PROCESO</option>
-												<option value="PLANIFICADO">PLANIFICADO</option>
-												<option value="BORRADOR">BORRADOR</option>
-												<option value="CANCELADO">CANCELADO</option>
-											</select>
-										</div>
-
-									</div>
-								</div>
-
-								<div class="card-footer d-flex gap-2">
-									<button class="btn btn-warning" type="submit">
-										<i class="bi bi-arrow-repeat me-1"></i>Guardar cambios
-									</button>
-									<a class="btn btn-outline-secondary" th:href="@{/ordenproduccion}">Cancelar</a>
-								</div>
-							</form>
 						</div>
-					</div>
+
+						<div class="card-footer d-flex justify-content-end gap-2">
+							<a class="btn btn-outline-secondary"
+								th:href="@{/ordenproduccion}"> 
+								<i class="bi bi-x-circle me-1"></i>Cancelar
+							</a>
+							<button class="btn btn-warning" type="submit">
+								<i class="bi bi-arrow-repeat me-1"></i>Guardar cambios
+							</button>
+						</div>
+					</form>
 				</div>
 			</div>
 		</div>

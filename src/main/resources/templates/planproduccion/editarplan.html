@@ -4,112 +4,181 @@
 	layout:decorate="~{plantilla/plantillaui}">
 <head>
 <title>Editar Plan de Producción | JB Pharma</title>
+
+<style>
+.metric-card .icon {
+	font-size: 2rem;
+	opacity: .75;
+}
+
+.table-actions .btn {
+	margin-right: .25rem;
+}
+
+.status-dot {
+	width: .65rem;
+	height: .65rem;
+	display: inline-block;
+	border-radius: 50%;
+	margin-right: .35rem;
+}
+
+.page-help {
+	font-size: .92rem;
+}
+
+.card-custom-red {
+	border-top: 3px solid #8b0000;
+}
+</style>
 </head>
 <body>
+	<h3 layout:fragment="titulo">Editar Plan de Producción</h3>
+
+	<ol layout:fragment="breadcrumb" class="breadcrumb float-sm-end">
+		<li class="breadcrumb-item"><a th:href="@{/planproduccion}">Inicio</a></li>
+		<li class="breadcrumb-item"><a th:href="@{/planproduccion}">PlanDeProduccion</a></li>
+		<li class="breadcrumb-item active">Editar</li>
+	</ol>
 
 	<div layout:fragment="contenidopaginas">
-		<div class="app-content-header">
-			<div class="container-fluid">
-				<h1 class="mb-0 fs-3">Editar Plan de Producción</h1>
-			</div>
-		</div>
+		<form th:action="@{/planproduccion/actualizar}" th:object="${plan}" method="post">
+			<!-- ID oculto del Plan -->
+			<input type="hidden" th:field="*{idPlan}" />
 
-		<div class="app-content">
-			<div class="container-fluid">
-				<div class="row">
-					<div class="col-lg-8">
-						<div class="card card-warning card-outline">
-							<div class="card-header">
-								<h3 class="card-title">
-									Modificar Plan #<span th:text="${plan.codigoPlan}"></span>
-								</h3>
-							</div>
+			<div class="card content-card card-custom-red">
+				<div class="card-header">
+					<h5 class="card-title mb-0">
+						Modificar Plan #<span th:text="${plan.codigoPlan}"></span>
+					</h5>
+				</div>
+				<div class="card-body">
+					<div class="row g-3">
 
-							<!-- Formulario apuntando a actualizar/{id} -->
-							<form th:action="@{/planproduccion/actualizar}"
-								th:object="${plan}" method="post">
-								<input type="hidden" th:field="*{idPlan}" />
+						<!-- Código del Plan (Actualizado dinámicamente) -->
+						<div class="col-md-6">
+							<label class="form-label">Código del Plan</label>
+							<input type="text" class="form-control" id="codigoPlanDisplay" disabled>
+							<input type="hidden" id="codigoPlan" th:field="*{codigoPlan}">
+						</div>
 
-								<!-- Campo Oculto con el ID del Plan -->
-								<input type="hidden" th:field="*{idPlan}" />
+						<!-- Usuario Responsable (Bloqueado / No editable) -->
+						<div class="col-md-6">
+							<label class="form-label">Usuario Responsable</label>
+							<select class="form-select" disabled>
+								<option th:each="indice : ${listausuarios}"
+									th:value="${indice.idUsuario}" th:text="${indice.nombre}"
+									th:selected="${indice.idUsuario == plan.idUsuario}"></option>
+							</select>
+							<input type="hidden" th:field="*{idUsuario}">
+						</div>
 
-								<div class="card-body">
-									<div class="row g-3">
+						<!-- Mes -->
+						<div class="col-md-6">
+							<label class="form-label">Mes</label>
+							<input type="number" class="form-control" id="mes" min="1" max="12"
+								required th:field="*{mes}">
+						</div>
 
-										<!-- Código del Plan -->
-										<div class="col-md-6">
-											<label class="form-label">Código del Plan</label> <input
-												type="text" class="form-control" required
-												th:field="*{codigoPlan}">
-										</div>
+						<!-- Año -->
+						<div class="col-md-6">
+							<label class="form-label">Año</label>
+							<input type="number" class="form-control" id="anio" min="2025" max="2027"
+								required th:field="*{anio}">
+						</div>
 
-										<!-- Usuario Responsable -->
-										<div class="col-md-6">
-											<label class="form-label">Usuario Responsable</label> <select
-												class="form-select" th:field="*{idUsuario}" required>
-												<option value="">Seleccione un Usuario</option>
-												<option th:each="indice : ${listausuarios}"
-													th:value="${indice.idUsuario}" th:text="${indice.nombre}"
-													th:selected="${indice.idUsuario == plan.idUsuario}"></option>
-											</select>
-										</div>
+						<!-- Cantidad de Lotes Estimada -->
+						<div class="col-md-6">
+							<label class="form-label">Cantidad de Lotes Estimada</label>
+							<input type="number" class="form-control" id="cantidadLotesEstimada" min="1"
+								placeholder="Ej: 10" required th:field="*{cantidadLotesEstimada}">
+						</div>
 
-										<!-- Año -->
-										<div class="col-md-6">
-											<label class="form-label">Año</label> <input type="number"
-												class="form-control" required th:field="*{anio}">
-										</div>
+						<!-- Fecha de Emisión (Actualizada automáticamente a la fecha/hora actual) -->
+						<div class="col-md-6">
+							<label class="form-label">Fecha de Emisión</label>
+							<input type="datetime-local" class="form-control" id="fechaEmisionDisplay" disabled>
+							<input type="hidden" id="fechaEmision" th:field="*{fechaEmision}">
+						</div>
 
-										<!-- Mes -->
-										<div class="col-md-6">
-											<label class="form-label">Mes</label> <input type="number"
-												min="1" max="12" class="form-control" required
-												th:field="*{mes}">
-										</div>
+						<!-- Estado de la Orden (Modificable: EN PROCESO, COMPLETADO, CANCELADO) -->
+						<div class="col-md-6">
+							<label class="form-label">Estado de la Orden</label>
+							<select class="form-select" th:field="*{estado}" required>
+								<option value="EN PROCESO">EN PROCESO</option>
+								<option value="COMPLETADO">COMPLETADO</option>
+								<option value="CANCELADO">CANCELADO</option>
+							</select>
+						</div>
 
-										<!-- Fecha Emisión -->
-										<div class="col-md-6">
-											<label class="form-label">Fecha Emisión</label> <input
-												type="date" class="form-control" required
-												th:field="*{fechaEmision}">
-										</div>
-
-										<!-- Estado -->
-										<div class="col-md-6">
-											<label class="form-label">Estado</label> <select
-												class="form-select" th:field="*{estado}" required>
-												<option value="BORRADOR">BORRADOR</option>
-												<option value="PLANIFICADO">PLANIFICADO</option>
-												<option value="EN PROCESO">EN PROCESO</option>
-												<option value="COMPLETADO">COMPLETADO</option>
-												<option value="CANCELADO">CANCELADO</option>
-											</select>
-										</div>
-
-										<!-- Descripción -->
-										<div class="col-12">
-											<label class="form-label">Descripción</label>
-											<textarea class="form-control" rows="3"
-												th:field="*{descripcion}"></textarea>
-										</div>
-
-									</div>
-								</div>
-
-								<div class="card-footer d-flex gap-2">
-									<button class="btn btn-warning" type="submit">
-										<i class="bi bi-arrow-repeat me-1"></i>Guardar Cambios
-									</button>
-									<a class="btn btn-outline-secondary"
-										th:href="@{/planproduccion}">Cancelar</a>
-								</div>
-							</form>
+						<!-- Descripción Operativa -->
+						<div class="col-12">
+							<label class="form-label">Descripción Operativa</label>
+							<textarea class="form-control" id="descripcion" rows="3"
+								th:field="*{descripcion}"></textarea>
 						</div>
 					</div>
 				</div>
+
+				<div class="card-footer d-flex justify-content-end gap-2">
+					<a class="btn btn-outline-secondary" th:href="@{/planproduccion}">
+						<i class="bi bi-x-circle me-1"></i>Cancelar
+					</a>
+					<button class="btn btn-warning" type="submit">
+						<i class="bi bi-arrow-repeat me-1"></i>Guardar Cambios
+					</button>
+				</div>
 			</div>
-		</div>
+		</form>
 	</div>
 
+	<!-- Scripts para actualización de Fecha actual y Código dinámico -->
+	<th:block layout:fragment="scripts">
+		<script>
+			document.addEventListener("DOMContentLoaded", function () {
+				// 1. Asignar Fecha y Hora Actual al editar
+				const fechaDisplay = document.getElementById("fechaEmisionDisplay");
+				const fechaHidden = document.getElementById("fechaEmision");
+
+				if (fechaDisplay && fechaHidden) {
+					const ahora = new Date();
+					const desfase = ahora.getTimezoneOffset() * 60000;
+					const fechaIso = new Date(ahora.getTime() - desfase)
+						.toISOString().slice(0, 16);
+
+					fechaDisplay.value = fechaIso;
+					fechaHidden.value = fechaIso;
+				}
+
+				// 2. Generación dinámica del Código del Plan al modificar Año o Mes
+				const inputAnio = document.getElementById("anio");
+				const inputMes = document.getElementById("mes");
+				const codigoDisplay = document.getElementById("codigoPlanDisplay");
+				const codigoHidden = document.getElementById("codigoPlan");
+
+				function actualizarCodigoPlan() {
+					const anioVal = inputAnio.value.trim();
+					const mesVal = inputMes.value.trim();
+
+					if (anioVal && mesVal) {
+						const mesFormateado = String(mesVal).padStart(2, '0');
+						const codigoGenerado = `PLAN-${anioVal}-${mesFormateado}`;
+						
+						codigoDisplay.value = codigoGenerado;
+						codigoHidden.value = codigoGenerado;
+					} else {
+						codigoDisplay.value = "";
+						codigoHidden.value = "";
+					}
+				}
+
+				if (inputAnio && inputMes) {
+					inputAnio.addEventListener("input", actualizarCodigoPlan);
+					inputMes.addEventListener("input", actualizarCodigoPlan);
+					actualizarCodigoPlan();
+				}
+			});
+		</script>
+	</th:block>
 </body>
 </html>

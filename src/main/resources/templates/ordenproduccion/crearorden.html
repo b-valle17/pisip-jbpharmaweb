@@ -1,9 +1,9 @@
 <!doctype html>
 <html xmlns:th="http://www.thymeleaf.org"
 	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-	layout:decorate="/plantilla/plantillaui">
+	layout:decorate="~{plantilla/plantillaui}">
 <head>
-<title>Orden de Producción | JB Pharma</title>
+<title>Registrar Órden de Producción | JB Pharma</title>
 
 <style>
 .metric-card .icon {
@@ -26,123 +26,131 @@
 .page-help {
 	font-size: .92rem;
 }
+
+/* Estilo para el borde superior rojo oscuro */
+.card-custom-red {
+	border-top: 3px solid #8b0000;
+}
 </style>
 </head>
 <body>
+	<h3 layout:fragment="titulo">Nueva Órden de Producción</h3>
+
+	<ol layout:fragment="breadcrumb" class="breadcrumb float-sm-end">
+		<li class="breadcrumb-item"><a th:href="@{/ordenproduccion}">Inicio</a></li>
+		<li class="breadcrumb-item"><a th:href="@{/ordenproduccion}">OrdenDeFabricacion</a></li>
+		<li class="breadcrumb-item active">Nueva</li>
+	</ol>
 
 	<div layout:fragment="contenidopaginas">
-		<div class="app-content-header">
-			<div class="container-fluid">
-				<div class="row">
-					<div class="col-sm-6">
-						<h1 class="mb-0 fs-3">Registrar nueva Órden de Fabricación</h1>
-					</div>
-					<div class="col-sm-6">
-						<ol class="breadcrumb float-sm-end">
-							<li class="breadcrumb-item"><a th:href="@{/ordenproduccion}"
-								href="./listaorden.html">Inicio</a></li>
-							<li class="breadcrumb-item"><a th:href="@{/ordenproduccion}"
-								href="./listarorden.html">OrdenDeFabricacion</a></li>
-							<li class="breadcrumb-item active">RegistrarNuevaOrden</li>
-						</ol>
-					</div>
+		<form th:action="@{/ordenproduccion/guardar}" th:object="${orden}"
+			method="post">
+			<div class="card content-card card-custom-red">
+				<div class="card-header">
+					<h5 class="card-title mb-0">Nueva Órden de Fabricación</h5>
 				</div>
-			</div>
-		</div>
+				<div class="card-body">
+					<div class="row g-3">
 
-		<div class="app-content">
-			<div class="container-fluid">
-				<div class="row">
-					<div class="col-lg-8">
-						<div class="card card-primary card-outline">
-							<div class="card-header">
-								<h3 class="card-title">Nueva Órden</h3>
-							</div>
-							<form th:action="@{/ordenproduccion/guardar}"
-								th:object="${orden}" method="post">
-								<div class="card-body">
-									<div class="row g-3">
-										
-										<div class="col-md-6">
-											<label class="form-label">Número de Lote</label> <input
-												type="text" class="form-control" id="numeroLote"
-												placeholder="Ej: LOT-121" required th:field="*{numeroLote}">
-										</div>
-
-										<div class="col-md-6">
-											<label class="form-label">Plan Asociado</label> <select
-												class="form-select" th:field="*{idPlan}" required>
-												<option value="">Seleccione un Plan</option>
-												<option th:each="indice : ${listaplan}"
-													th:value="${indice.idPlan}" th:text="${indice.codigoPlan}"></option>
-											</select>
-										</div>
-
-										<div class="col-md-6">
-											<label class="form-label">Producto</label> <select
-												class="form-select" th:field="*{idProducto}" required>
-												<option value="">Seleccione un Producto</option>
-												<option th:each="indice : ${listaproductos}"
-													th:value="${indice.idProducto}"
-													th:text="${indice.nombreProducto}"></option>
-											</select>
-										</div>
-
-										<div class="col-md-6">
-											<label class="form-label">Usuario Responsable</label> <select
-												class="form-select" th:field="*{idUsuario}" required>
-												<option value="">Seleccione un Usuario</option>
-												<option th:each="indice : ${listausuarios}"
-													th:value="${indice.idUsuario}" th:text="${indice.nombre}"></option>
-											</select>
-										</div>
-
-										<div class="col-md-6">
-											<label class="form-label">Tamaño de Lote (KG)</label> <input
-												type="number" step="0.001" class="form-control"
-												id="cantidadLote" min="1" placeholder="Ej: 50" required
-												th:field="*{cantidadLote}">
-										</div>
-
-										<div class="col-md-6">
-											<label class="form-label">Fecha Inicio</label> <input
-												type="date" class="form-control" id="fechaInicio" required
-												th:field="*{fechaInicio}">
-										</div>
-
-										<div class="col-md-6">
-											<label class="form-label">Fecha Fin</label> <input
-												type="date" class="form-control" id="fechaFin" required
-												th:field="*{fechaFin}">
-										</div>
-
-										<div class="col-md-6">
-											<label class="form-label">Estado de la Orden</label> <select
-												class="form-select" th:field="*{estado}" required>
-												<option value="">Seleccione</option>
-												<option value="COMPLETADO">COMPLETADO</option>
-												<option value="EN PROCESO">EN PROCESO</option>
-												<option value="PLANIFICADO">PLANIFICADO</option>
-												<option value="CONTROL DE CALIDAD">CONTROL DE CALIDAD</option>
-												<option value="CANCELADO">CANCELADO</option>
-											</select>
-										</div>
-									</div>
-								</div>
-								<div class="card-footer d-flex gap-2">
-									<button class="btn btn-primary" type="submit">
-										<i class="bi bi-save me-1"></i>Guardar y continuar
-									</button>
-									<a class="btn btn-outline-secondary"
-										th:href="@{/ordenproduccion}" href="./listarorden.html">Cancelar</a>
-								</div>
-							</form>
+						<!-- Número de Lote (Generado Automáticamente) -->
+						<div class="col-md-6">
+							<label class="form-label fw-bold">Número de Lote</label> <input
+								type="text" class="form-control" id="numeroLote"
+								th:field="*{numeroLote}" readonly />
 						</div>
+
+						<!-- Plan Asociado -->
+						<div class="col-md-6">
+							<label class="form-label fw-bold">Plan Asociado</label> <select
+								class="form-select" th:field="*{idPlan}" required>
+								<option value="">Seleccione un Plan</option>
+								<option th:each="indice : ${listaplan}"
+									th:value="${indice.idPlan}" th:text="${indice.codigoPlan}"></option>
+							</select>
+						</div>
+
+						<!-- Producto -->
+						<div class="col-md-6">
+							<label class="form-label fw-bold">Producto</label> <select
+								class="form-select" th:field="*{idProducto}" required>
+								<option value="">Seleccione un Producto</option>
+								<option th:each="indice : ${listaproductos}"
+									th:value="${indice.idProducto}"
+									th:text="${indice.nombreProducto}"></option>
+							</select>
+						</div>
+
+						<!-- Usuario Responsable (Automático con el Usuario Logueado) -->
+						<div class="col-md-6">
+							<label class="form-label fw-bold">Usuario Responsable</label>
+							<!-- Input oculto para enviar el ID del usuario al backend -->
+							<input type="hidden" th:field="*{idUsuario}" />
+							<!-- Input visible de solo lectura -->
+							<input type="text" class="form-control"
+								th:value="${nombreUsuarioLogueado != null ? nombreUsuarioLogueado : session.nombreUsuario}"
+								readonly />
+						</div>
+
+						<!-- Tamaño de Lote (KG) -->
+						<div class="col-md-6">
+							<label class="form-label fw-bold">Tamaño de Lote (KG)</label> <input
+								type="number" step="0.001" class="form-control"
+								id="cantidadLote" min="1" placeholder="Ej: 50" required
+								th:field="*{cantidadLote}">
+						</div>
+
+						<!-- Fecha de Inicio (Automática LocalDateTime) -->
+						<div class="col-md-6">
+							<label class="form-label fw-bold">Fecha de Inicio</label> <input
+								type="datetime-local" class="form-control"
+								id="fechaInicioDisplay" disabled> <input type="hidden"
+								id="fechaInicio" th:field="*{fechaInicio}">
+						</div>
+
+						<!-- Estado de la Orden (Bloqueado) -->
+						<div class="col-md-6">
+							<label class="form-label fw-bold">Estado de la Orden</label> <input
+								type="hidden" th:field="*{estado}" /> <input type="text"
+								class="form-control"
+								th:value="${orden != null and orden.estado != null ? orden.estado : 'EN PROCESO'}"
+								readonly />
+						</div>
+
 					</div>
 				</div>
+				<div class="card-footer d-flex justify-content-end gap-2">
+					<a class="btn btn-outline-secondary" th:href="@{/ordenproduccion}">
+						<i class="bi bi-x-circle me-1"></i>Cancelar
+					</a>
+					<button class="btn btn-primary" type="submit">
+						<i class="bi bi-save me-1"></i>Guardar y continuar
+					</button>
+				</div>
 			</div>
-		</div>
+		</form>
 	</div>
 
+	<!-- Script de autogeneración de Fecha y Hora Actual -->
+	<th:block layout:fragment="scripts">
+		<script>
+			document.addEventListener("DOMContentLoaded", function() {
+				const fechaDisplay = document
+						.getElementById("fechaInicioDisplay");
+				const fechaHidden = document.getElementById("fechaInicio");
+
+				if (fechaDisplay && fechaHidden) {
+					const ahora = new Date();
+					const desfase = ahora.getTimezoneOffset() * 60000;
+					const fechaIso = new Date(ahora.getTime() - desfase)
+							.toISOString().slice(0, 16);
+
+					fechaDisplay.value = fechaIso;
+					if (!fechaHidden.value) {
+						fechaHidden.value = fechaIso;
+					}
+				}
+			});
+		</script>
+	</th:block>
 </body>
 </html>

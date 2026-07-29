@@ -1,5 +1,6 @@
 package com.pisip.jbpharmaweb.model.dto.request;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 import org.springframework.format.annotation.DateTimeFormat;
@@ -19,10 +20,12 @@ public class PlanProduccionRequestDto {
 	private Integer mes;
 
 	private Integer anio;
-	@DateTimeFormat(pattern = "yyyy-MM-dd")
-	private Date fechaEmision;
+	@DateTimeFormat(pattern = "yyyy-MM-dd\'T\'HH:mm")
+	private LocalDateTime fechaEmision;
 
 	private String estado;
 
 	private String descripcion;
+	
+	private Integer cantidadLotesEstimada;
 }

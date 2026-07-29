@@ -1,8 +1,7 @@
 package com.pisip.jbpharmaweb.model.dto.request;
 
 import java.math.BigDecimal;
-import java.util.Date;
-
+import java.time.LocalDateTime;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import lombok.Data;
@@ -21,10 +20,10 @@ public class OrdenProduccionRequestDto {
 	private String numeroLote;
 
 	private BigDecimal cantidadLote;
-	@DateTimeFormat(pattern = "yyyy-MM-dd")
-	private Date fechaInicio;
-	@DateTimeFormat(pattern = "yyyy-MM-dd")
-	private Date fechaFin;
+	@DateTimeFormat(pattern = "yyyy-MM-dd\'T\'HH:mm")
+	private LocalDateTime fechaInicio;
+	@DateTimeFormat(pattern = "yyyy-MM-dd\'T\'HH:mm")
+	private LocalDateTime fechaFin;
 
 	private String estado;
 }
