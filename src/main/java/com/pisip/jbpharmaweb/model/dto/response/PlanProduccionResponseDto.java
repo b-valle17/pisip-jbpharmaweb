@@ -1,22 +1,50 @@
 package com.pisip.jbpharmaweb.model.dto.response;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonAlias;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
-import lombok.Data;
-@Data
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
 public class PlanProduccionResponseDto {
 	
 	private Integer idPlan;
-	private Integer idUsuario;
 	private String codigoPlan;
 	private Integer mes;
 	private Integer anio;
-	@JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSX", timezone = "UTC")
-	private Date fechaEmision;
+	private LocalDateTime fechaEmision;
 	private String estado;
 	private String descripcion;
+	private Integer cantidadLotesEstimada;
 	
+	@JsonProperty("idUsuario")
+    @JsonAlias({"fkUsuario", "fk_usuario", "id_usuario", "idUsuario"})
+    private Integer idUsuario;
+	
+	private String nombreUsuario;
 	private UsuarioResponseDTO usuario;
+
+	public Integer getIdUsuario() {
+		if (this.idUsuario != null) {
+			return this.idUsuario;
+		}
+		if (this.usuario != null && this.usuario.getIdUsuario() > 0) {
+			return this.usuario.getIdUsuario();
+		}
+		return null;
+	}
+
+	public String getNombreUsuario() {
+		if (this.nombreUsuario != null && !this.nombreUsuario.trim().isEmpty()) {
+			return this.nombreUsuario;
+		}
+		if (this.usuario != null && this.usuario.getNombre() != null) {
+			return this.usuario.getNombre();
+		}
+		return null;
+	}
 }

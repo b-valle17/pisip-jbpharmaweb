@@ -1,7 +1,7 @@
 <!doctype html>
 <html xmlns:th="http://www.thymeleaf.org"
 	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-	layout:decorate="/plantilla/plantillaui">
+	layout:decorate="~{plantilla/plantillaui}">
 <head>
 <title>Registrar Plan de Producción | JB Pharma</title>
 
@@ -26,106 +26,175 @@
 .page-help {
 	font-size: .92rem;
 }
+
+/* Estilo para el borde superior rojo oscuro */
+.card-custom-red {
+	border-top: 3px solid #8b0000;
+}
 </style>
 </head>
 <body>
+	<h3 layout:fragment="titulo">Nuevo Plan de Producción</h3>
+
+	<ol layout:fragment="breadcrumb" class="breadcrumb float-sm-end">
+		<li class="breadcrumb-item"><a th:href="@{/planproduccion}">Inicio</a></li>
+		<li class="breadcrumb-item"><a th:href="@{/planproduccion}">PlanDeProduccion</a></li>
+		<li class="breadcrumb-item active">Nuevo</li>
+	</ol>
 
 	<div layout:fragment="contenidopaginas">
-
-		<div class="app-content-header">
-			<div class="container-fluid">
-				<div class="row">
-					<div class="col-sm-6">
-						<h1 class="mb-0 fs-3">Registrar nuevo Plan de Producción</h1>
-					</div>
-					<div class="col-sm-6">
-						<ol class="breadcrumb float-sm-end">
-							<li class="breadcrumb-item"><a th:href="@{/planproduccion}"
-								href="./listaplan.html">Inicio</a></li>
-							<li class="breadcrumb-item"><a th:href="@{/planproduccion}"
-								href="./listarplan.html">PlanDeProduccion</a></li>
-							<li class="breadcrumb-item active">RegistrarNuevoPlan</li>
-						</ol>
-					</div>
+		<form th:action="@{/planproduccion/guardar}" th:object="${plan}"
+			method="post">
+			<div class="card content-card card-custom-red">
+				<div class="card-header">
+					<h5 class="card-title mb-0">Nuevo Plan Mensual</h5>
 				</div>
-			</div>
-		</div>
+				<div class="card-body">
+					<div class="row g-3">
 
-		<div class="app-content">
-			<div class="container-fluid">
-				<div class="row">
-					<div class="col-lg-8">
-						<div class="card card-primary card-outline">
-							<div class="card-header">
-								<h3 class="card-title">Nuevo Plan Mensual</h3>
-							</div>
-							<form th:action="@{/planproduccion/guardar}" th:object="${plan}"
-								method="post">
-								<div class="card-body">
-									<div class="row g-3">
-										<div class="col-md-6">
-											<label class="form-label">Código del Plan</label> <input
-												type="text" class="form-control" id="codigoPlan"
-												placeholder="Ej: PLAN-2026-06" required
-												th:field="*{codigoPlan}">
-										</div>
-										<div class="col-md-6">
-											<label class="form-label">Usuario Responsable</label> <select
-												class="form-select" th:field="*{idUsuario}" required>
-												<option value="">Seleccione un Usuario</option>
-												<option th:each="indice : ${listausuarios}"
-													th:value="${indice.idUsuario}" th:text="${indice.nombre}"></option>
-											</select>
-										</div>
-										<div class="col-md-6">
-											<label class="form-label">Mes</label> <input type="number"
-												class="form-control" id="mes" min="1" max="12"
-												placeholder="6" required th:field="*{mes}">
-										</div>
-										<div class="col-md-6">
-											<label class="form-label">Año</label> <input type="number"
-												class="form-control" id="anio" min="2025" max="2027"
-												placeholder="2026" required th:field="*{anio}">
-										</div>
-										<div class="col-md-6">
-											<label class="form-label">Fecha de Emisión</label> <input
-												type="date" class="form-control" id="fechaEmision" required
-												th:field="*{fechaEmision}">
-										</div>
-										<div class="col-12">
-											<label class="form-label">Descripción Operativa</label>
-											<textarea class="form-control" id="descripcion" rows="3"
-												placeholder="Línea de producción asignada..."
-												th:field="*{descripcion}"></textarea>
-										</div>
-										<div class="col-md-6">
-											<label class="form-label">Estado de la Orden</label> <select
-												class="form-select" th:field="*{estado}" required>
-												<option value="">Seleccione</option>
-												<option value="COMPLETADO">COMPLETADO</option>
-												<option value="EN PROCESO">EN PROCESO</option>
-												<option value="PLANIFICADO">PLANIFICADO</option>
-												<option value="BORRADOR">BORRADOR</option>
-												<option value="CANCELADO">CANCELADO</option>
-											</select>
-										</div>
+						<!-- Código del Plan (Generado automáticamente según Año y Mes) -->
+						<div class="col-md-6">
+							<label class="form-label">Código del Plan</label> <input
+								type="text" class="form-control" id="codigoPlanDisplay"
+								placeholder="Se generará automáticamente (ej: PLAN-2026-06)"
+								disabled> <input type="hidden" id="codigoPlan"
+								th:field="*{codigoPlan}">
+						</div>
 
-									</div>
-								</div>
-								<div class="card-footer d-flex gap-2">
-									<button class="btn btn-primary" type="submit">
-										<i class="bi bi-save me-1"></i>Guardar y continuar
-									</button>
-									<a class="btn btn-outline-secondary"
-										th:href="@{/planproduccion}" href="./listarplan.html">Cancelar</a>
-								</div>
-							</form>
+						<!-- Usuario Responsable (Automático con el Usuario Logueado) -->
+						<div class="col-md-6 mb-3">
+							<label class="form-label fw-bold">Usuario Responsable</label>
+
+							<!-- Input oculto para enviar el ID del usuario al backend -->
+							<input type="hidden" th:field="*{idUsuario}" />
+
+							<!-- Input visible con el nombre del usuario activo -->
+							<input type="text" class="form-control"
+								th:value="${nombreUsuarioLogueado != null ? nombreUsuarioLogueado : session.nombreUsuario}"
+								readonly />
+						</div>
+						<div class="col-md-6">
+							<label class="form-label">Mes</label> <input type="number"
+								class="form-control" id="mes" min="1" max="12" placeholder="6"
+								required th:field="*{mes}">
+						</div>
+
+						<div class="col-md-6">
+							<label class="form-label">Año</label> <input type="number"
+								class="form-control" id="anio" min="2025" max="2027"
+								placeholder="2026" required th:field="*{anio}">
+						</div>
+
+						<!-- Cantidad de Lotes Estimada -->
+						<div class="col-md-6">
+							<label class="form-label">Cantidad de Lotes Estimada</label> <input
+								type="number" class="form-control" id="cantidadLotesEstimada"
+								min="1" placeholder="Ej: 10" required
+								th:field="*{cantidadLotesEstimada}">
+						</div>
+
+						<!-- Fecha de Emisión (Automática y Bloqueada) -->
+						<div class="col-md-6">
+							<label class="form-label">Fecha de Emisión</label> <input
+								type="datetime-local" class="form-control"
+								id="fechaEmisionDisplay" disabled> <input type="hidden"
+								id="fechaEmision" th:field="*{fechaEmision}">
+						</div>
+
+						<!-- Estado de la Orden (Bloqueado) -->
+						<div class="col-md-6 mb-3">
+							<label class="form-label fw-bold">Estado del Plan</label>
+
+							<!-- Campo oculto que enviará el valor al backend -->
+							<input type="hidden" th:field="*{estado}" />
+
+							<!-- Campo visible sólo lectura (usar readonly en lugar de disabled) -->
+							<input type="text" class="form-control"
+								th:value="${plan.estado != null ? plan.estado : 'EN PROCESO'}"
+								readonly />
+						</div>
+
+						<div class="col-12">
+							<label class="form-label">Descripción Operativa</label>
+							<textarea class="form-control" id="descripcion" rows="3"
+								placeholder="Línea de producción asignada..."
+								th:field="*{descripcion}"></textarea>
 						</div>
 					</div>
 				</div>
+				<div class="card-footer d-flex justify-content-end gap-2">
+					<a class="btn btn-outline-secondary" th:href="@{/planproduccion}">
+						<i class="bi bi-x-circle me-1"></i>Cancelar
+					</a>
+					<button class="btn btn-primary" type="submit">
+						<i class="bi bi-save me-1"></i>Guardar y continuar
+					</button>
+				</div>
 			</div>
-		</div>
+		</form>
 	</div>
 
+	<!-- Scripts para inicialización y generación dinámica de valores -->
+	<th:block layout:fragment="scripts">
+		<script>
+			document
+					.addEventListener(
+							"DOMContentLoaded",
+							function() {
+								// 1. Asignar Fecha y Hora Actual
+								const fechaDisplay = document
+										.getElementById("fechaEmisionDisplay");
+								const fechaHidden = document
+										.getElementById("fechaEmision");
+
+								if (fechaDisplay && fechaHidden) {
+									const ahora = new Date();
+									const desfase = ahora.getTimezoneOffset() * 60000;
+									const fechaIso = new Date(ahora.getTime()
+											- desfase).toISOString().slice(0,
+											16);
+
+									fechaDisplay.value = fechaIso;
+									if (!fechaHidden.value) {
+										fechaHidden.value = fechaIso;
+									}
+								}
+
+								// 2. Generación dinámica de Código del Plan
+								const inputAnio = document
+										.getElementById("anio");
+								const inputMes = document.getElementById("mes");
+								const codigoDisplay = document
+										.getElementById("codigoPlanDisplay");
+								const codigoHidden = document
+										.getElementById("codigoPlan");
+
+								function actualizarCodigoPlan() {
+									const anioVal = inputAnio.value.trim();
+									const mesVal = inputMes.value.trim();
+
+									if (anioVal && mesVal) {
+										const mesFormateado = String(mesVal)
+												.padStart(2, '0');
+										const codigoGenerado = `PLAN-${anioVal}-${mesFormateado}`;
+
+										codigoDisplay.value = codigoGenerado;
+										codigoHidden.value = codigoGenerado;
+									} else {
+										codigoDisplay.value = "";
+										codigoHidden.value = "";
+									}
+								}
+
+								if (inputAnio && inputMes) {
+									inputAnio.addEventListener("input",
+											actualizarCodigoPlan);
+									inputMes.addEventListener("input",
+											actualizarCodigoPlan);
+									actualizarCodigoPlan();
+								}
+							});
+		</script>
+	</th:block>
 </body>
 </html>

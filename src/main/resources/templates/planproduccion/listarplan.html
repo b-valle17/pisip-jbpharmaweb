@@ -1,16 +1,16 @@
 <!doctype html>
-<html xmlns:th="http://www.thymeleaf.org"
+<html lang="es" xmlns:th="http://www.thymeleaf.org"
 	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 	layout:decorate="~{plantilla/plantillaui}">
 <head>
-<title>Plan de Producción | JB Pharma</title>
+<meta charset="UTF-8">
+<title>Planes de Producción | JB Pharma</title>
 
 <style>
 .table-actions .btn {
 	margin-right: .25rem;
 }
 
-/* Estilos para la tabla Ficha Técnica dentro del Modal */
 .style-table-ficha th {
 	font-size: 0.88rem;
 	letter-spacing: 0.3px;
@@ -33,191 +33,199 @@
 		top: 0;
 		width: 100%;
 	}
-	.card-header, .d-flex.gap-2.mb-3, .table-actions {
+	.card-header, .table-actions {
 		display: none !important;
 	}
 }
 </style>
 </head>
 <body>
+	<h3 layout:fragment="titulo">Planes de Producción</h3>
+
+	<ol layout:fragment="breadcrumb" class="breadcrumb float-sm-end">
+		<li class="breadcrumb-item"><a th:href="@{/planproduccion}">Inicio</a></li>
+		<li class="breadcrumb-item active">PlanDeProduccion</li>
+	</ol>
 
 	<div layout:fragment="contenidopaginas">
+		<div class="card content-card" id="printable-area">
+			<div class="card-header d-flex align-items-center">
+				<h5 class="card-title mb-0">Registros de planes de producción</h5>
+				<a th:href="@{/planproduccion/crearplan}"
+					class="btn btn-primary btn-sm ms-auto"> <i
+					class="bi bi-plus-circle me-1"></i>Crear Plan
+				</a>
+			</div>
 
-		<!-- Header de la sección -->
-		<div class="app-content-header">
-			<div class="container-fluid">
-				<div class="row">
-					<div class="col-sm-6">
-						<h1 class="mb-0 fs-3">Planes de Producción</h1>
-					</div>
-					<div class="col-sm-6">
-						<ol class="breadcrumb float-sm-end">
-							<li class="breadcrumb-item"><a th:href="@{/planproduccion}"
-								href="./listaplan.html">Inicio</a></li>
-							<li class="breadcrumb-item active">PlanDeProduccion</li>
-						</ol>
-					</div>
+			<div class="card-body">
+				<div th:if="${success}"
+					class="alert alert-success alert-dismissible fade show"
+					role="alert">
+					<span th:text="${success}"></span>
+					<button type="button" class="btn-close" data-bs-dismiss="alert"
+						aria-label="Close"></button>
+				</div>
+
+				<div th:if="${error}"
+					class="alert alert-danger alert-dismissible fade show" role="alert">
+					<span th:text="${error}"></span>
+					<button type="button" class="btn-close" data-bs-dismiss="alert"
+						aria-label="Close"></button>
+				</div>
+
+				<input id="buscador" type="search" class="form-control mb-3"
+					placeholder="Buscar por código, período, fecha de emisión, usuario, estado o descripción"
+					autocomplete="off">
+
+				<!-- Tabla de Planes -->
+				<div class="table-responsive">
+					<table id="tablaPlanes" class="table table-hover align-middle">
+						<thead>
+							<tr>
+								<th>Código</th>
+								<th>Período</th>
+								<th>Fecha de Emisión</th>
+								<th>Usuario Responsable</th>
+								<th>Estado</th>
+								<th class="text-end">Acciones</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr class="fila-plan" th:each="indice : ${listaplan}">
+								<td th:text="${indice.codigoPlan}" class="fw-bold">PLAN-2026-06</td>
+
+								<td
+									th:text="${indice.mes != null ? #numbers.formatInteger(indice.mes, 2) + '/' + indice.anio : '-'}">06/2026</td>
+
+								<td
+									th:text="${indice.fechaEmision != null ? #temporals.format(indice.fechaEmision, 'dd/MM/yyyy HH:mm') : '-'}">28/07/2026
+									19:22</td>
+
+								<td
+									th:text="${indice.nombreUsuario != null ? indice.nombreUsuario : 'Sin asignar'}">Stiven
+									Perez</td>
+
+								<td><span th:if="${indice.estado == 'COMPLETADO'}"
+									class="badge text-bg-success">COMPLETADO</span> <span
+									th:if="${indice.estado == 'EN PROCESO'}"
+									class="badge text-bg-warning">EN PROCESO</span> <span
+									th:if="${indice.estado == 'PLANIFICADO'}"
+									class="badge text-bg-info">PLANIFICADO</span> <span
+									th:if="${indice.estado == 'BORRADOR'}"
+									class="badge text-bg-secondary">BORRADOR</span> <span
+									th:if="${indice.estado == 'CANCELADO'}"
+									class="badge text-bg-danger">CANCELADO</span></td>
+								<td class="text-end table-actions">
+									<div class="btn-group">
+										<!-- Botón Ver Detalles -->
+										<button type="button"
+											class="btn btn-sm btn-outline-info btn-detalles"
+											title="Ver Detalles" th:data-codigo="${indice.codigoPlan}"
+											th:data-periodo="${indice.mes != null ? #numbers.formatInteger(indice.mes, 2) + '/' + indice.anio : '-'}"
+											th:data-emision="${indice.fechaEmision != null ? #temporals.format(indice.fechaEmision, 'dd/MM/yyyy HH:mm') : '-'}"
+											th:data-estado="${indice.estado}"
+											th:data-usuario="${indice.nombreUsuario != null ? indice.nombreUsuario : 'Sin asignar'}"
+											th:data-descripcion="${indice.descripcion != null and indice.descripcion != '' ? indice.descripcion : 'Sin descripción registrada'}">
+											<i class="bi bi-eye"></i>
+										</button>
+
+										<!-- Botón Editar -->
+										<a
+											th:if="${indice.idUsuario != null and idUsuarioLogueado != null and indice.idUsuario == idUsuarioLogueado}"
+											th:href="@{/planproduccion/editarplan(idPlan=${indice.idPlan})}"
+											class="btn btn-sm btn-outline-primary" title="Editar Plan">
+											<i class="bi bi-pencil"></i>
+										</a>
+
+										<!-- Botón Eliminar -->
+										<form
+											th:if="${indice.idUsuario != null and idUsuarioLogueado != null and indice.idUsuario == idUsuarioLogueado}"
+											th:action="@{/planproduccion/eliminar/{id}(id=${indice.idPlan})}"
+											method="post" style="display: inline;">
+											<button type="submit" class="btn btn-sm btn-outline-danger"
+												title="Eliminar"
+												onclick="return confirm('¿Seguro que desea eliminar este plan de producción?')">
+												<i class="bi bi-trash"></i>
+											</button>
+										</form>
+									</div>
+								</td>
+							</tr>
+
+							<tr id="sinResultados" style="display: none">
+								<td colspan="6" class="text-center text-muted py-4"><i
+									class="bi bi-search fs-3 d-block mb-2"></i> No se encontraron
+									planes de producción con ese criterio.</td>
+							</tr>
+
+							<tr th:if="${listaplan == null or #lists.isEmpty(listaplan)}">
+								<td colspan="6" class="text-center text-muted py-4"><i
+									class="bi bi-inbox fs-3 d-block mb-2"></i> No existen planes de
+									producción.</td>
+							</tr>
+						</tbody>
+					</table>
 				</div>
 			</div>
 		</div>
 
-		<div class="app-content">
-			<div class="container-fluid">
-
-				<div class="card" id="printable-area">
-					<div class="card-header">
-						<a th:href="@{/planproduccion/crearplan}"
-							class="btn btn-sm btn-outline-info" title="Crear Plan"><i
-							class="fa-solid fa-plus"></i> Crear Plan </a>
-						<div class="card-tools">
-							<div class="input-group input-group-sm" style="width: 16rem">
-								<span class="input-group-text"> <i class="bi bi-search"
-									aria-hidden="true"></i>
-								</span>
-								<!-- Filtro global -->
-								<input id="table-filter" type="search" class="form-control"
-									placeholder="Filtrar filas…" aria-label="Filtrar filas" />
-							</div>
-						</div>
-					</div>
-					<div class="card-body">
-
-						
-						<div th:if="${success}" class="alert alert-success alert-dismissible fade show" role="alert">
-							
-							<span th:text="${success}"></span>
-							<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-						</div>
-
-						<div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
-							
-							<span th:text="${error}"></span>
-							<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-						</div>
-
-						<div class="d-flex gap-2 mb-3">
-
-						</div>
-
-						<!-- Estructura de tabla HTML -->
-						<div class="table-responsive">
-							<table class="table table-striped" id="planes-table">
-								<thead>
-									<tr>
-										<th scope="col">Código</th>
-										<th scope="col">Periodo</th>
-										<th scope="col">Emisión</th>
-										<th scope="col">Estado</th>
-										<th scope="col" class="text-center">Acciones</th>
-									</tr>
-								</thead>
-								<tbody>
-									<tr th:each="indice : ${listaplan}">
-										<td th:text="${indice.codigoPlan}"></td>
-										<td
-											th:text="${indice.mes != null ? indice.mes + '/' + indice.anio : '-'}">01/2026</td>
-										<td th:text="${indice.fechaEmision}" class="text-center"></td>
-										<td class="text-center"><span
-											th:if="${indice.estado == 'COMPLETADO'}"
-											class="badge text-bg-success">COMPLETADO</span> <span
-											th:if="${indice.estado == 'EN PROCESO'}"
-											class="badge text-bg-warning">EN PROCESO</span> <span
-											th:if="${indice.estado == 'PLANIFICADO'}"
-											class="badge text-bg-info">PLANIFICADO</span> <span
-											th:if="${indice.estado == 'BORRADOR'}"
-											class="badge text-bg-secondary">BORRADOR</span> <span
-											th:if="${indice.estado == 'CANCELADO'}"
-											class="badge text-bg-danger">CANCELADO</span></td>
-										<td class="text-center">
-											<div class="btn-group table-actions">
-												
-												<button type="button"
-													class="btn btn-sm btn-outline-info btn-detalles"
-													title="Ver Detalles" th:data-codigo="${indice.codigoPlan}"
-													th:data-periodo="${indice.mes != null ? indice.mes + '/' + indice.anio : '-'}"
-													th:data-emision="${indice.fechaEmision}"
-													th:data-estado="${indice.estado}"
-													th:data-usuario="${indice.usuario != null ? indice.usuario.nombre : 'Carlos Gómez (Gerente)'}"
-													th:data-descripcion="${indice.descripcion != null and indice.descripcion != '' ? indice.descripcion : 'Sin descripción registrada'}">
-													<i class="fa-solid fa-eye"></i>
-												</button>
-
-												<a
-													th:href="@{/planproduccion/editarplan(idPlan=${indice.idPlan})}"
-													class="btn btn-sm btn-outline-warning" title="Editar Plan">
-													<i class="fa-solid fa-pen-to-square"></i>
-												</a>
-
-												<form
-													th:action="@{/planproduccion/eliminar/{id}(id=${indice.idPlan})}"
-													method="post" style="display: inline;">
-													<button type="submit" class="btn btn-sm btn-outline-danger"
-														title="Eliminar"
-														onclick="return confirm('¿Seguro que desea eliminar este plan?')">
-														<i class="fa-solid fa-trash"></i>
-													</button>
-												</form>
-											</div>
-										</td>
-									</tr>
-								</tbody>
-							</table>
-						</div>
-
-					</div>
-				</div>
-
-			</div>
-		</div>
-
-		
+		<!-- Modal Ficha Técnica / Detalles del Plan -->
 		<div class="modal fade" id="modalDetalles" tabindex="-1"
 			aria-labelledby="modalDetallesLabel" aria-hidden="true">
 			<div class="modal-dialog modal-lg modal-dialog-centered">
 				<div class="modal-content">
 					<div class="modal-header bg-dark text-white py-2">
 						<h5 class="modal-title fs-6 fw-bold" id="modalDetallesLabel">
-							<i class="fa-solid fa-clipboard-list me-2"></i>FICHA TÉCNICA - PLAN DE PRODUCCIÓN <span id="modal-codigo"></span>
+							<i class="bi bi-clipboard-data me-2"></i>FICHA TÉCNICA - PLAN DE
+							PRODUCCIÓN <span id="modal-codigo"></span>
 						</h5>
 						<button type="button" class="btn-close btn-close-white"
 							data-bs-dismiss="modal" aria-label="Close"></button>
 					</div>
 					<div class="modal-body p-3">
-						<!-- Tabla Estructurada al estilo Ficha Farmacéutica -->
 						<div class="table-responsive">
-							<table class="table table-bordered border-secondary align-middle mb-0 text-center style-table-ficha">
+							<table
+								class="table table-bordered border-secondary align-middle mb-0 text-center style-table-ficha">
 								<tbody>
 									<tr>
-										<th class="bg-secondary text-white w-20 text-start" scope="row">Código Plan</th>
-										<td colspan="2" id="modal-codigo-val" class="fw-bold text-start"></td>
+										<th class="bg-secondary text-white w-20 text-start"
+											scope="row">Código Plan</th>
+										<td colspan="2" id="modal-codigo-val"
+											class="fw-bold text-start"></td>
 										<th class="bg-secondary text-white w-15 text-start">Estado</th>
-										<td id="modal-estado-td" class="fw-bold">
-											<span id="modal-estado" class="badge"></span>
-										</td>
+										<td id="modal-estado-td" class="fw-bold"><span
+											id="modal-estado" class="badge"></span></td>
 									</tr>
 									<tr>
-										<th class="bg-secondary text-white text-start" scope="row">Cliente</th>
-										<td colspan="2" class="text-start fw-bold text-dark">James Brown Pharma</td>
+										<th class="bg-secondary text-white text-start" scope="row">Empresa</th>
+										<td colspan="2" class="text-start fw-bold text-dark">James
+											Brown Pharma</td>
 										<th class="bg-secondary text-white text-start">Ciudad</th>
 										<td class="fw-bold">Quito</td>
 									</tr>
 									<tr>
 										<th class="bg-secondary text-white text-start" scope="row">Dirección</th>
-										<td colspan="4" class="text-start fw-bold text-dark">Pifo, Av. Interoceánica Km 23 1/2 Sector el Rosal</td>
+										<td colspan="4" class="text-start fw-bold text-dark">Pifo,
+											Av. Interoceánica Km 23 1/2 Sector el Rosal</td>
 									</tr>
 									<tr>
-										<th class="bg-secondary text-white text-start" scope="row">Usuario Responsable</th>
-										<td colspan="4" id="modal-usuario" class="text-start fw-bold text-dark"></td>
+										<th class="bg-secondary text-white text-start" scope="row">Usuario
+											Responsable</th>
+										<td colspan="4" id="modal-usuario"
+											class="text-start fw-bold text-dark"></td>
 									</tr>
 									<tr>
 										<th class="bg-secondary text-white text-start" scope="row">Período</th>
 										<td id="modal-periodo" class="fw-semibold"></td>
-										<th class="bg-secondary text-white text-start">Fecha Emisión</th>
+										<th class="bg-secondary text-white text-start">Fecha
+											Emisión</th>
 										<td colspan="2" id="modal-emision" class="fw-semibold"></td>
 									</tr>
 									<tr>
-										<th class="bg-secondary text-white text-start align-top" scope="row">Descripción Operativa</th>
-										<td colspan="4" id="modal-descripcion" class="text-start" style="min-height: 60px;"></td>
+										<th class="bg-secondary text-white text-start align-top"
+											scope="row">Descripción Operativa</th>
+										<td colspan="4" id="modal-descripcion" class="text-start"
+											style="min-height: 60px;"></td>
 									</tr>
 								</tbody>
 							</table>
@@ -226,166 +234,76 @@
 					<div class="modal-footer py-2">
 						<button type="button" class="btn btn-sm btn-secondary"
 							data-bs-dismiss="modal">
-							<i class="fa-solid fa-xmark me-1"></i>Cerrar
+							<i class="bi bi-x-lg me-1"></i>Cerrar
 						</button>
 					</div>
 				</div>
 			</div>
 		</div>
-
-		<!-- Lógica JavaScript -->
-		<script>
-    document.addEventListener('DOMContentLoaded', () => {
-        const filterInput = document.getElementById('table-filter');
-        const table = document.getElementById('planes-table');
-        const rows = table.getElementsByTagName('tbody')[0].getElementsByTagName('tr');
-
-        function formatearFechaISO(fechaStr) {
-            if (!fechaStr) return '-';
-            const dateObj = new Date(fechaStr);
-            if (isNaN(dateObj.getTime())) return fechaStr;
-
-            const dia = String(dateObj.getUTCDate()).padStart(2, '0');
-            const mes = String(dateObj.getUTCMonth() + 1).padStart(2, '0');
-            const anio = dateObj.getUTCFullYear();
-            return `${dia}/${mes}/${anio}`;
-        }
-
-        // 1. Formatear Período y Fecha de Emisión en la Tabla
-        const mesesNombres = [
-            "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
-            "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"
-        ];
-
-        document.querySelectorAll('#planes-table tbody tr').forEach(row => {
-            // Columna Período (segunda columna)
-            const cellPeriodo = row.cells[1];
-            if (cellPeriodo) {
-                const textoOriginal = cellPeriodo.textContent.trim();
-                if (textoOriginal.includes('/')) {
-                    const partes = textoOriginal.split('/');
-                    const mesNum = parseInt(partes[0], 10);
-                    const anioNum = partes[1];
-
-                    if (mesNum >= 1 && mesNum <= 12) {
-                        cellPeriodo.textContent = mesesNombres[mesNum - 1] + ' ' + anioNum;
-                    }
-                }
-            }
-
-            // Columna Fecha Emisión 
-            const cellEmision = row.cells[2];
-            if (cellEmision) {
-                const fechaOriginal = cellEmision.textContent.trim();
-                cellEmision.textContent = formatearFechaISO(fechaOriginal);
-            }
-        });
-
-        // 2. Filtro global en tiempo real 
-        filterInput.addEventListener('input', function() {
-            const value = this.value.toLowerCase().trim();
-            for (let i = 0; i < rows.length; i++) {
-                const rowText = rows[i].textContent.toLowerCase();
-                rows[i].style.display = rowText.includes(value) ? '' : 'none';
-            }
-        });
-
-        // 3. Lógica para Abrir Modal con Detalles (Ficha Técnica)
-        const modalElement = document.getElementById('modalDetalles');
-        const modalDetalles = new bootstrap.Modal(modalElement);
-
-        document.querySelectorAll('.btn-detalles').forEach(button => {
-            button.addEventListener('click', function() {
-                const codigo = this.getAttribute('data-codigo');
-                const periodoRaw = this.getAttribute('data-periodo');
-                const emisionRaw = this.getAttribute('data-emision');
-                const estado = this.getAttribute('data-estado');
-                const usuario = this.getAttribute('data-usuario');
-                const descripcion = this.getAttribute('data-descripcion');
-
-                // Transformar Período
-                let periodoTexto = periodoRaw;
-                if (periodoRaw && periodoRaw.includes('/')) {
-                    const partes = periodoRaw.split('/');
-                    const mesNum = parseInt(partes[0], 10);
-                    const anioNum = partes[1];
-                    if (mesNum >= 1 && mesNum <= 12) {
-                        periodoTexto = mesesNombres[mesNum - 1] + " " + anioNum;
-                    }
-                }
-
-                // Cargar datos en la Ficha
-                document.getElementById('modal-codigo').textContent = codigo;
-                document.getElementById('modal-codigo-val').textContent = codigo;
-                document.getElementById('modal-usuario').textContent = usuario;
-                document.getElementById('modal-periodo').textContent = periodoTexto;
-                document.getElementById('modal-emision').textContent = formatearFechaISO(emisionRaw);
-                document.getElementById('modal-descripcion').textContent = descripcion;
-
-                // Formato del Badge de Estado
-                const modalEstado = document.getElementById('modal-estado');
-                modalEstado.textContent = estado;
-                modalEstado.className = 'badge ';
-
-                if (estado === 'COMPLETADO') modalEstado.classList.add('text-bg-success');
-                else if (estado === 'EN PROCESO') modalEstado.classList.add('text-bg-warning');
-                else if (estado === 'PLANIFICADO') modalEstado.classList.add('text-bg-info');
-                else if (estado === 'BORRADOR') modalEstado.classList.add('text-bg-secondary');
-                else if (estado === 'CANCELADO') modalEstado.classList.add('text-bg-danger');
-
-                modalDetalles.show();
-            });
-        });
-
-        // Helper para extraer los datos para exportar e imprimir
-        function getTableData() {
-            const data = [];
-            for (let i = 0; i < rows.length; i++) {
-                if (rows[i].style.display !== 'none') {
-                    const cells = rows[i].getElementsByTagName('td');
-                    data.push({
-                        codigo: cells[0].textContent.trim(),
-                        periodo: cells[1].textContent.trim(),
-                        emision: cells[2].textContent.trim(),
-                        estado: cells[3].textContent.trim()
-                    });
-                }
-            }
-            return data;
-        }
-
-        // Helper para descargar archivos
-        function downloadFile(content, fileName, contentType) {
-            const a = document.createElement("a");
-            const file = new Blob([content], { type: contentType });
-            a.href = URL.createObjectURL(file);
-            a.download = fileName;
-            a.click();
-        }
-
-        // 4. Exportar a CSV
-        document.getElementById('export-csv').addEventListener('click', () => {
-            const data = getTableData();
-            let csvContent = "\uFEFFCódigo,Período,Emisión,Estado\n";
-            data.forEach(row => {
-                csvContent += `"${row.codigo}","${row.periodo}","${row.emision}","${row.estado}"\n`;
-            });
-            downloadFile(csvContent, "planes_produccion.csv", "text/csv;charset=utf-8;");
-        });
-
-        // 5. Exportar a JSON
-        document.getElementById('export-json').addEventListener('click', () => {
-            const data = getTableData();
-            downloadFile(JSON.stringify(data, null, 2), "planes_produccion.json", "application/json");
-        });
-
-        // 6. Imprimir
-        document.getElementById('print-table').addEventListener('click', () => {
-            window.print();
-        });
-    });
-</script>
 	</div>
 
+	<!-- Lógica JavaScript -->
+	<th:block layout:fragment="scripts">
+		<script>
+			document.addEventListener('DOMContentLoaded', () => {
+				const buscador = document.getElementById('buscador');
+				const filas = Array.from(document.querySelectorAll('#tablaPlanes .fila-plan'));
+				const sinResultados = document.getElementById('sinResultados');
+
+				function normalizar(texto) {
+					return (texto || '').toLowerCase().normalize('NFD')
+						.replace(/[\u0300-\u036f]/g, '').trim();
+				}
+
+				if (buscador) {
+					buscador.addEventListener('input', function () {
+						const criterio = normalizar(buscador.value);
+						let visibles = 0;
+						filas.forEach(function (fila) {
+							const coincide = normalizar(fila.innerText).includes(criterio);
+							fila.style.display = coincide ? '' : 'none';
+							if (coincide) visibles++;
+						});
+						if (sinResultados) {
+							sinResultados.style.display = filas.length > 0 && visibles === 0 ? '' : 'none';
+						}
+					});
+				}
+
+				const modalElement = document.getElementById('modalDetalles');
+				const modalDetalles = new bootstrap.Modal(modalElement);
+
+				document.querySelectorAll('.btn-detalles').forEach(button => {
+					button.addEventListener('click', function() {
+						const codigo = this.getAttribute('data-codigo');
+						const periodo = this.getAttribute('data-periodo');
+						const emision = this.getAttribute('data-emision');
+						const estado = this.getAttribute('data-estado');
+						const usuario = this.getAttribute('data-usuario');
+						const descripcion = this.getAttribute('data-descripcion');
+
+						document.getElementById('modal-codigo').textContent = codigo;
+						document.getElementById('modal-codigo-val').textContent = codigo;
+						document.getElementById('modal-usuario').textContent = usuario;
+						document.getElementById('modal-periodo').textContent = periodo;
+						document.getElementById('modal-emision').textContent = emision;
+						document.getElementById('modal-descripcion').textContent = descripcion;
+
+						const modalEstado = document.getElementById('modal-estado');
+						modalEstado.textContent = estado;
+						modalEstado.className = 'badge ';
+
+						if (estado === 'COMPLETADO') modalEstado.classList.add('text-bg-success');
+						else if (estado === 'EN PROCESO') modalEstado.classList.add('text-bg-warning');
+						else if (estado === 'PLANIFICADO') modalEstado.classList.add('text-bg-info');
+						else if (estado === 'BORRADOR') modalEstado.classList.add('text-bg-secondary');
+						else if (estado === 'CANCELADO') modalEstado.classList.add('text-bg-danger');
+
+						modalDetalles.show();
+					});
+				});
+			});
+		</script>
+	</th:block>
 </body>
 </html>

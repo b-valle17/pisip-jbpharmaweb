@@ -96,7 +96,7 @@ public class LoginController {
 			if (nombreRol.isEmpty()) {
 				return "redirect:/autenticacion?noRol=true";
 			}
-
+			session.setAttribute("idUsuario", usuario.getIdUsuario());
 			session.setAttribute("usuarioLogueado", usuario.getCorreo());
 			session.setAttribute("nombreUsuario", usuario.getNombre());
 			session.setAttribute("rolUsuario", nombreRol);

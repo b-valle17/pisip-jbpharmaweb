@@ -1,16 +1,16 @@
 <!doctype html>
-<html xmlns:th="http://www.thymeleaf.org"
+<html lang="es" xmlns:th="http://www.thymeleaf.org"
 	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 	layout:decorate="~{plantilla/plantillaui}">
 <head>
-<title>Orden de Producción | JB Pharma</title>
+<meta charset="UTF-8">
+<title>Órdenes de Producción | JB Pharma</title>
 
 <style>
 .table-actions .btn {
 	margin-right: .25rem;
 }
 
-/* Estilos para la tabla Ficha Técnica dentro del Modal */
 .style-table-ficha th {
 	font-size: 0.88rem;
 	letter-spacing: 0.3px;
@@ -33,173 +33,175 @@
 		top: 0;
 		width: 100%;
 	}
-	.card-header, .d-flex.gap-2.mb-3, .table-actions {
+	.card-header, .table-actions {
 		display: none !important;
 	}
 }
 </style>
 </head>
 <body>
+	<h3 layout:fragment="titulo">Órdenes de Producción</h3>
+
+	<ol layout:fragment="breadcrumb" class="breadcrumb float-sm-end">
+		<li class="breadcrumb-item"><a th:href="@{/ordenproduccion}">Inicio</a></li>
+		<li class="breadcrumb-item active">OrdenDeProduccion</li>
+	</ol>
 
 	<div layout:fragment="contenidopaginas">
+		<div class="card content-card" id="printable-area">
+			<div class="card-header d-flex align-items-center">
+				<h5 class="card-title mb-0">Registros de órdenes de fabricación</h5>
+				<a th:href="@{/ordenproduccion/crearorden}"
+					class="btn btn-primary btn-sm ms-auto"> <i
+					class="bi bi-plus-circle me-1"></i>Crear Orden
+				</a>
+			</div>
 
-		<!-- Header de la sección -->
-		<div class="app-content-header">
-			<div class="container-fluid">
-				<div class="row">
-					<div class="col-sm-6">
-						<h1 class="mb-0 fs-3">Órdenes de Producción</h1>
-					</div>
-					<div class="col-sm-6">
-						<ol class="breadcrumb float-sm-end">
-							<li class="breadcrumb-item"><a th:href="@{/ordenproduccion}"
-								href="./listaorden.html">Inicio</a></li>
-							<li class="breadcrumb-item active">OrdenDeProduccion</li>
-						</ol>
-					</div>
+			<div class="card-body">
+				<!-- Mensajes de Notificación Flash -->
+				<div th:if="${success}"
+					class="alert alert-success alert-dismissible fade show"
+					role="alert">
+					<span th:text="${success}"></span>
+					<button type="button" class="btn-close" data-bs-dismiss="alert"
+						aria-label="Close"></button>
+				</div>
+
+				<div th:if="${error}"
+					class="alert alert-danger alert-dismissible fade show" role="alert">
+					<span th:text="${error}"></span>
+					<button type="button" class="btn-close" data-bs-dismiss="alert"
+						aria-label="Close"></button>
+				</div>
+
+				<!-- Buscador / Filtrador -->
+				<input id="buscador" type="search" class="form-control mb-3"
+					placeholder="Buscar por número de lote, cantidad, fecha, responsable o estado"
+					autocomplete="off">
+
+				<!-- Tabla de Órdenes -->
+				<div class="table-responsive">
+					<table id="ordenes-table" class="table table-hover align-middle">
+						<thead>
+							<tr>
+								<th>Número de Lote</th>
+								<th>Cantidad (Kg)</th>
+								<th>Fecha Inicio</th>
+								<th>Fecha Fin</th>
+								<th>Usuario Responsable</th>
+								<th class="text-center">Estado</th>
+								<th class="text-end">Acciones</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr class="fila-orden" th:each="indice : ${listaorden}">
+								<td th:text="${indice.numeroLote}" class="fw-bold">LOT-001</td>
+
+								<td th:text="${indice.cantidadLote}">50.0</td>
+
+								<td
+									th:text="${indice.fechaInicio != null ? #temporals.format(indice.fechaInicio, 'dd/MM/yyyy HH:mm') : '-'}">28/07/2026 20:28</td>
+
+								<td
+									th:text="${indice.fechaFin != null ? #temporals.format(indice.fechaFin, 'dd/MM/yyyy HH:mm') : 'En curso'}">En curso</td>
+
+								<td
+									th:text="${indice.nombreUsuario != null ? indice.nombreUsuario : 'Sin asignar'}">Stiven Perez</td>
+
+								<td class="text-center">
+									<span th:if="${indice.estado == 'COMPLETADO'}" class="badge text-bg-success">COMPLETADO</span>
+									<span th:if="${indice.estado == 'EN PROCESO'}" class="badge text-bg-warning">EN PROCESO</span>
+									<span th:if="${indice.estado == 'PLANIFICADO'}" class="badge text-bg-info">PLANIFICADO</span>
+									<span th:if="${indice.estado == 'CONTROL DE CALIDAD'}" class="badge text-bg-primary">CONTROL DE CALIDAD</span>
+									<span th:if="${indice.estado == 'CANCELADO'}" class="badge text-bg-danger">CANCELADO</span>
+								</td>
+
+								<td class="text-end table-actions">
+									<div class="btn-group">
+										<!-- Botón Ver Detalles -->
+										<button type="button"
+											class="btn btn-sm btn-outline-info btn-detalles"
+											title="Ver Detalles"
+											th:data-lote="${indice.numeroLote}"
+											th:data-cantidad="${indice.cantidadLote}"
+											th:data-inicio="${indice.fechaInicio != null ? #temporals.format(indice.fechaInicio, 'dd/MM/yyyy HH:mm') : '-'}"
+											th:data-fin="${indice.fechaFin != null ? #temporals.format(indice.fechaFin, 'dd/MM/yyyy HH:mm') : 'En curso'}"
+											th:data-estado="${indice.estado}"
+											th:data-producto="${indice.nombreProducto != null ? indice.nombreProducto : (indice.producto != null ? indice.producto.nombre : 'Sin producto')}"
+											th:data-plan="${indice.codigoPlan != null ? indice.codigoPlan : (indice.planProduccion != null ? indice.planProduccion.codigoPlan : 'Sin plan')}"
+											th:data-usuario="${indice.nombreUsuario != null ? indice.nombreUsuario : 'Sin asignar'}">
+											<i class="bi bi-eye"></i>
+										</button>
+
+										<!-- Botón Editar -->
+										<a
+											th:if="${indice.idUsuario != null and idUsuarioLogueado != null and indice.idUsuario == idUsuarioLogueado}"
+											th:href="@{/ordenproduccion/editarorden(idOrden=${indice.idOrden})}"
+											class="btn btn-sm btn-outline-primary" title="Editar Orden">
+											<i class="bi bi-pencil"></i>
+										</a>
+
+										<!-- Botón Eliminar  -->
+										<form
+											th:if="${indice.idUsuario != null and idUsuarioLogueado != null and indice.idUsuario == idUsuarioLogueado}"
+											th:action="@{/ordenproduccion/eliminar/{id}(id=${indice.idOrden})}"
+											method="post" style="display: inline;">
+											<button type="submit" class="btn btn-sm btn-outline-danger"
+												title="Eliminar"
+												onclick="return confirm('¿Seguro que desea eliminar esta orden de fabricación?')">
+												<i class="bi bi-trash"></i>
+											</button>
+										</form>
+									</div>
+								</td>
+							</tr>
+
+							<tr id="sinResultados" style="display: none">
+								<td colspan="7" class="text-center text-muted py-4">
+									<i class="bi bi-search fs-3 d-block mb-2"></i> No se encontraron órdenes de fabricación con ese criterio.
+								</td>
+							</tr>
+
+							<tr th:if="${listaorden == null or #lists.isEmpty(listaorden)}">
+								<td colspan="7" class="text-center text-muted py-4">
+									<i class="bi bi-inbox fs-3 d-block mb-2"></i> No existen órdenes de fabricación registradas.
+								</td>
+							</tr>
+						</tbody>
+					</table>
 				</div>
 			</div>
 		</div>
 
-		<div class="app-content">
-			<div class="container-fluid">
-
-				<div class="card" id="printable-area">
-					<div class="card-header">
-						<a th:href="@{/ordenproduccion/crearorden}"
-								class="btn btn-sm btn-outline-info" title="Crear Orden"><i
-								class="fa-solid fa-plus"></i> Crear Orden </a>
-						<div class="card-tools">
-							<div class="input-group input-group-sm" style="width: 16rem">
-								<span class="input-group-text"> <i class="bi bi-search"
-									aria-hidden="true"></i>
-								</span>
-								<!-- Filtro global -->
-								<input id="table-filter" type="search" class="form-control"
-									placeholder="Filtrar filas…" aria-label="Filtrar filas" />
-							</div>
-						</div>
-					</div>
-					<div class="card-body">
-
-						<!-- 🔔 MENSAJES DE NOTIFICACIÓN FLASH -->
-						<div th:if="${success}" class="alert alert-success alert-dismissible fade show" role="alert">
-							<i class="bi bi-check-circle-fill me-2"></i>
-							<span th:text="${success}"></span>
-							<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-						</div>
-
-						<div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
-							<i class="bi bi-exclamation-triangle-fill me-2"></i>
-							<span th:text="${error}"></span>
-							<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-						</div>
-
-						<div class="d-flex gap-2 mb-3">
-							
-						</div>
-
-						<!-- Estructura de tabla HTML -->
-						<div class="table-responsive">
-							<table class="table table-striped" id="ordenes-table">
-								<thead>
-									<tr>
-										<th scope="col">Número de Lote</th>
-										<th scope="col">Cantidad(Kg)</th>
-										<th scope="col">Fecha Inicio</th>
-										<th scope="col">Fecha Fin</th>
-										<th scope="col" class="text-center">Estado</th>
-										<th scope="col" class="text-center">Acciones</th>
-									</tr>
-								</thead>
-								<tbody>
-									<tr th:each="indice : ${listaorden}">
-										<td th:text="${indice.numeroLote}"></td>
-										<td th:text="${indice.cantidadLote}"></td>
-										<td th:text="${indice.fechaInicio}" class="text-center"></td>
-										<td th:text="${indice.fechaFin}" class="text-center"></td>
-										<td class="text-center"><span
-											th:if="${indice.estado == 'COMPLETADO'}"
-											class="badge text-bg-success">COMPLETADO</span> <span
-											th:if="${indice.estado == 'EN PROCESO'}"
-											class="badge text-bg-warning">EN PROCESO</span> <span
-											th:if="${indice.estado == 'PLANIFICADO'}"
-											class="badge text-bg-info">PLANIFICADO</span> <span
-											th:if="${indice.estado == 'CONTROL DE CALIDAD'}"
-											class="badge text-bg-primary">CONTROL DE CALIDAD</span> <span
-											th:if="${indice.estado == 'CANCELADO'}"
-											class="badge text-bg-danger">CANCELADO</span></td>
-										<td class="text-center">
-											<div class="btn-group table-actions">
-												<!-- 👁️ BOTÓN VER DETALLES -->
-												<button type="button"
-													class="btn btn-sm btn-outline-info btn-detalles"
-													title="Ver Detalles" 
-													th:data-lote="${indice.numeroLote}"
-													th:data-cantidad="${indice.cantidadLote}"
-													th:data-inicio="${indice.fechaInicio}"
-													th:data-fin="${indice.fechaFin}"
-													th:data-estado="${indice.estado}"
-													th:data-producto="${indice.producto != null ? indice.producto.nombre : 'Ergotamina Tartrato'}"
-													th:data-plan="${indice.planProduccion != null ? indice.planProduccion.codigoPlan : 'PLAN-2026-06'}"
-													th:data-usuario="${indice.usuario != null ? indice.usuario.nombre : 'Carlos Gómez (Gerente)'}">
-													<i class="fa-solid fa-eye"></i>
-												</button>
-
-												<a
-													th:href="@{/ordenproduccion/editarorden(idOrden=${indice.idOrden})}"
-													class="btn btn-sm btn-outline-warning" title="Editar Orden">
-													<i class="fa-solid fa-pen-to-square"></i>
-												</a> 
-												<form
-													th:action="@{/ordenproduccion/eliminar/{id}(id=${indice.idOrden})}"
-													method="post" style="display: inline;">
-													<button type="submit" class="btn btn-sm btn-outline-danger"
-														title="Eliminar"
-														onclick="return confirm('¿Seguro que desea eliminar esta orden?')">
-														<i class="fa-solid fa-trash"></i>
-													</button>
-												</form>
-											</div>
-										</td>
-									</tr>
-								</tbody>
-							</table>
-						</div>
-
-					</div>
-				</div>
-
-			</div>
-		</div>
-
-		<!-- 📌 MODAL DE DETALLES DE LA ORDEN DE PRODUCCIÓN (FICHA TÉCNICA) -->
+		<!-- Modal Ficha Técnica / Detalles de la Orden -->
 		<div class="modal fade" id="modalDetalles" tabindex="-1"
 			aria-labelledby="modalDetallesLabel" aria-hidden="true">
 			<div class="modal-dialog modal-lg modal-dialog-centered">
 				<div class="modal-content">
 					<div class="modal-header bg-dark text-white py-2">
 						<h5 class="modal-title fs-6 fw-bold" id="modalDetallesLabel">
-							<i class="fa-solid fa-boxes-stacked me-2"></i>FICHA TÉCNICA - ORDEN DE PRODUCCIÓN <span id="modal-lote-title"></span>
+							<i class="bi bi-boxes me-2"></i>FICHA TÉCNICA - ÓRDEN DE PRODUCCIÓN <span id="modal-lote-title"></span>
 						</h5>
 						<button type="button" class="btn-close btn-close-white"
 							data-bs-dismiss="modal" aria-label="Close"></button>
 					</div>
 					<div class="modal-body p-3">
 						<div class="table-responsive">
-							<table class="table table-bordered border-secondary align-middle mb-0 text-center style-table-ficha">
+							<table
+								class="table table-bordered border-secondary align-middle mb-0 text-center style-table-ficha">
 								<tbody>
 									<tr>
-										<th class="bg-secondary text-white w-20 text-start" scope="row">N° de Lote</th>
+										<th class="bg-secondary text-white w-20 text-start"
+											scope="row">N° de Lote</th>
 										<td colspan="2" id="modal-lote" class="fw-bold text-start"></td>
 										<th class="bg-secondary text-white w-15 text-start">Estado</th>
-										<td id="modal-estado-td" class="fw-bold">
-											<span id="modal-estado" class="badge"></span>
-										</td>
+										<td id="modal-estado-td" class="fw-bold"><span
+											id="modal-estado" class="badge"></span></td>
 									</tr>
 									<tr>
 										<th class="bg-secondary text-white text-start" scope="row">Producto</th>
-										<td colspan="2" id="modal-producto" class="text-start fw-bold text-dark"></td>
+										<td colspan="2" id="modal-producto"
+											class="text-start fw-bold text-dark"></td>
 										<th class="bg-secondary text-white text-start">Tamaño Lote</th>
 										<td id="modal-cantidad" class="fw-bold"></td>
 									</tr>
@@ -232,140 +234,82 @@
 					<div class="modal-footer py-2">
 						<button type="button" class="btn btn-sm btn-secondary"
 							data-bs-dismiss="modal">
-							<i class="fa-solid fa-xmark me-1"></i>Cerrar
+							<i class="bi bi-x-lg me-1"></i>Cerrar
 						</button>
 					</div>
 				</div>
 			</div>
 		</div>
-
-		<!-- Lógica para Filtro, Exportación e Impresión -->
-		<script>
-            document.addEventListener('DOMContentLoaded', () => {
-                const filterInput = document.getElementById('table-filter');
-                const table = document.getElementById('ordenes-table');
-                const rows = table.getElementsByTagName('tbody')[0].getElementsByTagName('tr');
-
-                // Helper para formatear fechas a dd/MM/yyyy en UTC
-                function formatearFechaISO(fechaStr) {
-                    if (!fechaStr) return '-';
-                    const dateObj = new Date(fechaStr);
-                    if (isNaN(dateObj.getTime())) return fechaStr;
-
-                    const dia = String(dateObj.getUTCDate()).padStart(2, '0');
-                    const mes = String(dateObj.getUTCMonth() + 1).padStart(2, '0');
-                    const anio = dateObj.getUTCFullYear();
-                    return `${dia}/${mes}/${anio}`;
-                }
-
-                // 1. Formatear Fechas de Inicio y Fin en la Tabla
-                document.querySelectorAll('#ordenes-table tbody tr').forEach(row => {
-                    const cellInicio = row.cells[2];
-                    const cellFin = row.cells[3];
-                    if (cellInicio) cellInicio.textContent = formatearFechaISO(cellInicio.textContent.trim());
-                    if (cellFin) cellFin.textContent = formatearFechaISO(cellFin.textContent.trim());
-                });
-
-                // 2. Filtro global en tiempo real 
-                filterInput.addEventListener('input', function() {
-                    const value = this.value.toLowerCase().trim();
-                    for (let i = 0; i < rows.length; i++) {
-                        const rowText = rows[i].textContent.toLowerCase();
-                        rows[i].style.display = rowText.includes(value) ? '' : 'none';
-                    }
-                });
-
-                // 3. Lógica para Abrir Modal de Detalles (Ficha Técnica de la Orden)
-                const modalElement = document.getElementById('modalDetalles');
-                const modalDetalles = new bootstrap.Modal(modalElement);
-
-                document.querySelectorAll('.btn-detalles').forEach(button => {
-                    button.addEventListener('click', function() {
-                        const lote = this.getAttribute('data-lote');
-                        const cantidad = this.getAttribute('data-cantidad');
-                        const inicio = this.getAttribute('data-inicio');
-                        const fin = this.getAttribute('data-fin');
-                        const estado = this.getAttribute('data-estado');
-                        const producto = this.getAttribute('data-producto');
-                        const plan = this.getAttribute('data-plan');
-                        const usuario = this.getAttribute('data-usuario');
-
-                        // Cargar datos en la Ficha Técnica de la Orden
-                        document.getElementById('modal-lote-title').textContent = lote;
-                        document.getElementById('modal-lote').textContent = lote;
-                        document.getElementById('modal-cantidad').textContent = cantidad + ' Kg';
-                        document.getElementById('modal-producto').textContent = producto;
-                        document.getElementById('modal-plan').textContent = plan;
-                        document.getElementById('modal-usuario').textContent = usuario;
-                        document.getElementById('modal-inicio').textContent = formatearFechaISO(inicio);
-                        document.getElementById('modal-fin').textContent = formatearFechaISO(fin);
-
-                        // Formato del Badge de Estado
-                        const modalEstado = document.getElementById('modal-estado');
-                        modalEstado.textContent = estado;
-                        modalEstado.className = 'badge ';
-
-                        if (estado === 'COMPLETADO') modalEstado.classList.add('text-bg-success');
-                        else if (estado === 'EN PROCESO') modalEstado.classList.add('text-bg-warning');
-                        else if (estado === 'PLANIFICADO') modalEstado.classList.add('text-bg-info');
-                        else if (estado === 'CONTROL DE CALIDAD') modalEstado.classList.add('text-bg-primary');
-                        else if (estado === 'CANCELADO') modalEstado.classList.add('text-bg-danger');
-
-                        modalDetalles.show();
-                    });
-                });
-
-                // Helper para extraer los datos visibles de la tabla en un array limpio
-                function getTableData() {
-                    const data = [];
-                    for (let i = 0; i < rows.length; i++) {
-                        if (rows[i].style.display !== 'none') {
-                            const cells = rows[i].getElementsByTagName('td');
-                            data.push({
-                                lote: cells[0].textContent.trim(),
-                                cantidad: cells[1].textContent.trim(),
-                                inicio: cells[2].textContent.trim(),
-                                fin: cells[3].textContent.trim(),
-                                estado: cells[4].textContent.trim()
-                            });
-                        }
-                    }
-                    return data;
-                }
-
-                function downloadFile(content, fileName, contentType) {
-                    const a = document.createElement("a");
-                    const file = new Blob([content], { type: contentType });
-                    a.href = URL.createObjectURL(file);
-                    a.download = fileName;
-                    a.click();
-                }
-
-                // Exportar a CSV
-                document.getElementById('export-csv').addEventListener('click', () => {
-                    const data = getTableData();
-                    let csvContent = "\uFEFFN° Lote,Cantidad (Kg),Fecha Inicio,Fecha Fin,Estado\n";
-                    
-                    data.forEach(row => {
-                        csvContent += `"${row.lote}","${row.cantidad}","${row.inicio}","${row.fin}","${row.estado}"\n`;
-                    });
-                    
-                    downloadFile(csvContent, "ordenes_produccion.csv", "text/csv;charset=utf-8;");
-                });
-
-                // Exportar a JSON
-                document.getElementById('export-json').addEventListener('click', () => {
-                    const data = getTableData();
-                    downloadFile(JSON.stringify(data, null, 2), "ordenes_produccion.json", "application/json");
-                });
-
-                // Imprimir la Tabla
-                document.getElementById('print-table').addEventListener('click', () => {
-                    window.print();
-                });
-            });
-        </script>
 	</div>
 
+	<!-- Lógica JavaScript -->
+	<th:block layout:fragment="scripts">
+		<script>
+			document.addEventListener('DOMContentLoaded', () => {
+				// 1. Buscador dinámico
+				const buscador = document.getElementById('buscador');
+				const filas = Array.from(document.querySelectorAll('#ordenes-table .fila-orden'));
+				const sinResultados = document.getElementById('sinResultados');
+
+				function normalizar(texto) {
+					return (texto || '').toLowerCase().normalize('NFD')
+						.replace(/[\u0300-\u036f]/g, '').trim();
+				}
+
+				if (buscador) {
+					buscador.addEventListener('input', function () {
+						const criterio = normalizar(buscador.value);
+						let visibles = 0;
+						filas.forEach(function (fila) {
+							const coincide = normalizar(fila.innerText).includes(criterio);
+							fila.style.display = coincide ? '' : 'none';
+							if (coincide) visibles++;
+						});
+						if (sinResultados) {
+							sinResultados.style.display = filas.length > 0 && visibles === 0 ? '' : 'none';
+						}
+					});
+				}
+
+				// 2. Lógica para Abrir Modal de Detalles (Ficha Técnica)
+				const modalElement = document.getElementById('modalDetalles');
+				const modalDetalles = new bootstrap.Modal(modalElement);
+
+				document.querySelectorAll('.btn-detalles').forEach(button => {
+					button.addEventListener('click', function() {
+						const lote = this.getAttribute('data-lote');
+						const cantidad = this.getAttribute('data-cantidad');
+						const inicio = this.getAttribute('data-inicio');
+						const fin = this.getAttribute('data-fin');
+						const estado = this.getAttribute('data-estado');
+						const producto = this.getAttribute('data-producto');
+						const plan = this.getAttribute('data-plan');
+						const usuario = this.getAttribute('data-usuario');
+
+						document.getElementById('modal-lote-title').textContent = lote;
+						document.getElementById('modal-lote').textContent = lote;
+						document.getElementById('modal-cantidad').textContent = cantidad + ' Kg';
+						document.getElementById('modal-producto').textContent = producto;
+						document.getElementById('modal-plan').textContent = plan;
+						document.getElementById('modal-usuario').textContent = usuario;
+						document.getElementById('modal-inicio').textContent = inicio;
+						document.getElementById('modal-fin').textContent = fin;
+
+						const modalEstado = document.getElementById('modal-estado');
+						modalEstado.textContent = estado;
+						modalEstado.className = 'badge ';
+
+						if (estado === 'COMPLETADO') modalEstado.classList.add('text-bg-success');
+						else if (estado === 'EN PROCESO') modalEstado.classList.add('text-bg-warning');
+						else if (estado === 'PLANIFICADO') modalEstado.classList.add('text-bg-info');
+						else if (estado === 'CONTROL DE CALIDAD') modalEstado.classList.add('text-bg-primary');
+						else if (estado === 'CANCELADO') modalEstado.classList.add('text-bg-danger');
+
+						modalDetalles.show();
+					});
+				});
+			});
+		</script>
+	</th:block>
 </body>
 </html>
