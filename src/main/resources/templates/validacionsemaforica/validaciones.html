@@ -24,9 +24,9 @@
                 <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
                 <div class="alert alert-light border mb-3">
                     <strong>Significado del semáforo:</strong>
-                    <span class="badge text-bg-success ms-2">VERDE</span> dentro del rango óptimo;
-                    <span class="badge text-bg-warning ms-2">AMARILLO</span> dentro del rango, pero próximo a un límite;
-                    <span class="badge text-bg-danger ms-2">ROJO</span> fuera de los límites de calidad.
+                    <span class="badge text-bg-success ms-2">ÓPTIMO</span> dentro del rango óptimo;
+                    <span class="badge text-bg-warning ms-2">PRECAUCIÓN</span> dentro del rango, pero próximo a un límite;
+                    <span class="badge text-bg-danger ms-2">CRÍTICO</span> fuera de los límites de calidad.
                 </div>
                 <input id="buscador" type="search" class="form-control mb-3" placeholder="Buscar por ensayo, variable, parámetro, resultado o mensaje" autocomplete="off">
                 <div class="table-responsive">
@@ -44,7 +44,7 @@
                                     th:text="${parametro != null ? parametro['nombreParametro'] : 'Parámetro #' + v.idParametro}"></td>
                                 <td>
                                     <span class="badge"
-                                        th:classappend="${v.resultado == 'VERDE'} ? ' text-bg-success' : (${v.resultado == 'AMARILLO' or v.resultado == 'ADVERTENCIA'} ? ' text-bg-warning' : (${v.resultado == 'ROJO'} ? ' text-bg-danger' : ' text-bg-secondary'))"
+                                        th:classappend="${v.resultado == 'OPTIMO'} ? ' text-bg-success' : (${v.resultado == 'PRECAUCION' or v.resultado == 'ADVERTENCIA'} ? ' text-bg-warning' : (${v.resultado == 'CRITICO'} ? ' text-bg-danger' : ' text-bg-secondary'))"
                                         th:text="${v.resultado}"></span>
                                 </td>
                                 <td th:text="${v.mensaje}"></td>

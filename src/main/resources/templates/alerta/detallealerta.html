@@ -35,9 +35,9 @@
                 <div class="card-body">
                     <div class="alert alert-light border mb-3">
                         <strong>Interpretación:</strong>
-                        <span class="badge text-bg-success ms-2">VERDE</span> cumple el rango óptimo;
-                        <span class="badge text-bg-warning ms-2">AMARILLO</span> está próximo a un límite;
-                        <span class="badge text-bg-danger ms-2">ROJO</span> está fuera del rango permitido.
+                        <span class="badge text-bg-success ms-2">ÓPTIMO</span> cumple el rango óptimo;
+                        <span class="badge text-bg-warning ms-2">PRECAUCIÓN</span> está próximo a un límite;
+                        <span class="badge text-bg-danger ms-2">CRÍTICO</span> está fuera del rango permitido.
                     </div>
                     <div class="row g-3">
                         <div class="col-md-6">
@@ -75,22 +75,9 @@
                             <textarea id="razonValidacion" class="form-control" rows="2" readonly></textarea>
                         </div>
 
-                        <div class="col-md-4">
-                            <label for="tipoAlerta" class="form-label">Tipo</label>
-                            <select id="tipoAlerta" class="form-select" th:field="*{tipoAlerta}" required>
-                                <option value="EMAIL">EMAIL</option>
-                                <option value="SISTEMA">SISTEMA</option>
-                            </select>
-                        </div>
+                        <input type="hidden" th:field="*{tipoAlerta}" value="EMAIL">
 
-                        <div class="col-md-4">
-                            <label for="estadoEnvio" class="form-label">Estado</label>
-                            <select id="estadoEnvio" class="form-select" th:field="*{estadoEnvio}" required>
-                                <option value="PENDIENTE">PENDIENTE</option>
-                                <option value="ENVIADO">ENVIADO</option>
-                                <option value="ERROR">ERROR</option>
-                            </select>
-                        </div>
+                        <input type="hidden" th:field="*{estadoEnvio}" value="PENDIENTE">
 
                         <div class="col-md-4">
                             <label for="destinatario" class="form-label">Destinatario</label>

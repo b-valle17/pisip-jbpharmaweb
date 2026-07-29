@@ -81,9 +81,13 @@
                         </div>
 
                         <div class="col-12">
+                            <div id="avisoParametro" class="alert alert-warning d-none mb-3">
+                                <i class="bi bi-exclamation-triangle me-1"></i>
+                                <span id="textoAvisoParametro"></span>
+                            </div>
                             <div class="alert alert-info mb-0">
                                 <i class="bi bi-info-circle me-1"></i>
-                                El resultado, el mensaje y la fecha se calculan automáticamente comparando el valor obtenido con los límites del parámetro. Verde indica rango óptimo; amarillo, proximidad del 10 % a un límite; rojo, valor fuera del rango.
+                                El resultado, el mensaje y la fecha se calculan automáticamente. ÓPTIMO indica rango adecuado; PRECAUCIÓN, proximidad a un límite; CRÍTICO, valor fuera del rango permitido.
                             </div>
                         </div>
 					</div>
@@ -105,16 +109,72 @@
                 const ensayo = document.getElementById("idEnsayo");
                 const variable = document.getElementById("idVariable");
                 const parametro = document.getElementById("idParametro");
-                const variableOriginal = variable.value;
-                const parametroOriginal = parametro.value;
+                const botonGuardar = document.querySelector('button[type="submit"]');
+                const aviso = document.getElementById("avisoParametro");
+                const textoAviso = document.getElementById("textoAvisoParametro");
 
                 function normalizar(texto) {
                     return (texto || "").trim().toLowerCase();
                 }
 
+                function mostrarAviso(mensaje) {
+                    aviso.classList.toggle("d-none", !mensaje);
+                    textoAviso.textContent = mensaje || "";
+                    botonGuardar.disabled = Boolean(mensaje);
+                }
+
+                function parametrosCompatibles(idProducto, opcionVariable) {
+                    const nombre = normalizar(opcionVariable?.dataset.nombre);
+                    const unidad = normalizar(opcionVariable?.dataset.unidad);
+
+                    return Array.from(parametro.options).filter(function (op, indice) {
+                        if (indice === 0) return false;
+                        const mismoProducto = op.dataset.producto === idProducto;
+                        const mismoNombre = normalizar(op.dataset.nombre) === nombre;
+                        const mismaUnidad = normalizar(op.dataset.unidad) === unidad;
+                        return mismoProducto && mismoNombre && mismaUnidad;
+                    });
+                }
+
+                function seleccionarParametro() {
+                    const opcionEnsayo = ensayo.options[ensayo.selectedIndex];
+                    const opcionVariable = variable.options[variable.selectedIndex];
+                    const idProducto = opcionEnsayo?.dataset.producto || "";
+
+                    Array.from(parametro.options).forEach(function (op, indice) {
+                        if (indice === 0) return;
+                        op.hidden = true;
+                        op.disabled = true;
+                    });
+
+                    if (!opcionVariable || !opcionVariable.value) {
+                        parametro.value = "";
+                        mostrarAviso("Seleccione una variable registrada para el ensayo.");
+                        return;
+                    }
+
+                    const compatibles = parametrosCompatibles(idProducto, opcionVariable);
+                    if (compatibles.length === 1) {
+                        compatibles[0].hidden = false;
+                        compatibles[0].disabled = false;
+                        parametro.value = compatibles[0].value;
+                        mostrarAviso("");
+                        return;
+                    }
+
+                    parametro.value = "";
+                    const nombre = opcionVariable.dataset.nombre || "sin nombre";
+                    const unidad = opcionVariable.dataset.unidad || "sin unidad";
+                    mostrarAviso(
+                        "La variable '" + nombre + "' (" + unidad + ") no coincide con ningún parámetro del producto. " +
+                        "Elimine esa variable y regístrela con el nombre y la unidad configurados en Parámetros de calidad."
+                    );
+                }
+
                 function filtrarVariables() {
                     const idEnsayo = ensayo.value;
                     let primera = "";
+
                     Array.from(variable.options).forEach(function (op, indice) {
                         if (indice === 0) return;
                         const visible = op.dataset.ensayo === idEnsayo;
@@ -122,36 +182,12 @@
                         op.disabled = !visible;
                         if (visible && !primera) primera = op.value;
                     });
-                    const originalValido = Array.from(variable.options).some(op =>
-                        op.value === variableOriginal && !op.disabled);
-                    variable.value = originalValido ? variableOriginal : primera;
-                    seleccionarParametro();
-                }
 
-                function seleccionarParametro() {
-                    const opcionEnsayo = ensayo.options[ensayo.selectedIndex];
-                    const idProducto = opcionEnsayo ? opcionEnsayo.dataset.producto : "";
-                    const opcionVariable = variable.options[variable.selectedIndex];
-                    const nombreVariable = normalizar(opcionVariable ? opcionVariable.dataset.nombre : "");
-                    const unidadVariable = normalizar(opcionVariable ? opcionVariable.dataset.unidad : "");
-                    let mejor = "";
-                    let alternativo = "";
-
-                    Array.from(parametro.options).forEach(function (op, indice) {
-                        if (indice === 0) return;
-                        const mismoProducto = op.dataset.producto === idProducto;
-                        op.hidden = !mismoProducto;
-                        op.disabled = !mismoProducto;
-                        if (!mismoProducto) return;
-                        if (!alternativo) alternativo = op.value;
-                        const mismoNombre = normalizar(op.dataset.nombre) === nombreVariable;
-                        const mismaUnidad = normalizar(op.dataset.unidad) === unidadVariable;
-                        if (!mejor && (mismoNombre || mismaUnidad)) mejor = op.value;
+                    const actualValido = Array.from(variable.options).some(function (op) {
+                        return op.value === variable.value && !op.disabled;
                     });
-
-                    const originalValido = Array.from(parametro.options).some(op =>
-                        op.value === parametroOriginal && !op.disabled);
-                    parametro.value = originalValido ? parametroOriginal : (mejor || alternativo);
+                    if (!actualValido) variable.value = primera;
+                    seleccionarParametro();
                 }
 
                 ensayo.addEventListener("change", filtrarVariables);
