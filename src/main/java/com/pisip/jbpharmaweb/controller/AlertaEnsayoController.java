@@ -62,12 +62,22 @@ public class AlertaEnsayoController {
     @PostMapping("/guardar")
     public String guardar(@ModelAttribute("alerta") AlertaEnsayoRequestDto dto, RedirectAttributes ra) {
         dto.setIdAlerta(null);
-        if (dto.getEstadoEnvio() == null || dto.getEstadoEnvio().isBlank()) {
-            dto.setEstadoEnvio("PENDIENTE");
+        dto.setTipoAlerta("EMAIL");
+        dto.setEstadoEnvio("PENDIENTE");
+        dto.setFechaEnvio(null);
+        AlertaEnsayoResponseDto guardada = servicio.guardar(dto);
+        try {
+            emailService.enviarAlertaEnsayo(dto.getDestinatario(), dto.getAsunto(), dto.getMensaje());
+            dto.setEstadoEnvio("ENVIADO");
+            dto.setFechaEnvio(LocalDateTime.now());
+            servicio.actualizar(guardada.getIdAlerta(), dto);
+            ra.addFlashAttribute("success", "Alerta enviada correctamente a " + dto.getDestinatario() + ".");
+        } catch (Exception ex) {
+            dto.setEstadoEnvio("ERROR");
+            dto.setFechaEnvio(null);
+            servicio.actualizar(guardada.getIdAlerta(), dto);
+            ra.addFlashAttribute("error", "La alerta se registró, pero el correo no pudo enviarse: " + mensajeSeguro(ex));
         }
-        dto.setFechaEnvio("ENVIADO".equalsIgnoreCase(dto.getEstadoEnvio()) ? LocalDateTime.now() : null);
-        servicio.guardar(dto);
-        ra.addFlashAttribute("success", "Alerta registrada y pendiente de envío.");
         return "redirect:/alertas";
     }
 

@@ -261,6 +261,11 @@
 						<!-- 4. OPCIONES DE ANALISTA DE LABORATORIO                    -->
 						<!-- ========================================================= -->
 						<th:block th:if="${session.rolUsuario == 'ANALISTA'}">
+							<li class="nav-item"><a th:href="@{/dashboard}"
+								class="nav-link"> <i class="fas fa-chart-line"></i>
+									<p>Dashboard</p>
+							</a></li>
+						<th:block th:if="${session.rolUsuario == 'ANALISTA'}">
 							<li class="nav-item"><a th:href="@{/ensayos}"
 								class="nav-link"> <i class="nav-icon bi bi-flask-fill"></i>
 									<p>Ensayos</p>

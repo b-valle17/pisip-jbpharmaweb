@@ -43,7 +43,7 @@
 								<option value="">Seleccione una orden</option>
 								<option th:each="orden : ${ordenes}"
 									th:value="${orden.idOrden}"
-                                    th:attr="data-producto=${orden.idProducto}"
+                                    th:attr="data-producto=${orden.idProductoResuelto},data-producto-nombre=${orden.nombreProductoResuelto}"
 									th:text="${orden.numeroLote != null
 										? orden.numeroLote + ' (ID ' + orden.idOrden + ')'
 										: 'Orden ' + orden.idOrden}">
@@ -52,21 +52,10 @@
 						</div>
 
 						<div class="col-md-4">
-							<label for="idProducto" class="form-label">Producto</label>
-							<select id="idProducto"
-								class="form-select"
-								th:field="*{idProducto}"
-								required>
-								<option value="">Seleccione un producto</option>
-								<option th:each="producto : ${productos}"
-									th:value="${producto.idProducto}"
-									th:text="${producto.nombreProducto != null
-										? producto.nombreProducto
-										: 'Producto ' + producto.idProducto}">
-								</option>
-							</select>
-						</div>
-
+                            <label class="form-label">Producto relacionado</label>
+                            <input type="hidden" id="idProducto" th:field="*{idProducto}">
+                            <input type="text" id="productoTexto" class="form-control" value="Seleccione una orden" readonly>
+                        </div>
 						<div class="col-md-4">
 							<label class="form-label">Código</label>
 							<input type="text"
@@ -76,24 +65,22 @@
 						</div>
 
 						<div class="col-md-4">
-							<label for="fechaEnsayo" class="form-label">Fecha</label>
-							<input type="datetime-local"
-                                id="fechaEnsayo"
-                                name="fechaEnsayo"
-                                class="form-control"
-                                th:value="${ensayo.fechaEnsayo}"
-                                required>
+							<label for="fechaSeleccionada" class="form-label">Fecha</label>
+							<input type="date"
+                                    id="fechaSeleccionada"
+                                    class="form-control"
+                                    th:value="${ensayo.fechaEnsayo != null ? #temporals.format(ensayo.fechaEnsayo, 'yyyy-MM-dd') : ''}"
+                                    onkeydown="return false;"
+                                    onpaste="return false;"
+                                    required>
+                                <input type="hidden" id="fechaEnsayo" th:field="*{fechaEnsayo}">
+                                <div class="form-text">Seleccione la fecha desde el calendario.</div>
 						</div>
 
 						<div class="col-md-5">
 							<label for="responsable" class="form-label">Responsable</label>
-							<input type="text"
-								id="responsable"
-								class="form-control"
-								th:field="*{responsable}"
-								placeholder="Nombre del responsable"
-								maxlength="100"
-								required>
+							<input type="text" id="responsable" class="form-control" th:field="*{responsable}" readonly>
+                            <div class="form-text">Se obtiene automáticamente del usuario autenticado.</div>
 						</div>
 
 						<div class="col-md-3">
@@ -139,33 +126,48 @@
 	</div>
 
 	<th:block layout:fragment="scripts">
-		<script>
-			document.addEventListener("DOMContentLoaded", function () {
-                const ordenSelect = document.getElementById("idOrden");
-                const productoSelect = document.getElementById("idProducto");
-                function sincronizarProducto() {
-                    if (!ordenSelect || !productoSelect) return;
-                    const opcion = ordenSelect.options[ordenSelect.selectedIndex];
-                    const idProducto = opcion ? opcion.dataset.producto : null;
-                    if (idProducto) {
-                        productoSelect.value = idProducto;
-                        productoSelect.dispatchEvent(new Event("change"));
-                    }
-                }
-                if (ordenSelect) {
-                    ordenSelect.addEventListener("change", sincronizarProducto);
-                    sincronizarProducto();
-                }
+            <script>
+                document.addEventListener("DOMContentLoaded", function () {
+                    const ordenSelect = document.getElementById("idOrden");
+                    const idProducto = document.getElementById("idProducto");
+                    const productoTexto = document.getElementById("productoTexto");
+                    const fechaSeleccionada = document.getElementById("fechaSeleccionada");
+                    const fechaEnsayo = document.getElementById("fechaEnsayo");
+                    const formulario = document.querySelector('form[action$="/ensayos/guardar"]');
 
-				const fecha = document.getElementById("fechaEnsayo");
-				if (fecha && !fecha.value) {
-					const ahora = new Date();
-					const desfase = ahora.getTimezoneOffset() * 60000;
-					fecha.value = new Date(ahora.getTime() - desfase)
-						.toISOString().slice(0, 16);
-				}
-			});
-		</script>
-	</th:block>
+                    function sincronizarProducto() {
+                        if (!ordenSelect || !idProducto || !productoTexto) return;
+                        const opcion = ordenSelect.options[ordenSelect.selectedIndex];
+                        const productoId = opcion ? opcion.dataset.producto : "";
+                        const productoNombre = opcion ? opcion.dataset.productoNombre : "";
+                        idProducto.value = productoId || "";
+                        productoTexto.value = productoId
+                            ? (productoNombre || "Producto " + productoId)
+                            : "Seleccione una orden";
+                    }
+
+                    function sincronizarFecha() {
+                        if (!fechaSeleccionada || !fechaEnsayo) return;
+                        fechaEnsayo.value = fechaSeleccionada.value
+                            ? fechaSeleccionada.value + "T00:00"
+                            : "";
+                    }
+
+                    if (ordenSelect) {
+                        ordenSelect.addEventListener("change", sincronizarProducto);
+                        sincronizarProducto();
+                    }
+                    if (fechaSeleccionada) {
+                        fechaSeleccionada.addEventListener("change", sincronizarFecha);
+                        fechaSeleccionada.addEventListener("click", function () {
+                            if (typeof fechaSeleccionada.showPicker === "function") {
+                                fechaSeleccionada.showPicker();
+                            }
+                        });
+                    }
+                    if (formulario) formulario.addEventListener("submit", sincronizarFecha);
+                });
+            </script>
+        </th:block>
 </body>
 </html>

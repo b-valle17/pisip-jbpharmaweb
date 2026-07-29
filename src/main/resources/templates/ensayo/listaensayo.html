@@ -40,6 +40,7 @@
                                 <th>Producto</th>
                                 <th>Fecha</th>
                                 <th>Responsable</th>
+                                 <th>Descripcion</th>
                                 <th>Estado</th>
                                 <th class="text-end">Acciones</th>
                             </tr>
@@ -51,22 +52,25 @@
                                 <td th:text="${productosPorId[e.idProducto] != null ? productosPorId[e.idProducto].nombreProducto : 'Producto ' + e.idProducto}">-</td>
                                 <td th:text="${e.fechaEnsayo != null ? #temporals.format(e.fechaEnsayo, 'dd/MM/yyyy HH:mm') : '-'}">-</td>
                                 <td th:text="${e.responsable}">Responsable</td>
+                                <td th:text="${e.observacion}">Descripcion</td>
                                 <td>
                                     <span class="badge"
                                         th:classappend="${e.estado == 'COMPLETADO' or e.estado == 'FINALIZADO'} ? ' text-bg-success' : (${e.estado == 'RECHAZADO' or e.estado == 'OBSERVADO'} ? ' text-bg-danger' : (${e.estado == 'EN_REVISION' or e.estado == 'EN_PROCESO'} ? ' text-bg-warning' : (${e.estado == 'PENDIENTE'} ? ' text-bg-secondary' : (${e.estado == 'REGISTRADO'} ? ' text-bg-info' : ' text-bg-primary'))))"
                                         th:text="${e.estado}">ESTADO</span>
                                 </td>
                                 <td class="text-end table-actions">
-                                    <a th:href="@{/ensayos/{id}/editar(id=${e.idEnsayo})}"
+                                    <a th:if="${puedeEditar != null and puedeEditar[e.idEnsayo] == true}"
+                                        th:href="@{/ensayos/{id}/editar(id=${e.idEnsayo})}"
                                         class="btn btn-sm btn-outline-primary" title="Editar">
                                         <i class="bi bi-pencil"></i>
                                     </a>
-                                    <button type="button" class="btn btn-sm btn-outline-danger"
+                                    <button th:if="${puedeEditar != null and puedeEditar[e.idEnsayo] == true}" type="button" class="btn btn-sm btn-outline-danger"
                                         title="Eliminar" data-bs-toggle="modal" data-bs-target="#modalEliminar"
                                         th:data-id="${e.idEnsayo}" th:data-codigo="${e.codigoEnsayo}"
                                         onclick="prepararEliminacion(this)">
                                         <i class="bi bi-trash"></i>
                                     </button>
+                                    <span th:unless="${puedeEditar != null and puedeEditar[e.idEnsayo] == true}" class="text-muted small">Solo lectura</span>
                                 </td>
                             </tr>
 

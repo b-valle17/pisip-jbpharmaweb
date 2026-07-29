@@ -1,0 +1,18 @@
+<!doctype html><html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{plantilla/plantillaui}">
+<head><meta charset="UTF-8"><title>Dashboard Sprint 3</title></head><body>
+<h3 layout:fragment="titulo">Dashboard de calidad - Sprint 3</h3>
+<ol layout:fragment="breadcrumb" class="breadcrumb float-sm-end"><li class="breadcrumb-item active">Inicio</li></ol>
+<div layout:fragment="contenidopaginas">
+<div class="row g-3 mb-3">
+<div class="col-md-3"><div class="card border-primary"><div class="card-body"><div class="text-muted">Ensayos</div><h2 th:text="${totalEnsayos}">0</h2></div></div></div>
+<div class="col-md-3"><div class="card border-info"><div class="card-body"><div class="text-muted">Variables</div><h2 th:text="${totalVariables}">0</h2></div></div></div>
+<div class="col-md-3"><div class="card border-secondary"><div class="card-body"><div class="text-muted">Validaciones</div><h2 th:text="${totalValidaciones}">0</h2></div></div></div>
+<div class="col-md-3"><div class="card border-dark"><div class="card-body"><div class="text-muted">Alertas</div><h2 th:text="${totalAlertas}">0</h2></div></div></div>
+</div>
+<div class="row g-3 mb-3">
+<div class="col-md-4"><div class="card bg-success-subtle"><div class="card-body"><h5>Óptimo</h5><h2 th:text="${optimos}">0</h2></div></div></div>
+<div class="col-md-4"><div class="card bg-warning-subtle"><div class="card-body"><h5>Precaución</h5><h2 th:text="${precauciones}">0</h2></div></div></div>
+<div class="col-md-4"><div class="card bg-danger-subtle"><div class="card-body"><h5>Crítico</h5><h2 th:text="${criticos}">0</h2><small th:text="|Alertas con error: ${alertasError}|"></small></div></div></div>
+</div>
+<div class="card"><div class="card-header"><h5 class="mb-0">Ensayos recientes</h5></div><div class="table-responsive"><table class="table table-hover mb-0"><thead><tr><th>Código</th><th>Responsable</th><th>Estado</th><th>Fecha</th></tr></thead><tbody><tr th:each="e:${ensayosRecientes}"><td th:text="${e.codigoEnsayo}"></td><td th:text="${e.responsable}"></td><td th:text="${e.estado}"></td><td th:text="${e.fechaEnsayo}"></td></tr></tbody></table></div></div>
+</div></body></html>

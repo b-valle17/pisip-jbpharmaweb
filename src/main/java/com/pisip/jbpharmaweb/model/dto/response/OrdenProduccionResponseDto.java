@@ -71,4 +71,18 @@ public class OrdenProduccionResponseDto {
  		}
  		return null;
  	}
+
+	public Integer getIdProductoResuelto() {
+		if (idProducto != null) return idProducto;
+		return producto != null ? producto.getIdProducto() : null;
+	}
+
+	public String getNombreProductoResuelto() {
+		if (producto != null && producto.getNombreProducto() != null
+				&& !producto.getNombreProducto().isBlank()) {
+			return producto.getNombreProducto();
+		}
+		Integer id = getIdProductoResuelto();
+		return id != null ? "Producto " + id : "Producto no asociado";
+	}
 }
