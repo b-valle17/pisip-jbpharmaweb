@@ -32,6 +32,13 @@
 					<div class="row g-4">
 						<div class="col-md-8 mx-auto">
 
+							<div th:if="${error}"
+								class="alert alert-danger alert-dismissible fade show" role="alert">
+								<span th:text="${error}"></span>
+								<button type="button" class="btn-close" data-bs-dismiss="alert"
+									aria-label="Close"></button>
+							</div>
+
 							<!-- Datos del dictamen -->
 							<div class="card card-primary card-outline mb-4">
 								<div class="card-header">
@@ -79,9 +86,9 @@
 								</div>
 							</div>
 
-							<!-- Acciones: Aceptar / Rechazar -->
+							<!-- Acciones: Aceptar / Rechazar (solo Supervisor) -->
 							<div class="card card-outline mb-4"
-								th:if="${dictamen.estado != 'ACEPTADO' and dictamen.estado != 'RECHAZADO'}">
+								th:if="${(dictamen.estado != 'ACEPTADO' and dictamen.estado != 'RECHAZADO') and session.rolUsuario == 'SUPERVISOR'}">
 								<div class="card-header">
 									<h3 class="card-title">Decisión del supervisor</h3>
 								</div>
@@ -101,13 +108,18 @@
 								</div>
 							</div>
 
+							<div class="callout callout-info"
+								th:if="${(dictamen.estado != 'ACEPTADO' and dictamen.estado != 'RECHAZADO') and session.rolUsuario != 'SUPERVISOR'}">
+								Este dictamen está pendiente de la decisión del supervisor.
+							</div>
+
 						</div>
 					</div>
 				</div>
 			</div>
 
 			<!-- Modal para capturar el motivo del rechazo -->
-			<div class="modal fade" id="modalRechazo" tabindex="-1" aria-hidden="true" th:if="${session.rolUsuario != 'GERENTE'}">
+			<div class="modal fade" id="modalRechazo" tabindex="-1" aria-hidden="true" th:if="${session.rolUsuario == 'SUPERVISOR'}">
 				<div class="modal-dialog">
 					<form th:action="@{/dictamenLote/{id}/rechazar(id=${dictamen.idDictamen})}" method="post">
 						<div class="modal-content">

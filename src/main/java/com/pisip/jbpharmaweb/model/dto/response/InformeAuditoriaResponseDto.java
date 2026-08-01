@@ -12,4 +12,5 @@ public class InformeAuditoriaResponseDto {
 	private Date fechaGeneracion;
 	private String formato;
 	private String rutaArchivo;
+	private String comentario;
 }

@@ -29,9 +29,56 @@
 			</div>
 			<div class="app-content">
 				<div class="container-fluid">
+					<div th:if="${success}"
+						class="alert alert-success alert-dismissible fade show"
+						role="alert">
+						<span th:text="${success}"></span>
+						<button type="button" class="btn-close" data-bs-dismiss="alert"
+							aria-label="Close"></button>
+					</div>
+					<div th:if="${error}"
+						class="alert alert-danger alert-dismissible fade show" role="alert">
+						<span th:text="${error}"></span>
+						<button type="button" class="btn-close" data-bs-dismiss="alert"
+							aria-label="Close"></button>
+					</div>
+
+					<div class="card mb-4" th:if="${ensayospendientes != null and not #lists.isEmpty(ensayospendientes)}">
+						<div class="card-header">
+							<h3 class="card-title">Ensayos pendientes por dictaminar</h3>
+						</div>
+						<div class="card-body">
+							<table class="table table-striped">
+								<thead>
+									<tr>
+										<th scope="col">Código Ensayo</th>
+										<th scope="col">Orden</th>
+										<th scope="col">Responsable</th>
+										<th scope="col">Estado Ensayo</th>
+										<th scope="col">Acciones</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr th:each="ensayo : ${ensayospendientes}">
+										<td th:text="${ensayo.codigoEnsayo}"></td>
+										<td th:text="${'Orden #' + ensayo.idOrden}"></td>
+										<td th:text="${ensayo.responsable}"></td>
+										<td th:text="${ensayo.estado}"></td>
+										<td>
+											<a th:if="${session.rolUsuario != 'GERENTE'}"
+												th:href="@{/dictamenLote/crearDictamenLote(idOrden=${ensayo.idOrden})}"
+												class="btn btn-sm btn-outline-primary">
+												<i class="bi bi-clipboard-check"></i> Dictaminar
+											</a>
+										</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+					</div>
+
 					<div class="card">
 						<div class="card-header">
-							<!-- 🔹 SOLO VISIBLE SI NO ES GERENTE -->
 							<a th:if="${session.rolUsuario != 'GERENTE'}"
 								th:href="@{/dictamenLote/crearDictamenLote}"
 								class="btn btn-sm btn-outline-info" title="Crear Parametro">
@@ -77,7 +124,11 @@
 												th:if="${indice.idUsuarioInspector == null}"
 												class="badge bg-secondary">Sin Usuario</span></td>
 											<td th:text="${indice.fechaDictamen}"></td>
-											<td th:text="${indice.estado}"></td>
+											<td>
+												<span class="badge"
+													th:classappend="${indice.estado == 'ACEPTADO'} ? 'text-bg-success' : (${indice.estado == 'RECHAZADO'} ? 'text-bg-danger' : 'text-bg-secondary')"
+													th:text="${indice.estado}"></span>
+											</td>
 											<td th:text="${indice.observaciones}"></td>
 											<td>
 												<div class="btn-group" role="group" aria-label="Acciones">

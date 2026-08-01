@@ -21,9 +21,7 @@ public class WebClientConfig implements WebMvcConfigurer { // 👈 2. IMPLEMENTA
     @Override // 👈 3. ANOTACIÓN @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(authInterceptor)
-                // Proteger los módulos del sistema
-                .addPathPatterns("/usuario/**", "/parametrocalidad/**", "/planproduccion/**", "/ensayos/**")
-                // Excluir rutas públicas (login, logout, archivos estáticos)
+                .addPathPatterns("/**")
                 .excludePathPatterns(
                         "/autenticacion/**",
                         "/css/**",

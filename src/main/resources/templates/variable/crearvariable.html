@@ -50,6 +50,8 @@
 								class="form-control"
 								th:field="*{nombreVariable}"
 								placeholder="Ejemplo: pH"
+								pattern="[^0-9]*"
+								title="El nombre de la variable no puede contener numeros"
 								maxlength="100"
 								required>
 						</div>
@@ -70,6 +72,8 @@
 							<input type="text"
 								id="unidadMedida"
 								class="form-control"
+								pattern="[A-Za-z0-9%/.\s]+"
+								title="Use solo letras, numeros y simbolos propios de una unidad de medida"
 								th:field="*{unidadMedida}"
 								placeholder="Ejemplo: °C, %, mg/L"
 								maxlength="50"
@@ -90,6 +94,17 @@
 		</form>
 	</div>
 
-	<th:block layout:fragment="scripts"></th:block>
+	<th:block layout:fragment="scripts">
+		<script>
+			document.addEventListener("DOMContentLoaded", function () {
+				const nombre = document.getElementById("nombreVariable");
+				if (nombre) {
+					nombre.addEventListener("input", function () {
+						this.value = this.value.replace(/[0-9]/g, "");
+					});
+				}
+			});
+		</script>
+	</th:block>
 </body>
 </html>

@@ -135,6 +135,50 @@
 					</div>
 				</div>
 
+				<!-- FILA 3: Indicadores de calidad (Dictamenes) -->
+				<div class="row g-3 mt-1">
+					<div class="col-lg-4 col-md-6">
+						<div class="card kpi-card kpi-border-success shadow-sm h-100 p-2">
+							<div class="card-body d-flex align-items-center justify-content-between">
+								<div>
+									<span class="text-muted fw-semibold text-uppercase fs-7 d-block mb-1">Tasa de Aprobación de Dictámenes</span>
+									<h2 class="fw-bold mb-0 text-dark" th:text="${resumen.tasaAprobacionDictamenes} + '%'">0%</h2>
+								</div>
+								<div class="kpi-icon-bg bg-success-subtle text-success">
+									<i class="bi bi-patch-check"></i>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="col-lg-4 col-md-6">
+						<div class="card kpi-card kpi-border-warning shadow-sm h-100 p-2">
+							<div class="card-body d-flex align-items-center justify-content-between">
+								<div>
+									<span class="text-muted fw-semibold text-uppercase fs-7 d-block mb-1">Dictámenes Pendientes</span>
+									<h2 class="fw-bold mb-0 text-dark" th:text="${resumen.dictamenesPendientes}">0</h2>
+								</div>
+								<div class="kpi-icon-bg bg-warning-subtle text-warning">
+									<i class="bi bi-hourglass-split"></i>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="col-lg-4 col-md-12">
+						<div class="card border-0 shadow-sm rounded-3 h-100">
+							<div class="card-header bg-transparent border-0 pt-3 px-3">
+								<h5 class="card-title fw-bold text-dark mb-0">
+									<i class="bi bi-bar-chart-fill me-2 text-primary"></i>Dictámenes
+								</h5>
+							</div>
+							<div class="card-body p-3">
+								<div style="position: relative; height: 140px; width: 100%;">
+									<canvas id="graficoDictamenes"></canvas>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
 			</div>
 		</div>
 	</div>
@@ -196,6 +240,31 @@
 						}
 					}
 				});
+
+				const ctxDictamenes = document.getElementById('graficoDictamenes');
+				if (ctxDictamenes) {
+					new Chart(ctxDictamenes, {
+						type: 'bar',
+						data: {
+							labels: ['Aceptados', 'Rechazados', 'Pendientes'],
+							datasets: [{
+								data: [
+									/*[[${resumen?.dictamenesAceptados}]]*/ 0,
+									/*[[${resumen?.dictamenesRechazados}]]*/ 0,
+									/*[[${resumen?.dictamenesPendientes}]]*/ 0
+								],
+								backgroundColor: ['#198754', '#dc3545', '#ffc107'],
+								borderRadius: 6
+							}]
+						},
+						options: {
+							responsive: true,
+							maintainAspectRatio: false,
+							plugins: { legend: { display: false } },
+							scales: { y: { beginAtZero: true, ticks: { precision: 0 } } }
+						}
+					});
+				}
 			});
 		</script>
 	</th:block>

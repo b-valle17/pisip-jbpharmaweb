@@ -31,8 +31,16 @@
 				<div class="container-fluid">
 					<div class="row g-4">
 						<div class="col-12">
-							<div class="callout callout-info">En este formulario podra
-								crear el dictamen de lote</div>
+							<div class="callout callout-info">Al registrar el dictamen, este
+								queda en estado PENDIENTE hasta que el supervisor lo apruebe o
+								lo rechace desde la ventana de revisión.</div>
+							<div th:if="${error}"
+								class="alert alert-danger alert-dismissible fade show"
+								role="alert">
+								<span th:text="${error}"></span>
+								<button type="button" class="btn-close" data-bs-dismiss="alert"
+									aria-label="Close"></button>
+							</div>
 						</div>
 						<div class="col-md-6 mx-auto">
 							<div class="card card-primary card-outline mb-4">
@@ -76,12 +84,9 @@
 												id="fechaDictamen" th:field="*{fechaDictamen}" th:attr="min=${#temporals.format(#temporals.createNow(),'yyyy-MM-dd')}" required/>
 										</div>
 										<div class="mb-3">
-											<label for="estado" class="form-label">Estado</label> <select
-												class="form-select" id="estado" th:field="*{estado}" required>
-												<option value="">Selecciona un estado</option>
-												<option value="APROBADO">APROBADO</option>
-												<option value="RECHAZADO">RECHAZADO</option>
-											</select>
+											<label class="form-label">Estado</label>
+											<input type="text" class="form-control" value="PENDIENTE" disabled />
+											<div class="form-text">El estado se define automáticamente al registrar; se resuelve luego en la revisión.</div>
 										</div>
 										<div class="mb-3">
 											<label for="observaciones" class="form-label">Observaciones</label>

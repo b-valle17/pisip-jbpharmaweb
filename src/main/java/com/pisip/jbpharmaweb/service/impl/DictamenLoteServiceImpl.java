@@ -8,6 +8,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import com.pisip.jbpharmaweb.model.dto.request.DictamenLoteRequestDto;
 import com.pisip.jbpharmaweb.model.dto.request.DictamenRechazoRequestDto;
 import com.pisip.jbpharmaweb.model.dto.response.DictamenLoteResponseDto;
+import com.pisip.jbpharmaweb.model.dto.response.EnsayoLaboratorioResponseDto;
 import com.pisip.jbpharmaweb.service.IDictamenLoteService;
 
 @Service
@@ -24,6 +25,12 @@ public class DictamenLoteServiceImpl implements IDictamenLoteService {
 	public List<DictamenLoteResponseDto> listarDictamenLote() {
 		return webClient.get().uri("/dictamen-lote").retrieve().bodyToFlux(DictamenLoteResponseDto.class)
 				.collectList().block();
+	}
+
+	@Override
+	public List<EnsayoLaboratorioResponseDto> listarEnsayosPendientes() {
+		return webClient.get().uri("/dictamen-lote/pendientes").retrieve()
+				.bodyToFlux(EnsayoLaboratorioResponseDto.class).collectList().block();
 	}
 
 	@Override

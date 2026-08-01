@@ -31,8 +31,9 @@
 				<div class="container-fluid">
 					<div class="row g-4">
 						<div class="col-12">
-							<div class="callout callout-info">En este formulario podra
-								crear el informe de auditoría</div>
+							<div class="callout callout-info">Seleccione la auditoría de
+								lote sobre la que se generará el informe. La fecha, el formato
+								y la ruta del archivo se generan automáticamente.</div>
 						</div>
 						<div class="col-md-6 mx-auto">
 							<div class="card card-primary card-outline mb-4">
@@ -40,28 +41,25 @@
 									method="post">
 									<div class="card-body">
 										<div class="mb-3">
-											<label for="idAuditoria" class="form-label">ID Auditoría</label>
-											<input type="number" class="form-control" id="idAuditoria"
-												th:field="*{idAuditoria}"/>
-										</div>
-										<div class="mb-3">
-											<label for="fechaGeneracion" class="form-label">Fecha de Generación</label>
-											<input type="date" class="form-control" id="fechaGeneracion"
-												th:field="*{fechaGeneracion}"/>
+											<label for="idAuditoria" class="form-label">Auditoría de Lote</label>
+											<select class="form-select" id="idAuditoria" th:field="*{idAuditoria}" required>
+												<option value="" disabled selected>-- Seleccione una auditoría --</option>
+												<option th:each="auditoria : ${auditorias}"
+													th:value="${auditoria.idAuditoria}"
+													th:text="${'Auditoría #' + auditoria.idAuditoria + ' - Orden #' + auditoria.idOrdenProduccion + ' (' + auditoria.resultado + ')'}">
+												</option>
+											</select>
 										</div>
 										<div class="mb-3">
 											<label for="formato" class="form-label">Formato</label>
-											<input type="text" class="form-control" id="formato"
-												placeholder="Ej: PDF, EXCEL" th:field="*{formato}"/>
-										</div>
-										<div class="mb-3">
-											<label for="rutaArchivo" class="form-label">Ruta del Archivo</label>
-											<input type="text" class="form-control" id="rutaArchivo"
-												th:field="*{rutaArchivo}"/>
+											<select class="form-select" id="formato" th:field="*{formato}">
+												<option value="PDF">PDF</option>
+												<option value="EXCEL">EXCEL</option>
+											</select>
 										</div>
 									</div>
 									<div class="card-footer">
-										<button type="submit" class="btn btn-primary">Guardar</button>
+										<button type="submit" class="btn btn-primary">Generar informe</button>
 									</div>
 								</form>
 							</div>

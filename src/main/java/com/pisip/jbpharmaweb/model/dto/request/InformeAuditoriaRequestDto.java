@@ -14,4 +14,6 @@ public class InformeAuditoriaRequestDto {
 	private String formato;
 
 	private String rutaArchivo;
+
+	private String comentario;
 }

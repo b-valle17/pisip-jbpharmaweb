@@ -4,10 +4,13 @@ import java.util.List;
 
 import com.pisip.jbpharmaweb.model.dto.request.DictamenLoteRequestDto;
 import com.pisip.jbpharmaweb.model.dto.response.DictamenLoteResponseDto;
+import com.pisip.jbpharmaweb.model.dto.response.EnsayoLaboratorioResponseDto;
 
 public interface IDictamenLoteService {
 
 	public List<DictamenLoteResponseDto> listarDictamenLote();
+
+	public List<EnsayoLaboratorioResponseDto> listarEnsayosPendientes();
 
 	public void guardarDictamenLote(DictamenLoteRequestDto nuevo);
 
