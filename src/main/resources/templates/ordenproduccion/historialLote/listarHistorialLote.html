@@ -45,18 +45,17 @@
 							</div>
 
 							<div class="card-tools">
-								<div class="input-group input-group-sm" style="width: 18rem">
+								<div class="input-group input-group-sm" style="width: 16rem">
 									<span class="input-group-text"> <i class="bi bi-search"
 										aria-hidden="true"></i>
-									</span> <input id="buscadorHistorial" type="search" class="form-control"
-										placeholder="Buscar por orden, accion, descripcion o estado"
-										aria-label="Buscar" autocomplete="off" />
+									</span> <input id="table-filter" type="search" class="form-control"
+										placeholder="Filter rows&hellip;" aria-label="Filter rows" />
 								</div>
 							</div>
 						</div>
 						<div class="card-body">
 							<div id="users-table">
-								<table id="tablaHistorialLote" class="table table-striped">
+								<table class="table table-striped">
 									<thead>
 										<tr>
 											<th scope="col">ID</th>
@@ -69,7 +68,7 @@
 										</tr>
 									</thead>
 									<tbody>
-										<tr class="fila-historial" th:each="indice : ${listahistoriallote}">
+										<tr th:each="indice : ${listahistoriallote}">
 											<td th:text="${indice.idHistorial}" class="fw-semibold"></td>
 											<td th:text="${indice.idOrdenProduccion}"></td>
 											<td th:text="${indice.fechaEvento}"></td>
@@ -93,10 +92,6 @@
 												</div>
 											</td>
 										</tr>
-									<tr id="sinResultadosHistorial" style="display: none">
-										<td colspan="7" class="text-center text-muted py-4">No se
-											encontraron registros con ese criterio.</td>
-									</tr>
 									</tbody>
 								</table>
 							</div>
@@ -155,31 +150,5 @@
         }
       });
     </script>
-	<script>
-		document.addEventListener('DOMContentLoaded', function () {
-			const buscador = document.getElementById('buscadorHistorial');
-			const filas = Array.from(document.querySelectorAll('#tablaHistorialLote .fila-historial'));
-			const sinResultados = document.getElementById('sinResultadosHistorial');
-
-			function normalizar(texto) {
-				return (texto || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').trim();
-			}
-
-			if (buscador) {
-				buscador.addEventListener('input', function () {
-					const criterio = normalizar(buscador.value);
-					let visibles = 0;
-					filas.forEach(function (fila) {
-						const coincide = normalizar(fila.innerText).includes(criterio);
-						fila.style.display = coincide ? '' : 'none';
-						if (coincide) visibles++;
-					});
-					if (sinResultados) {
-						sinResultados.style.display = filas.length > 0 && visibles === 0 ? '' : 'none';
-					}
-				});
-			}
-		});
-	</script>
 </body>
 </html>

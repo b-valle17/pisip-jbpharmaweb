@@ -106,10 +106,20 @@ public class OrdenProduccionController {
 			dto.setIdUsuario(idUsuarioSession);
 		}
 
-		// Autogeneración del número de lote secuencial (ej: LOT-001, LOT-002)
 		List<OrdenProduccionResponseDto> ordenesExistentes = servicioAPI.listarOrden();
-		int siguienteNumero = (ordenesExistentes != null ? ordenesExistentes.size() : 0) + 1;
-		dto.setNumeroLote(String.format("LOT-%03d", siguienteNumero));
+		int maximoActual = 0;
+		if (ordenesExistentes != null) {
+			for (OrdenProduccionResponseDto existente : ordenesExistentes) {
+				String numero = existente.getNumeroLote();
+				if (numero != null && numero.startsWith("LOT-")) {
+					try {
+						maximoActual = Math.max(maximoActual, Integer.parseInt(numero.substring(4)));
+					} catch (NumberFormatException ex) {
+					}
+				}
+			}
+		}
+		dto.setNumeroLote(String.format("LOT-%03d", maximoActual + 1));
 
 		dto.setEstado("EN PROCESO");
 

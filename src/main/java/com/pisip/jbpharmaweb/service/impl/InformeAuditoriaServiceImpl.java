@@ -1,6 +1,7 @@
 package com.pisip.jbpharmaweb.service.impl;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -28,6 +29,12 @@ public class InformeAuditoriaServiceImpl implements IInformeAuditoriaService {
 	@Override
 	public void guardarInformeAuditoria(InformeAuditoriaRequestDto nuevo) {
 		webClient.post().uri("/informe-auditoria").bodyValue(nuevo).retrieve().toBodilessEntity().block();
+	}
+
+	@Override
+	public void comentarInformeAuditoria(int idInforme, String comentario) {
+		webClient.put().uri("/informe-auditoria/{id}/comentar", idInforme)
+				.bodyValue(Map.of("comentario", comentario)).retrieve().toBodilessEntity().block();
 	}
 
 }

@@ -13,14 +13,13 @@
 				<div class="container-fluid">
 					<div class="row">
 						<div class="col-sm-6">
-							<h1 class="mb-0 fs-3">Crear Informe Auditoría</h1>
+							<h1 class="mb-0 fs-3">Lista Dictamen Lote</h1>
 						</div>
 						<div class="col-sm-6">
 							<nav aria-label="breadcrumb">
 								<ol class="breadcrumb float-sm-end">
 									<li class="breadcrumb-item"><a href="/index">Inicio</a></li>
-									<li class="breadcrumb-item"><a href="/informeAuditoria">Informe Auditoría</a></li>
-									<li class="breadcrumb-item active" aria-current="page">Crear</li>
+									<li class="breadcrumb-item active" aria-current="page">Dictamen Lote</li>
 								</ol>
 							</nav>
 						</div>
@@ -29,40 +28,64 @@
 			</div>
 			<div class="app-content">
 				<div class="container-fluid">
-					<div class="row g-4">
-						<div class="col-12">
-							<div class="callout callout-info">Seleccione la auditoría de
-								lote sobre la que se generará el informe. La fecha, el formato
-								y la ruta del archivo se generan automáticamente.</div>
-						</div>
-						<div class="col-md-6 mx-auto">
-							<div class="card card-primary card-outline mb-4">
-								<form th:action="@{/informeAuditoria/guardar}" th:object="${informeAuditoria}"
-									method="post">
-									<div class="card-body">
-										<div class="mb-3">
-											<label for="idAuditoria" class="form-label">Auditoría de Lote</label>
-											<select class="form-select" id="idAuditoria" th:field="*{idAuditoria}" required>
-												<option value="" disabled selected>-- Seleccione una auditoría --</option>
-												<option th:each="auditoria : ${auditorias}"
-													th:value="${auditoria.idAuditoria}"
-													th:text="${'Auditoría #' + auditoria.idAuditoria + ' - Orden #' + auditoria.idOrdenProduccion + ' (' + auditoria.resultado + ')'}">
-												</option>
-											</select>
-										</div>
-										<div class="mb-3">
-											<label for="formato" class="form-label">Formato</label>
-											<select class="form-select" id="formato" th:field="*{formato}">
-												<option value="PDF">PDF</option>
-												<option value="EXCEL">EXCEL</option>
-											</select>
-										</div>
-									</div>
-									<div class="card-footer">
-										<button type="submit" class="btn btn-primary">Generar informe</button>
-									</div>
-								</form>
+					<div class="card">
+						<div class="card-header">
+							<a class="badge text-bg-info"
+								th:href="@{/dictamenLote/crearDictamenLote}"
+								style="text-decoration: none;">Crear Dictamen Lote</a>
+							<div class="card-tools">
+								<div class="input-group input-group-sm" style="width: 16rem">
+									<span class="input-group-text"> <i class="bi bi-search"
+										aria-hidden="true"></i>
+									</span> <input id="table-filter" type="search" class="form-control"
+										placeholder="Filter rows&hellip;" aria-label="Filter rows" />
+								</div>
 							</div>
+						</div>
+						<div class="card-body">
+							<div id="users-table">
+								<table class="table table-striped">
+									<thead>
+										<tr>
+											<th scope="col">ID</th>
+											<th scope="col">ID Orden Producción</th>
+											<th scope="col">ID Usuario Inspector</th>
+											<th scope="col">Fecha Dictamen</th>
+											<th scope="col">Estado</th>
+											<th scope="col">Observaciones</th>
+											<th scope="col">Acciones</th>
+										</tr>
+									</thead>
+									<tbody>
+										<tr th:each="indice : ${listadictamenlote}">
+											<td th:text="${indice.idDictamen}" class="fw-semibold"></td>
+											<td th:text="${indice.idOrdenProduccion}"></td>
+											<td th:text="${indice.idUsuarioInspector}"></td>
+											<td th:text="${indice.fechaDictamen}"></td>
+											<td th:text="${indice.estado}"></td>
+											<td th:text="${indice.observaciones}"></td>
+											<td>
+												<div class="btn-group" role="group" aria-label="Acciones">
+													<a th:href="@{/dictamenLote/{id}/revisar(id=${indice.idDictamen})}"
+														class="btn btn-sm btn-outline-primary" title="Revisar / Aceptar / Rechazar">
+														<i class="bi bi-clipboard-check"></i>
+													</a> <a th:href="@{/dictamenLote/editarDictamenLote}"
+														class="btn btn-sm btn-outline-warning" title="Editar">
+														<i class="fa-solid fa-pen-to-square"></i>
+													</a> <a href="" class="btn btn-sm btn-outline-danger"
+														title="Eliminar"
+														onclick="return confirm('¿Estás seguro de que deseas eliminar este registro?')">
+														<i class="fa fa-trash" aria-hidden="true"></i>
+													</a>
+												</div>
+											</td>
+										</tr>
+									</tbody>
+								</table>
+							</div>
+						</div>
+						<div class="card-footer text-secondary small">
+							Pisip-JBpharma &mdash; Dictamen Lote
 						</div>
 					</div>
 				</div>

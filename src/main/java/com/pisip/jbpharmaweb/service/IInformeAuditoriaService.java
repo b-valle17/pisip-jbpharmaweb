@@ -11,4 +11,6 @@ public interface IInformeAuditoriaService {
 
 	public void guardarInformeAuditoria(InformeAuditoriaRequestDto nuevo);
 
+	public void comentarInformeAuditoria(int idInforme, String comentario);
+
 }

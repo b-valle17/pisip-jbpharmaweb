@@ -13,13 +13,13 @@
 				<div class="container-fluid">
 					<div class="row">
 						<div class="col-sm-6">
-							<h1 class="mb-0 fs-3">Historial de Lotes (Aceptados / Rechazados)</h1>
+							<h1 class="mb-0 fs-3">Lista Indicadores KPI</h1>
 						</div>
 						<div class="col-sm-6">
 							<nav aria-label="breadcrumb">
 								<ol class="breadcrumb float-sm-end">
 									<li class="breadcrumb-item"><a href="/index">Inicio</a></li>
-									<li class="breadcrumb-item active" aria-current="page">Historial Lote</li>
+									<li class="breadcrumb-item active" aria-current="page">Indicadores KPI</li>
 								</ol>
 							</nav>
 						</div>
@@ -28,61 +28,89 @@
 			</div>
 			<div class="app-content">
 				<div class="container-fluid">
+
+					<!-- Dashboard de metricas: SmallBox / InfoBox -->
+					<div class="row" th:if="${resumen != null}">
+						<div class="col-lg-3 col-6">
+							<div class="small-box text-bg-success">
+								<div class="inner">
+									<h3 th:text="${resumen.cumplimientoPlanMensual} + '%'">0%</h3>
+									<p>Cumplimiento del Plan Mensual</p>
+								</div>
+								<i class="small-box-icon bi bi-graph-up-arrow"></i>
+							</div>
+						</div>
+						<div class="col-lg-3 col-6">
+							<div class="small-box text-bg-info">
+								<div class="inner">
+									<h3 th:text="${resumen.totalLotesProducidos}">0</h3>
+									<p>Total de Lotes Producidos</p>
+								</div>
+								<i class="small-box-icon bi bi-boxes"></i>
+							</div>
+						</div>
+						<div class="col-lg-3 col-6">
+							<div class="small-box text-bg-warning">
+								<div class="inner">
+									<h3 th:text="${resumen.lotesEnCuarentena}">0</h3>
+									<p>Lotes en Cuarentena / En Ensayo</p>
+								</div>
+								<i class="small-box-icon bi bi-hourglass-split"></i>
+							</div>
+						</div>
+						<div class="col-lg-3 col-6">
+							<div class="info-box">
+								<span class="info-box-icon text-bg-secondary"><i class="bi bi-pie-chart"></i></span>
+								<div class="info-box-content">
+									<span class="info-box-text">Distribución por Estado</span>
+									<span class="info-box-number">
+										<span th:each="entry, iter : ${resumen.distribucionPorEstado}">
+											<span th:text="${entry.key} + ': ' + ${entry.value}"></span><span th:if="${!iter.last}">, </span>
+										</span>
+										<span th:if="${resumen.distribucionPorEstado == null or resumen.distribucionPorEstado.isEmpty()}">Sin datos</span>
+									</span>
+								</div>
+							</div>
+						</div>
+					</div>
+
 					<div class="card">
 						<div class="card-header">
 							<a class="badge text-bg-info"
-								th:href="@{/historialLote/crearHistorialLote}"
-								style="text-decoration: none;">Crear Historial Lote</a>
-
-							<!-- Filtro por estado -->
-							<div class="btn-group btn-group-sm ms-3" role="group" aria-label="Filtro de estado">
-								<a th:href="@{/historialLote}" class="btn"
-									th:classappend="${estadoSeleccionado == null} ? 'btn-secondary' : 'btn-outline-secondary'">Todos</a>
-								<a th:href="@{/historialLote(estado='ACEPTADO')}" class="btn"
-									th:classappend="${estadoSeleccionado == 'ACEPTADO'} ? 'btn-success' : 'btn-outline-success'">Aceptados</a>
-								<a th:href="@{/historialLote(estado='RECHAZADO')}" class="btn"
-									th:classappend="${estadoSeleccionado == 'RECHAZADO'} ? 'btn-danger' : 'btn-outline-danger'">Rechazados</a>
-							</div>
-
+								th:href="@{/indicadorKpi/crearIndicadorKpi}"
+								style="text-decoration: none;">Crear Indicador KPI</a>
 							<div class="card-tools">
-								<div class="input-group input-group-sm" style="width: 18rem">
+								<div class="input-group input-group-sm" style="width: 16rem">
 									<span class="input-group-text"> <i class="bi bi-search"
 										aria-hidden="true"></i>
-									</span> <input id="buscadorHistorial" type="search" class="form-control"
-										placeholder="Buscar por orden, accion, descripcion o estado"
-										aria-label="Buscar" autocomplete="off" />
+									</span> <input id="table-filter" type="search" class="form-control"
+										placeholder="Filter rows&hellip;" aria-label="Filter rows" />
 								</div>
 							</div>
 						</div>
 						<div class="card-body">
 							<div id="users-table">
-								<table id="tablaHistorialLote" class="table table-striped">
+								<table class="table table-striped">
 									<thead>
 										<tr>
 											<th scope="col">ID</th>
-											<th scope="col">ID Orden Producción</th>
-											<th scope="col">Fecha Evento</th>
-											<th scope="col">Acción</th>
+											<th scope="col">Nombre Indicador</th>
+											<th scope="col">Valor</th>
+											<th scope="col">Fecha Cálculo</th>
 											<th scope="col">Descripción</th>
-											<th scope="col">Estado del Lote</th>
 											<th scope="col">Acciones</th>
 										</tr>
 									</thead>
 									<tbody>
-										<tr class="fila-historial" th:each="indice : ${listahistoriallote}">
-											<td th:text="${indice.idHistorial}" class="fw-semibold"></td>
-											<td th:text="${indice.idOrdenProduccion}"></td>
-											<td th:text="${indice.fechaEvento}"></td>
-											<td th:text="${indice.accion}"></td>
+										<tr th:each="indice : ${listaindicadorkpi}">
+											<td th:text="${indice.idKpi}" class="fw-semibold"></td>
+											<td th:text="${indice.nombreIndicador}"></td>
+											<td th:text="${indice.valor}"></td>
+											<td th:text="${indice.fechaCalculo}"></td>
 											<td th:text="${indice.descripcion}"></td>
 											<td>
-												<span class="badge"
-													th:classappend="${indice.estadoLote == 'ACEPTADO'} ? 'text-bg-success' : (${indice.estadoLote == 'RECHAZADO'} ? 'text-bg-danger' : 'text-bg-secondary')"
-													th:text="${indice.estadoLote} ?: 'Pendiente'"></span>
-											</td>
-											<td>
 												<div class="btn-group" role="group" aria-label="Acciones">
-													<a th:href="@{/historialLote/editarHistorialLote}"
+													<a th:href="@{/indicadorKpi/editarIndicadorKpi}"
 														class="btn btn-sm btn-outline-warning" title="Editar">
 														<i class="fa-solid fa-pen-to-square"></i>
 													</a> <a href="" class="btn btn-sm btn-outline-danger"
@@ -93,16 +121,12 @@
 												</div>
 											</td>
 										</tr>
-									<tr id="sinResultadosHistorial" style="display: none">
-										<td colspan="7" class="text-center text-muted py-4">No se
-											encontraron registros con ese criterio.</td>
-									</tr>
 									</tbody>
 								</table>
 							</div>
 						</div>
 						<div class="card-footer text-secondary small">
-							Pisip-JBpharma &mdash; Historial Lote
+							Pisip-JBpharma &mdash; Indicadores KPI
 						</div>
 					</div>
 				</div>
@@ -155,31 +179,5 @@
         }
       });
     </script>
-	<script>
-		document.addEventListener('DOMContentLoaded', function () {
-			const buscador = document.getElementById('buscadorHistorial');
-			const filas = Array.from(document.querySelectorAll('#tablaHistorialLote .fila-historial'));
-			const sinResultados = document.getElementById('sinResultadosHistorial');
-
-			function normalizar(texto) {
-				return (texto || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').trim();
-			}
-
-			if (buscador) {
-				buscador.addEventListener('input', function () {
-					const criterio = normalizar(buscador.value);
-					let visibles = 0;
-					filas.forEach(function (fila) {
-						const coincide = normalizar(fila.innerText).includes(criterio);
-						fila.style.display = coincide ? '' : 'none';
-						if (coincide) visibles++;
-					});
-					if (sinResultados) {
-						sinResultados.style.display = filas.length > 0 && visibles === 0 ? '' : 'none';
-					}
-				});
-			}
-		});
-	</script>
 </body>
 </html>

@@ -12,4 +12,8 @@ public class IndicadorKpiResumenDto {
 	private long totalLotesProducidos;
 	private long lotesEnCuarentena;
 	private Map<String, Long> distribucionPorEstado;
+	private long dictamenesAceptados;
+	private long dictamenesRechazados;
+	private long dictamenesPendientes;
+	private BigDecimal tasaAprobacionDictamenes;
 }
