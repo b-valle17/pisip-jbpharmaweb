@@ -1,6 +1,7 @@
 package com.pisip.jbpharmaweb.model.dto.request;
 
 import java.sql.Date;
+import java.time.LocalDate;
 
 import lombok.Data;
 
@@ -11,7 +12,7 @@ public class DictamenLoteRequestDto {
 
 	private Integer idUsuarioInspector;
 
-	private Date fechaDictamen;
+	private LocalDate fechaDictamen;
 
 	private String estado;
 

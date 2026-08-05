@@ -30,9 +30,7 @@
 				<div class="container-fluid">
 					<div class="card">
 						<div class="card-header">
-							<a class="badge text-bg-info"
-								th:href="@{/historialLote/crearHistorialLote}"
-								style="text-decoration: none;">Crear Historial Lote</a>
+							
 
 							<!-- Filtro por estado -->
 							<div class="btn-group btn-group-sm ms-3" role="group" aria-label="Filtro de estado">
@@ -65,7 +63,6 @@
 											<th scope="col">Acción</th>
 											<th scope="col">Descripción</th>
 											<th scope="col">Estado del Lote</th>
-											<th scope="col">Acciones</th>
 										</tr>
 									</thead>
 									<tbody>
@@ -80,18 +77,7 @@
 													th:classappend="${indice.estadoLote == 'ACEPTADO'} ? 'text-bg-success' : (${indice.estadoLote == 'RECHAZADO'} ? 'text-bg-danger' : 'text-bg-secondary')"
 													th:text="${indice.estadoLote} ?: 'Pendiente'"></span>
 											</td>
-											<td>
-												<div class="btn-group" role="group" aria-label="Acciones">
-													<a th:href="@{/historialLote/editarHistorialLote}"
-														class="btn btn-sm btn-outline-warning" title="Editar">
-														<i class="fa-solid fa-pen-to-square"></i>
-													</a> <a href="" class="btn btn-sm btn-outline-danger"
-														title="Eliminar"
-														onclick="return confirm('¿Estás seguro de que deseas eliminar este registro?')">
-														<i class="fa fa-trash" aria-hidden="true"></i>
-													</a>
-												</div>
-											</td>
+											
 										</tr>
 									<tr id="sinResultadosHistorial" style="display: none">
 										<td colspan="7" class="text-center text-muted py-4">No se
@@ -109,14 +95,8 @@
 			</div>
 	<!--begin::Footer-->
 	<footer class="app-footer">
-		<!--begin::To the end-->
-		<div class="float-end d-none d-sm-inline">Anything you want</div>
-		<!--end::To the end-->
-		<!--begin::Copyright-->
-		<strong> Copyright &copy; 2014-2026&nbsp; <a
-			href="https://adminlte.io" class="text-decoration-none">AdminLTE.io</a>.
-		</strong> All rights reserved.
-		<!--end::Copyright-->
+		
+		
 	</footer>
 	<!--end::Footer-->
 	</div>
