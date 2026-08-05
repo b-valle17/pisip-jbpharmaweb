@@ -62,20 +62,33 @@ public class DictamenLoteController {
 
 	@GetMapping("/crearDictamenLote")
 	public String leerpaginacrear(@RequestParam(required = false) Integer idOrden, Model model,
-			HttpSession session, RedirectAttributes redirectAttributes) {
-		if (esGerente(session)) {
-			redirectAttributes.addFlashAttribute("error", "El rol Gerente no puede registrar dictámenes.");
-			return "redirect:/dictamenLote";
-		}
-		DictamenLoteRequestDto dto = new DictamenLoteRequestDto();
-		if (idOrden != null) {
-			dto.setIdOrdenProduccion(idOrden);
-		}
-		model.addAttribute("dictamenLote", dto);
-		model.addAttribute("ordenesProduccion", ordenProduccionService.listarOrden());
-		model.addAttribute("usuariosInspectores", usuarioService.listarUsuarios());
+	        HttpSession session, RedirectAttributes redirectAttributes) {
+	    if (esGerente(session)) {
+	        redirectAttributes.addFlashAttribute("error", "El rol Gerente no puede registrar dictámenes.");
+	        return "redirect:/dictamenLote";
+	    }
 
-		return "/dictamenLote/crearDictamenLote";
+	    DictamenLoteRequestDto dto = new DictamenLoteRequestDto();
+	    if (idOrden != null) {
+	        dto.setIdOrdenProduccion(idOrden);
+	    }
+
+	    // Obtener las claves exactas guardadas en LoginController
+	    Integer idUsuario = (Integer) session.getAttribute("idUsuario");
+	    String nombreUsuario = (String) session.getAttribute("nombreUsuario");
+
+	    if (idUsuario != null) {
+	        dto.setIdUsuarioInspector(idUsuario);
+	    }
+
+	    if (nombreUsuario != null) {
+	        model.addAttribute("nombreInspectorLogueado", nombreUsuario);
+	    }
+
+	    model.addAttribute("dictamenLote", dto);
+	    model.addAttribute("ordenesProduccion", ordenProduccionService.listarOrden());
+
+	    return "/dictamenLote/crearDictamenLote";
 	}
 
 	@PostMapping("/guardar")

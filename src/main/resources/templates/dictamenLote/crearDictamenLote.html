@@ -7,6 +7,11 @@
 </head>
 <body class="layout-fixed sidebar-expand-lg bg-body-tertiary">
 	<div class="app-wrapper">
+
+		<!-- Bloques vacíos para sobrescribir y ocultar "JB Pharma" e "Inicio" superior -->
+		<h3 layout:fragment="titulo" style="display: none;"></h3>
+		<ol layout:fragment="breadcrumb" style="display: none;"></ol>
+
 		<div layout:fragment="contenidopaginas">
 			<div class="app-content-header">
 				<div class="container-fluid">
@@ -17,9 +22,7 @@
 						<div class="col-sm-6">
 							<nav aria-label="breadcrumb">
 								<ol class="breadcrumb float-sm-end">
-									<li class="breadcrumb-item"><a href="/index">Inicio</a></li>
-									<li class="breadcrumb-item"><a href="/dictamenLote">Dictamen
-											Lote</a></li>
+									<li class="breadcrumb-item"><a href="/dictamenLote">Dictamen Lote</a></li>
 									<li class="breadcrumb-item active" aria-current="page">Crear</li>
 								</ol>
 							</nav>
@@ -31,9 +34,9 @@
 				<div class="container-fluid">
 					<div class="row g-4">
 						<div class="col-12">
-							<div class="callout callout-info">Al registrar el dictamen, este
-								queda en estado PENDIENTE hasta que el supervisor lo apruebe o
-								lo rechace desde la ventana de revisión.</div>
+							<div class="callout callout-info">Al registrar el dictamen,
+								este queda en estado PENDIENTE hasta que el supervisor lo
+								apruebe o lo rechace desde la ventana de revisión.</div>
 							<div th:if="${error}"
 								class="alert alert-danger alert-dismissible fade show"
 								role="alert">
@@ -63,30 +66,32 @@
 											</select>
 										</div>
 
-										<!-- SELECT: Usuario Inspector -->
+										<!-- Usuario Inspector -->
 										<div class="mb-3">
-											<label for="idUsuarioInspector" class="form-label">Usuario
-												Inspector</label> <select class="form-select"
-												id="idUsuarioInspector" th:field="*{idUsuarioInspector}"
-												required>
-												<option value="" disabled selected>-- Seleccione un
-													Inspector --</option>
-												<option th:each="usuario : ${usuariosInspectores}"
-													th:value="${usuario.idUsuario}"
-													th:text="${usuario.nombre}">
-												</option>
-											</select>
+											<label for="nombreInspector" class="form-label">Usuario
+												Inspector</label>
+
+											<!-- Nombre del usuario logeado en pantalla -->
+											<input type="text" class="form-control" id="nombreInspector"
+												th:value="${nombreInspectorLogueado}" readonly />
+
+											<!-- ID del usuario logeado que se envía al servidor -->
+											<input type="hidden" th:field="*{idUsuarioInspector}" />
 										</div>
 
 										<div class="mb-3">
 											<label for="fechaDictamen" class="form-label">Fecha
 												de Dictamen</label> <input type="date" class="form-control"
-												id="fechaDictamen" th:field="*{fechaDictamen}" th:attr="min=${#temporals.format(#temporals.createNow(),'yyyy-MM-dd')}" required/>
+												id="fechaDictamen" th:field="*{fechaDictamen}"
+												th:attr="min=${#temporals.format(#temporals.createNow(),'yyyy-MM-dd')}"
+												required />
 										</div>
 										<div class="mb-3">
-											<label class="form-label">Estado</label>
-											<input type="text" class="form-control" value="PENDIENTE" disabled />
-											<div class="form-text">El estado se define automáticamente al registrar; se resuelve luego en la revisión.</div>
+											<label class="form-label">Estado</label> <input type="text"
+												class="form-control" value="PENDIENTE" disabled />
+											<div class="form-text">El estado se define
+												automáticamente al registrar; se resuelve luego en la
+												revisión.</div>
 										</div>
 										<div class="mb-3">
 											<label for="observaciones" class="form-label">Observaciones</label>
@@ -105,13 +110,6 @@
 			</div>
 			<!--begin::Footer-->
 			<footer class="app-footer">
-				<!--begin::To the end-->
-				<div class="float-end d-none d-sm-inline">Anything you want</div>
-				<!--end::Copyright-->
-				<strong> Copyright &copy; 2014-2026&nbsp; <a
-					href="https://adminlte.io" class="text-decoration-none">AdminLTE.io</a>.
-				</strong> All rights reserved.
-				<!--end::Copyright-->
 			</footer>
 			<!--end::Footer-->
 		</div>
