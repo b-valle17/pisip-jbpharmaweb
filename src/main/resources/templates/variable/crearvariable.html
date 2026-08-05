@@ -3,61 +3,160 @@
 	xmlns:th="http://www.thymeleaf.org"
 	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 	layout:decorate="~{plantilla/plantillaui}">
+
 <head>
 	<meta charset="UTF-8">
 	<title>Nueva variable</title>
 </head>
+
 <body>
+
 	<h3 layout:fragment="titulo">Nueva variable</h3>
 
-	<ol layout:fragment="breadcrumb" class="breadcrumb float-sm-end">
-		<li class="breadcrumb-item"><a th:href="@{/dashboard}">Inicio</a></li>
-		<li class="breadcrumb-item"><a th:href="@{/variables}">Variables</a></li>
-		<li class="breadcrumb-item active">Nueva</li>
+	<ol layout:fragment="breadcrumb"
+		class="breadcrumb float-sm-end">
+
+		<li class="breadcrumb-item">
+			<a th:href="@{/dashboard}">Inicio</a>
+		</li>
+
+		<li class="breadcrumb-item">
+			<a th:href="@{/variables}">Variables</a>
+		</li>
+
+		<li class="breadcrumb-item active">
+			Nueva
+		</li>
 	</ol>
 
 	<div layout:fragment="contenidopaginas">
-		<form th:action="@{/variables/guardar}"
+
+		<form id="formVariable"
+			th:action="@{/variables/guardar}"
 			th:object="${variable}"
 			method="post">
 
 			<div class="card content-card">
+
 				<div class="card-header">
-					<h5 class="card-title mb-0">Registrar variable</h5>
+					<h5 class="card-title mb-0">
+						Registrar variable
+					</h5>
 				</div>
 
 				<div class="card-body">
+
+					<div id="alertaVariable"
+						class="alert alert-warning d-none"
+						role="alert">
+
+						<i class="bi bi-exclamation-triangle me-1"></i>
+						<span id="textoAlertaVariable"></span>
+					</div>
+
 					<div class="row g-3">
 
+						<!-- ENSAYO -->
 						<div class="col-md-6">
-							<label for="idEnsayo" class="form-label">Ensayo</label>
+
+							<label for="idEnsayo"
+								class="form-label">
+								Ensayo
+							</label>
+
 							<select id="idEnsayo"
 								class="form-select"
 								th:field="*{idEnsayo}"
 								required>
-								<option value="">Seleccione un ensayo</option>
+
+								<option value="">
+									Seleccione un ensayo
+								</option>
+
 								<option th:each="ensayo : ${ensayos}"
 									th:value="${ensayo.idEnsayo}"
 									th:text="${ensayo.codigoEnsayo}">
 								</option>
+
 							</select>
+
+							<div class="form-text">
+								Seleccione el ensayo al que pertenece la variable.
+							</div>
 						</div>
 
+						<!-- NOMBRE DE VARIABLE -->
 						<div class="col-md-6">
-							<label for="nombreVariable" class="form-label">Nombre de variable</label>
-							<input type="text"
-								id="nombreVariable"
-								class="form-control"
+
+							<label for="nombreVariable"
+								class="form-label">
+								Nombre de variable
+							</label>
+
+							<select id="nombreVariable"
+								class="form-select"
 								th:field="*{nombreVariable}"
-								placeholder="Ejemplo: pH"
-								pattern="[^0-9]*"
-								title="El nombre de la variable no puede contener numeros"
-								maxlength="100"
 								required>
+
+								<option value="">
+									Seleccione una variable
+								</option>
+
+								<option value="Pureza">
+									Pureza
+								</option>
+
+								<option value="Porcentaje de disolución">
+									Porcentaje de disolución
+								</option>
+
+								<option value="Contenido del principio activo">
+									Contenido del principio activo
+								</option>
+
+								<option value="pH">
+									pH
+								</option>
+
+								<option value="Viscosidad">
+									Viscosidad
+								</option>
+
+								<option value="Densidad">
+									Densidad
+								</option>
+
+								<option value="Humedad">
+									Humedad
+								</option>
+
+								<option value="Peso promedio">
+									Peso promedio
+								</option>
+
+								<option value="Temperatura">
+									Temperatura
+								</option>
+
+								<option value="Nivel de color">
+									Nivel de color
+								</option>
+
+							</select>
+
+							<div class="form-text">
+								Seleccione una variable del catálogo autorizado.
+							</div>
 						</div>
 
+						<!-- VALOR OBTENIDO -->
 						<div class="col-md-6">
-							<label for="valorObtenido" class="form-label">Valor obtenido</label>
+
+							<label for="valorObtenido"
+								class="form-label">
+								Valor obtenido
+							</label>
+
 							<input type="number"
 								id="valorObtenido"
 								class="form-control"
@@ -65,46 +164,287 @@
 								step="0.0001"
 								placeholder="0.0000"
 								required>
+
+							<div class="form-text">
+								Ingrese el valor obtenido durante el ensayo.
+							</div>
 						</div>
 
+						<!-- UNIDAD AUTOMÁTICA -->
 						<div class="col-md-6">
-							<label for="unidadMedida" class="form-label">Unidad de medida</label>
+
+							<label for="unidadMedidaVisible"
+								class="form-label">
+								Unidad de medida
+							</label>
+
 							<input type="text"
-								id="unidadMedida"
+								id="unidadMedidaVisible"
 								class="form-control"
-								pattern="[A-Za-z0-9%/.\s]+"
-								title="Use solo letras, numeros y simbolos propios de una unidad de medida"
-								th:field="*{unidadMedida}"
-								placeholder="Ejemplo: °C, %, mg/L"
-								maxlength="50"
-								required>
+								placeholder="Se asignará automáticamente"
+								readonly>
+
+							<input type="hidden"
+								id="unidadMedida"
+								th:field="*{unidadMedida}">
+
+							<div class="form-text">
+								La unidad se asigna automáticamente según la
+								variable seleccionada.
+							</div>
 						</div>
+
 					</div>
 				</div>
 
-				<div class="card-footer d-flex justify-content-end gap-2">
-					<a th:href="@{/variables}" class="btn btn-outline-secondary">
-						<i class="bi bi-x-circle me-1"></i>Cancelar
+				<div class="card-footer
+					d-flex
+					justify-content-end
+					gap-2">
+
+					<a th:href="@{/variables}"
+						class="btn btn-outline-secondary">
+
+						<i class="bi bi-x-circle me-1"></i>
+						Cancelar
 					</a>
-					<button type="submit" class="btn btn-primary">
-						<i class="bi bi-save me-1"></i>Guardar variable
+
+					<button type="submit"
+						id="botonGuardar"
+						class="btn btn-primary">
+
+						<i class="bi bi-save me-1"></i>
+						Guardar variable
 					</button>
+
 				</div>
 			</div>
 		</form>
 	</div>
 
 	<th:block layout:fragment="scripts">
+
 		<script>
-			document.addEventListener("DOMContentLoaded", function () {
-				const nombre = document.getElementById("nombreVariable");
-				if (nombre) {
-					nombre.addEventListener("input", function () {
-						this.value = this.value.replace(/[0-9]/g, "");
-					});
+			document.addEventListener(
+				"DOMContentLoaded",
+				function () {
+
+					const form =
+						document.getElementById("formVariable");
+
+					const selectEnsayo =
+						document.getElementById("idEnsayo");
+
+					const selectVariable =
+						document.getElementById("nombreVariable");
+
+					const valorObtenido =
+						document.getElementById("valorObtenido");
+
+					const unidadVisible =
+						document.getElementById(
+							"unidadMedidaVisible"
+						);
+
+					const unidadOculta =
+						document.getElementById(
+							"unidadMedida"
+						);
+
+					const alerta =
+						document.getElementById("alertaVariable");
+
+					const textoAlerta =
+						document.getElementById(
+							"textoAlertaVariable"
+						);
+
+					const unidadesPorVariable = {
+						"Pureza": "%",
+						"Porcentaje de disolución": "%",
+						"Contenido del principio activo": "mg",
+						"pH": "pH",
+						"Viscosidad": "cP",
+						"Densidad": "g/cm³",
+						"Humedad": "%",
+						"Peso promedio": "mg",
+						"Temperatura": "°C",
+						"Nivel de color": "Nivel"
+					};
+
+					function mostrarAlerta(mensaje) {
+
+						textoAlerta.textContent = mensaje || "";
+
+						alerta.classList.toggle(
+							"d-none",
+							!mensaje
+						);
+					}
+
+					function actualizarUnidad() {
+
+						const variableSeleccionada =
+							selectVariable.value;
+
+						const unidad =
+							unidadesPorVariable[
+								variableSeleccionada
+							] || "";
+
+						unidadVisible.value = unidad;
+						unidadOculta.value = unidad;
+
+						selectVariable.classList.remove(
+							"is-invalid"
+						);
+
+						unidadVisible.classList.remove(
+							"is-invalid"
+						);
+
+						mostrarAlerta("");
+					}
+
+					function validarFormulario() {
+
+						let formularioValido = true;
+						let mensaje = "";
+
+						if (!selectEnsayo.value) {
+
+							selectEnsayo.classList.add(
+								"is-invalid"
+							);
+
+							formularioValido = false;
+							mensaje =
+								"Debe seleccionar un ensayo.";
+
+						} else {
+
+							selectEnsayo.classList.remove(
+								"is-invalid"
+							);
+						}
+
+						if (!selectVariable.value) {
+
+							selectVariable.classList.add(
+								"is-invalid"
+							);
+
+							if (!mensaje) {
+								mensaje =
+									"Debe seleccionar una variable.";
+							}
+
+							formularioValido = false;
+
+						} else {
+
+							selectVariable.classList.remove(
+								"is-invalid"
+							);
+						}
+
+						if (!unidadOculta.value) {
+
+							unidadVisible.classList.add(
+								"is-invalid"
+							);
+
+							if (!mensaje) {
+								mensaje =
+									"No se pudo determinar la unidad de medida.";
+							}
+
+							formularioValido = false;
+
+						} else {
+
+							unidadVisible.classList.remove(
+								"is-invalid"
+							);
+						}
+
+						if (valorObtenido.value === "") {
+
+							valorObtenido.classList.add(
+								"is-invalid"
+							);
+
+							if (!mensaje) {
+								mensaje =
+									"Debe ingresar el valor obtenido.";
+							}
+
+							formularioValido = false;
+
+						} else {
+
+							valorObtenido.classList.remove(
+								"is-invalid"
+							);
+						}
+
+						mostrarAlerta(mensaje);
+
+						return formularioValido;
+					}
+
+					selectVariable.addEventListener(
+						"change",
+						actualizarUnidad
+					);
+
+					selectEnsayo.addEventListener(
+						"change",
+						function () {
+
+							selectEnsayo.classList.remove(
+								"is-invalid"
+							);
+
+							mostrarAlerta("");
+						}
+					);
+
+					valorObtenido.addEventListener(
+						"input",
+						function () {
+
+							valorObtenido.classList.remove(
+								"is-invalid"
+							);
+
+							mostrarAlerta("");
+						}
+					);
+
+					form.addEventListener(
+						"submit",
+						function (event) {
+
+							actualizarUnidad();
+
+							if (!validarFormulario()) {
+								event.preventDefault();
+							}
+						}
+					);
+
+					/*
+					 * Permite reconstruir la unidad cuando el formulario
+					 * vuelve desde el backend con valores previamente
+					 * seleccionados.
+					 */
+					actualizarUnidad();
 				}
-			});
+			);
 		</script>
+
 	</th:block>
+
 </body>
 </html>

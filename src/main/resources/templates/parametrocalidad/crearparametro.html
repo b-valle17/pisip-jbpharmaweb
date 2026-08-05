@@ -1,221 +1,403 @@
 <!doctype html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org"
+<html lang="es"
+	xmlns:th="http://www.thymeleaf.org"
 	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-	layout:decorate="/plantilla/plantillaui">
+	layout:decorate="~{plantilla/plantillaui}">
+
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta charset="UTF-8">
+	<title>Crear parámetro</title>
 </head>
-<body class="layout-fixed sidebar-expand-lg bg-body-tertiary">
-	<div class="app-wrapper">
-		<div layout:fragment="contenidopaginas">
-			<div class="app-content-header">
-				<div class="container-fluid">
-					<div class="row">
-						<div class="col-sm-6">
-							<h1 class="mb-0 fs-3">Crear Parametro</h1>
-						</div>
-						<div class="col-sm-6">
-							<nav aria-label="breadcrumb">
-								<ol class="breadcrumb float-sm-end">
-									<li class="breadcrumb-item"><a href="#">Home</a></li>
-									<li class="breadcrumb-item"><a href="#">Forms</a></li>
-									<li class="breadcrumb-item active" aria-current="page">Elements</li>
-								</ol>
-							</nav>
-						</div>
-					</div>
-				</div>
-			</div>
-			<div class="app-content">
-				<div class="container-fluid">
-					<div class="row g-4">
-						<div class="col-12">
-							<div class="callout callout-info">En este formulario podrá
-								definir los parámetros de calidad</div>
 
-							<!-- 🔻 ALERTA DE ERROR DESDE EL BACKEND -->
-							<div th:if="${error}"
-								class="alert alert-danger alert-dismissible fade show"
-								role="alert">
-								<i class="bi bi-exclamation-triangle-fill me-2"></i> <span
-									th:text="${error}"></span>
-								<button type="button" class="btn-close" data-bs-dismiss="alert"
-									aria-label="Close"></button>
-							</div>
-						</div>
+<body>
 
-						<!-- Quick Example -->
-						<div class="col-md-6 mx-auto">
-							<div class="card card-primary card-outline mb-4">
-								<form id="formParametro"
-									th:action="@{/parametrocalidad/guardar}"
-									th:object="${parametro}" method="post">
-									<div class="card-body">
+	<h3 layout:fragment="titulo">
+		Crear parámetro
+	</h3>
 
-										<!-- 🔻 ALERTA JS DINÁMICA (JS Oculto por defecto) -->
-										<div id="alertaLimites" class="alert alert-warning d-none"
-											role="alert">
-											El <strong>Límite Mínimo</strong> no puede ser mayor que el <strong>Límite
-												Máximo</strong>.
-										</div>
+	<ol layout:fragment="breadcrumb"
+		class="breadcrumb float-sm-end">
 
-										<div class="mb-3">
-											<label for="inputNombre" class="form-label">Nombre
-												parámetro</label> <input type="text" class="form-control"
-												id="inputNombre" th:field="*{nombreParametro}" minlength="3"
-												maxlength="100" required />
-											<div class="form-text">En este campo debe escribir el
-												nombre del parámetro</div>
-										</div>
-										<div class="mb-3">
-											<label for="inputMinimo" class="form-label">Límite
-												mínimo</label> <input type="number" step="any" class="form-control"
-												id="inputMinimo" th:field="*{limiteMinimo}" required />
-											<div class="form-text">En este campo debe escribir el
-												límite mínimo</div>
-										</div>
-										<div class="mb-3">
-											<label for="inputMaximo" class="form-label">Límite
-												máximo</label> <input type="number" step="any" class="form-control"
-												id="inputMaximo" th:field="*{limiteMaximo}" required />
-											<div class="form-text">En este campo debe escribir el
-												límite máximo</div>
-										</div>
-										<!-- 🔻 CAMBIO REALIZADO: Select de Unidades de Medida -->
-										<div class="mb-3">
-											<label for="selectUnidad" class="form-label">Unidad
-												de medida</label> <select class="form-select" id="selectUnidad"
-												th:field="*{unidadMedida}" required>
-												<option value="" selected>Seleccione una unidad</option>
+		<li class="breadcrumb-item">
+			<a th:href="@{/dashboard}">Inicio</a>
+		</li>
 
-												<optgroup label="Porcentaje y Concentración">
-													<option value="%">% (Porcentaje)</option>
-													<option value="mg/mL">mg/mL</option>
-													<option value="µg/mL">µg/mL</option>
-													<option value="ppm">ppm (Partes por millón)</option>
-													<option value="M">M (Molaridad)</option>
-												</optgroup>
+		<li class="breadcrumb-item">
+			<a th:href="@{/parametrocalidad}">
+				Parámetros de calidad
+			</a>
+		</li>
 
-												<optgroup label="Masa / Peso">
-													<option value="g">g (Gramos)</option>
-													<option value="mg">mg (Miligramos)</option>
-													<option value="µg">µg (Microgramos)</option>
-													<option value="kg">kg (Kilogramos)</option>
-												</optgroup>
+		<li class="breadcrumb-item active">
+			Nuevo
+		</li>
+	</ol>
 
-												<optgroup label="Volumen">
-													<option value="mL">mL (Mililitros)</option>
+	<div layout:fragment="contenidopaginas">
 
-													<option value="L">L (Litros)</option>
-													<option value="µL">µL (Microlitros)</option>
-												</optgroup>
-
-												<optgroup label="Físico / Químico">
-													<option value="pH">pH</option>
-													<option value="°C">°C (Grados Celsius)</option>
-													<option value="cP">cP (Centipoise - Viscosidad)</option>
-													<option value="g/cm³">g/cm³ (Densidad)</option>
-													<option value="µS/cm">µS/cm (Conductividad)</option>
-												</optgroup>
-
-												<optgroup label="Microbiología">
-													<option value="UFC/g">UFC/g (Unidades Formadoras
-														de Colonias por gramo)</option>
-													<option value="UFC/mL">UFC/mL (Unidades Formadoras
-														de Colonias por mililitro)</option>
-												</optgroup>
-											</select>
-											<div class="form-text">En este campo debe seleccionar
-												la unidad de medida</div>
-										</div>
-										<div class="mb-3">
-											<label for="select-default" class="form-label">Producto</label>
-											<select class="form-select" id="select-default"
-												th:field="*{idProducto}" required>
-												<option value="" selected>Escoja el producto</option>
-												<option th:each="rol : ${productos}"
-													th:value="${rol.idProducto}"
-													th:text="${rol.nombreProducto}"></option>
-											</select>
-											<div class="form-text">En este campo debe escoger el
-												producto a parametrizar</div>
-										</div>
-										<div class="mb-3">
-											<label for="inputFecha" class="form-label">Fecha
-												configuración</label> <input type="date" class="form-control"
-												id="inputFecha" th:field="*{fechaConfiguracion}"
-												th:attr="min=${#temporals.format(#temporals.createNow(),'yyyy-MM-dd')}"
-												required />
-											<div class="form-text">En este campo debe establecer la
-												fecha de configuración</div>
-										</div>
-									</div>
-									<div class="card-footer">
-										<button type="submit" class="btn btn-primary">Guardar</button>
-									</div>
-								</form>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
+		<div class="callout callout-info">
+			En este formulario podrá definir los parámetros de calidad.
 		</div>
 
-		<!-- Script de validación interactiva -->
-		<script>
-			document.addEventListener("DOMContentLoaded", function() {
-				const form = document.getElementById("formParametro");
-				const inputMin = document.getElementById("inputMinimo");
-				const inputMax = document.getElementById("inputMaximo");
-				const alerta = document.getElementById("alertaLimites");
+		<div th:if="${error}"
+			class="alert alert-danger alert-dismissible fade show"
+			role="alert">
 
-				function validarLimites() {
-					const minVal = parseFloat(inputMin.value);
-					const maxVal = parseFloat(inputMax.value);
+			<i class="bi bi-exclamation-triangle-fill me-2"></i>
 
-					if (!isNaN(minVal) && !isNaN(maxVal) && minVal > maxVal) {
-						alerta.classList.remove("d-none");
-						inputMin.classList.add("is-invalid");
-						inputMax.classList.add("is-invalid");
-						return false;
-					} else {
-						alerta.classList.add("d-none");
-						inputMin.classList.remove("is-invalid");
-						inputMax.classList.remove("is-invalid");
-						return true;
-					}
-				}
+			<span th:text="${error}"></span>
 
-				inputMin.addEventListener("input", validarLimites);
-				inputMax.addEventListener("input", validarLimites);
+			<button type="button"
+				class="btn-close"
+				data-bs-dismiss="alert"
+				aria-label="Cerrar">
+			</button>
+		</div>
 
-				form.addEventListener("submit", function(e) {
-					if (!validarLimites()) {
-						e.preventDefault(); // Detiene el envío si el mínimo es mayor al máximo
-					}
-				});
-			});
-		</script>
+		<div class="card content-card">
 
-		<!-- Footer -->
-		<footer class="app-footer">
-			<div class="float-end d-none d-sm-inline">Anything you want</div>
-			<strong> Copyright &copy; 2014-2026&nbsp; <a
-				href="https://adminlte.io" class="text-decoration-none">AdminLTE.io</a>.
-			</strong> All rights reserved.
-		</footer>
+			<div class="card-header">
+				<h5 class="card-title mb-0">
+					Registrar parámetro de calidad
+				</h5>
+			</div>
+
+			<form id="formParametro"
+				th:action="@{/parametrocalidad/guardar}"
+				th:object="${parametro}"
+				method="post">
+
+				<div class="card-body">
+
+					<div id="alertaLimites"
+						class="alert alert-warning d-none"
+						role="alert">
+
+						El <strong>límite mínimo</strong>
+						no puede ser mayor que el
+						<strong>límite máximo</strong>.
+					</div>
+
+					<div class="row g-3">
+
+						<div class="col-md-6">
+
+							<label for="nombreParametro"
+								class="form-label">
+								Nombre del parámetro
+							</label>
+
+							<select id="nombreParametro"
+								class="form-select"
+								th:field="*{nombreParametro}"
+								required>
+
+								<option value="">
+									Seleccione un parámetro
+								</option>
+
+								<option value="Pureza">
+									Pureza
+								</option>
+
+								<option value="Porcentaje de disolución">
+									Porcentaje de disolución
+								</option>
+
+								<option value="Contenido del principio activo">
+									Contenido del principio activo
+								</option>
+
+								<option value="pH">
+									pH
+								</option>
+
+								<option value="Viscosidad">
+									Viscosidad
+								</option>
+
+								<option value="Densidad">
+									Densidad
+								</option>
+
+								<option value="Humedad">
+									Humedad
+								</option>
+
+								<option value="Peso promedio">
+									Peso promedio
+								</option>
+
+								<option value="Temperatura">
+									Temperatura
+								</option>
+
+								<option value="Nivel de color">
+									Nivel de color
+								</option>
+
+							</select>
+
+							<div class="form-text">
+								Seleccione un parámetro del catálogo autorizado.
+							</div>
+						</div>
+
+						<div class="col-md-6">
+
+							<label for="unidadMedidaVisible"
+								class="form-label">
+								Unidad de medida
+							</label>
+
+							<input type="text"
+								id="unidadMedidaVisible"
+								class="form-control"
+								placeholder="Se asignará automáticamente"
+								readonly>
+
+							<input type="hidden"
+								id="unidadMedida"
+								th:field="*{unidadMedida}">
+
+							<div class="form-text">
+								La unidad se asigna automáticamente.
+							</div>
+						</div>
+
+						<div class="col-md-6">
+
+							<label for="inputMinimo"
+								class="form-label">
+								Límite mínimo
+							</label>
+
+							<input type="number"
+								step="any"
+								class="form-control"
+								id="inputMinimo"
+								th:field="*{limiteMinimo}"
+								required>
+
+							<div class="form-text">
+								Ingrese el límite mínimo permitido.
+							</div>
+						</div>
+
+						<div class="col-md-6">
+
+							<label for="inputMaximo"
+								class="form-label">
+								Límite máximo
+							</label>
+
+							<input type="number"
+								step="any"
+								class="form-control"
+								id="inputMaximo"
+								th:field="*{limiteMaximo}"
+								required>
+
+							<div class="form-text">
+								Ingrese el límite máximo permitido.
+							</div>
+						</div>
+
+						<div class="col-md-6">
+
+							<label for="idProducto"
+								class="form-label">
+								Producto
+							</label>
+
+							<select class="form-select"
+								id="idProducto"
+								th:field="*{idProducto}"
+								required>
+
+								<option value="">
+									Seleccione un producto
+								</option>
+
+								<option th:each="producto : ${productos}"
+									th:value="${producto.idProducto}"
+									th:text="${producto.nombreProducto}">
+								</option>
+
+							</select>
+
+							<div class="form-text">
+								Seleccione el producto que utilizará el parámetro.
+							</div>
+						</div>
+
+						<div class="col-md-6">
+
+							<label for="inputFecha"
+								class="form-label">
+								Fecha de configuración
+							</label>
+
+							<input type="date"
+								class="form-control"
+								id="inputFecha"
+								th:field="*{fechaConfiguracion}"
+								required>
+
+							<div class="form-text">
+								Seleccione la fecha de configuración.
+							</div>
+						</div>
+
+					</div>
+				</div>
+
+				<div class="card-footer d-flex justify-content-end gap-2">
+
+					<a th:href="@{/parametrocalidad}"
+						class="btn btn-outline-secondary">
+
+						<i class="bi bi-x-circle me-1"></i>
+						Cancelar
+					</a>
+
+					<button type="submit"
+						class="btn btn-primary">
+
+						<i class="bi bi-save me-1"></i>
+						Guardar parámetro
+					</button>
+
+				</div>
+			</form>
+		</div>
 	</div>
 
-	<!-- Scripts de Plugins -->
-	<script
-		src="https://cdn.jsdelivr.net/npm/overlayscrollbars@2.11.0/browser/overlayscrollbars.browser.es6.min.js"
-		crossorigin="anonymous"></script>
-	<script
-		src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
-		crossorigin="anonymous"></script>
-	<script
-		src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.min.js"
-		crossorigin="anonymous"></script>
-	<script src="../js/adminlte.js"></script>
+	<th:block layout:fragment="scripts">
+
+		<script>
+			document.addEventListener(
+				"DOMContentLoaded",
+				function () {
+
+					const form =
+						document.getElementById("formParametro");
+
+					const nombreParametro =
+						document.getElementById("nombreParametro");
+
+					const unidadVisible =
+						document.getElementById(
+							"unidadMedidaVisible"
+						);
+
+					const unidadOculta =
+						document.getElementById(
+							"unidadMedida"
+						);
+
+					const inputMin =
+						document.getElementById("inputMinimo");
+
+					const inputMax =
+						document.getElementById("inputMaximo");
+
+					const alerta =
+						document.getElementById("alertaLimites");
+
+					const unidadesPorParametro = {
+						"Pureza": "%",
+						"Porcentaje de disolución": "%",
+						"Contenido del principio activo": "mg",
+						"pH": "pH",
+						"Viscosidad": "cP",
+						"Densidad": "g/cm³",
+						"Humedad": "%",
+						"Peso promedio": "mg",
+						"Temperatura": "°C",
+						"Nivel de color": "Nivel"
+					};
+
+					function actualizarUnidad() {
+
+						const nombreSeleccionado =
+							nombreParametro.value;
+
+						const unidad =
+							unidadesPorParametro[
+								nombreSeleccionado
+							] || "";
+
+						unidadVisible.value = unidad;
+						unidadOculta.value = unidad;
+					}
+
+					function validarLimites() {
+
+						const minVal =
+							parseFloat(inputMin.value);
+
+						const maxVal =
+							parseFloat(inputMax.value);
+
+						const invalido =
+							!isNaN(minVal)
+							&& !isNaN(maxVal)
+							&& minVal > maxVal;
+
+						alerta.classList.toggle(
+							"d-none",
+							!invalido
+						);
+
+						inputMin.classList.toggle(
+							"is-invalid",
+							invalido
+						);
+
+						inputMax.classList.toggle(
+							"is-invalid",
+							invalido
+						);
+
+						return !invalido;
+					}
+
+					nombreParametro.addEventListener(
+						"change",
+						actualizarUnidad
+					);
+
+					inputMin.addEventListener(
+						"input",
+						validarLimites
+					);
+
+					inputMax.addEventListener(
+						"input",
+						validarLimites
+					);
+
+					form.addEventListener(
+						"submit",
+						function (event) {
+
+							actualizarUnidad();
+
+							if (!unidadOculta.value
+									|| !validarLimites()) {
+								event.preventDefault();
+							}
+						}
+					);
+
+					actualizarUnidad();
+					validarLimites();
+				}
+			);
+		</script>
+
+	</th:block>
+
 </body>
 </html>
