@@ -47,12 +47,10 @@ public class OrdenProduccionController {
 	public String leerpagina(Model model, HttpSession session) {
 		List<OrdenProduccionResponseDto> datosAPI = servicioAPI.listarOrden();
 		
-		// 1. Obtener listas auxiliares desde los servicios
 		List<UsuarioResponseDTO> usuarios = usuarioService.listarUsuarios(); 
 		List<PlanProduccionResponseDto> planes = planService.listarPlan();
 		List<ProductoResponseDto> productos = productoService.listarProductos();
 
-		// 2. Crear Mapas para búsqueda rápida ID -> Nombre / Código
 		Map<Integer, String> mapaUsuarios = usuarios.stream()
 				.filter(u -> u.getIdUsuario() > 0 && u.getNombre() != null)
 				.collect(Collectors.toMap(UsuarioResponseDTO::getIdUsuario, UsuarioResponseDTO::getNombre, (e, r) -> e));
@@ -68,20 +66,16 @@ public class OrdenProduccionController {
 		Integer idUsuarioSession = (Integer) session.getAttribute("idUsuario");
 		String nombreUsuarioSession = (String) session.getAttribute("nombreUsuario");
 
-		// 3. Vincular Usuario, Código de Plan y Nombre de Producto a cada orden
 		if (datosAPI != null) {
 			for (OrdenProduccionResponseDto orden : datosAPI) {
-				// Mapear Usuario Responsable
 				Integer idUser = orden.getIdUsuario();
 				String nombreReal = (idUser != null) ? mapaUsuarios.get(idUser) : null;
 				orden.setNombreUsuario(nombreReal != null ? nombreReal : "Sin asignar");
 
-				// Mapear Código del Plan
 				Integer idPlan = orden.getIdPlan();
 				String codPlan = (idPlan != null) ? mapaPlanes.get(idPlan) : null;
 				orden.setCodigoPlan(codPlan != null ? codPlan : "Sin plan");
 
-				// Mapear Nombre del Producto
 				Integer idProd = orden.getIdProducto();
 				String nomProd = (idProd != null) ? mapaProductos.get(idProd) : null;
 				orden.setNombreProducto(nomProd != null ? nomProd : "Sin producto");
@@ -96,68 +90,95 @@ public class OrdenProduccionController {
 	}
 
 	@GetMapping("/crearorden")
-	public String leerpaginacrear(Model model, HttpSession session) {
-		OrdenProduccionRequestDto dto = new OrdenProduccionRequestDto();
+	public String leerpaginacrear(Model model, HttpSession session, RedirectAttributes redirectAttributes) {
+	    List<OrdenProduccionResponseDto> ordenesExistentes = servicioAPI.listarOrden();
 
-		Integer idUsuarioSession = (Integer) session.getAttribute("idUsuario");
-		String nombreUsuarioSession = (String) session.getAttribute("nombreUsuario");
+	    boolean existeOrdenEnProceso = ordenesExistentes != null && ordenesExistentes.stream()
+	            .anyMatch(o -> o.getEstado() != null && "EN PROCESO".equalsIgnoreCase(o.getEstado().trim()));
 
-		if (idUsuarioSession != null) {
-			dto.setIdUsuario(idUsuarioSession);
-		}
+	    if (existeOrdenEnProceso) {
+	        redirectAttributes.addFlashAttribute("error", 
+	            "No se puede crear una nueva orden de producción mientras exista una en estado 'EN PROCESO'. Debe ser cambiada a 'COMPLETADO' o 'CANCELADO'.");
+	        return "redirect:/ordenproduccion";
+	    }
 
-		List<OrdenProduccionResponseDto> ordenesExistentes = servicioAPI.listarOrden();
-		int maximoActual = 0;
-		if (ordenesExistentes != null) {
-			for (OrdenProduccionResponseDto existente : ordenesExistentes) {
-				String numero = existente.getNumeroLote();
-				if (numero != null && numero.startsWith("LOT-")) {
-					try {
-						maximoActual = Math.max(maximoActual, Integer.parseInt(numero.substring(4)));
-					} catch (NumberFormatException ex) {
-					}
-				}
-			}
-		}
-		dto.setNumeroLote(String.format("LOT-%03d", maximoActual + 1));
+	    OrdenProduccionRequestDto dto = new OrdenProduccionRequestDto();
 
-		dto.setEstado("EN PROCESO");
+	    Integer idUsuarioSession = (Integer) session.getAttribute("idUsuario");
+	    String nombreUsuarioSession = (String) session.getAttribute("nombreUsuario");
 
-		List<PlanProduccionResponseDto> planes = planService.listarPlan();
-		List<ProductoResponseDto> productos = productoService.listarProductos(); 
-		List<UsuarioResponseDTO> usuarios = usuarioService.listarUsuarios();
+	    if (idUsuarioSession != null) {
+	        dto.setIdUsuario(idUsuarioSession);
+	    }
 
-		model.addAttribute("orden", dto);
-		model.addAttribute("nombreUsuarioLogueado", nombreUsuarioSession);
-		model.addAttribute("listaplan", planes);           
-		model.addAttribute("listaproductos", productos);  
-		model.addAttribute("listausuarios", usuarios);     
+	    int maximoActual = 0;
+	    if (ordenesExistentes != null) {
+	        for (OrdenProduccionResponseDto existente : ordenesExistentes) {
+	            String numero = existente.getNumeroLote();
+	            if (numero != null && numero.startsWith("LOT-")) {
+	                try {
+	                    maximoActual = Math.max(maximoActual, Integer.parseInt(numero.substring(4)));
+	                } catch (NumberFormatException ex) {
+	                }
+	            }
+	        }
+	    }
+	    dto.setNumeroLote(String.format("LOT-%03d", maximoActual + 1));
+	    dto.setEstado("EN PROCESO");
 
-		return "ordenproduccion/crearorden";
+	    List<PlanProduccionResponseDto> planes = planService.listarPlan();
+	    List<ProductoResponseDto> productos = productoService.listarProductos(); 
+	    List<UsuarioResponseDTO> usuarios = usuarioService.listarUsuarios();
+
+	    model.addAttribute("orden", dto);
+	    model.addAttribute("nombreUsuarioLogueado", nombreUsuarioSession);
+	    model.addAttribute("listaplan", planes);           
+	    model.addAttribute("listaproductos", productos);  
+	    model.addAttribute("listausuarios", usuarios);     
+
+	    return "ordenproduccion/crearorden";
 	}
-	
+
 	@PostMapping("/guardar")
 	public String guardarOrden(@ModelAttribute("orden") OrdenProduccionRequestDto requestDto, 
 	                           HttpSession session,
+	                           Model model,
 	                           RedirectAttributes redirectAttributes) {
-		try {
-			if (requestDto.getIdUsuario() == null) {
-				Integer idUsuarioSession = (Integer) session.getAttribute("idUsuario");
-				requestDto.setIdUsuario(idUsuarioSession);
-			}
+	    try {
+	        if (requestDto.getIdUsuario() == null) {
+	            Integer idUsuarioSession = (Integer) session.getAttribute("idUsuario");
+	            requestDto.setIdUsuario(idUsuarioSession);
+	        }
 
-			if (requestDto.getEstado() == null || requestDto.getEstado().trim().isEmpty()) {
-				requestDto.setEstado("EN PROCESO");
-			}
+	        if (requestDto.getEstado() == null || requestDto.getEstado().trim().isEmpty()) {
+	            requestDto.setEstado("EN PROCESO");
+	        }
 
-			servicioAPI.guardarOrden(requestDto);
-			redirectAttributes.addFlashAttribute("success", "Registro guardado correctamente.");
-			
-			return "redirect:/ordenproduccion";
-		} catch (Exception e) {
-			redirectAttributes.addFlashAttribute("error", "Error al guardar la orden de producción: " + e.getMessage());
-			return "redirect:/ordenproduccion/crearorden";
-		}
+	        List<OrdenProduccionResponseDto> ordenesExistentes = servicioAPI.listarOrden();
+	        boolean existeOrdenEnProceso = ordenesExistentes != null && ordenesExistentes.stream()
+	                .anyMatch(o -> o.getEstado() != null && "EN PROCESO".equalsIgnoreCase(o.getEstado().trim()));
+
+	        if (existeOrdenEnProceso) {
+	            String nombreUsuarioSession = (String) session.getAttribute("nombreUsuario");
+
+	            model.addAttribute("error", 
+	                "No se puede registrar una nueva orden de producción mientras exista una con estado 'EN PROCESO'.");
+	            model.addAttribute("nombreUsuarioLogueado", nombreUsuarioSession);
+	            model.addAttribute("listaplan", planService.listarPlan());
+	            model.addAttribute("listaproductos", productoService.listarProductos());
+	            model.addAttribute("listausuarios", usuarioService.listarUsuarios());
+
+	            return "ordenproduccion/crearorden";
+	        }
+
+	        servicioAPI.guardarOrden(requestDto);
+	        redirectAttributes.addFlashAttribute("success", "Registro guardado correctamente.");
+	        
+	        return "redirect:/ordenproduccion";
+	    } catch (Exception e) {
+	        redirectAttributes.addFlashAttribute("error", "Error al guardar la orden de producción: " + e.getMessage());
+	        return "redirect:/ordenproduccion/crearorden";
+	    }
 	}
 
 	@GetMapping("/editarorden")
@@ -199,16 +220,12 @@ public class OrdenProduccionController {
 	                              HttpSession session,
 	                              RedirectAttributes redirectAttributes) {
 		try {
-			// 1. Obtener la orden existente desde el backend para comparar el estado previo y preservar la fechaInicio
 			OrdenProduccionResponseDto ordenExistente = servicioAPI.buscarPorId(ordenDto.getIdOrden());
 
-			// 2. Preservar la fecha de inicio original si no vino en la petición
 			if (ordenDto.getFechaInicio() == null && ordenExistente != null) {
 				ordenDto.setFechaInicio(ordenExistente.getFechaInicio());
 			}
 
-			// 3. Regla de negocio para Fecha Fin:
-			// Si el nuevo estado es COMPLETADO o CANCELADO, asignamos automáticamente la hora actual.
 			String estadoNuevo = ordenDto.getEstado();
 			if ("COMPLETADO".equalsIgnoreCase(estadoNuevo) || "CANCELADO".equalsIgnoreCase(estadoNuevo)) {
 				if (ordenExistente != null && ordenExistente.getFechaFin() != null) {
@@ -218,16 +235,13 @@ public class OrdenProduccionController {
 					ordenDto.setFechaFin(java.time.LocalDateTime.now());
 				}
 			} else {
-				// Si regresa a EN PROCESO o CONTROL DE CALIDAD, mantenemos fechaFin nula
 				ordenDto.setFechaFin(null);
 			}
 
-			// 4. Preservar el idUsuario si estuviera ausente
 			if (ordenDto.getIdUsuario() == null && ordenExistente != null) {
 				ordenDto.setIdUsuario(ordenExistente.getIdUsuario());
 			}
 
-			// 5. Consumir la API para actualizar
 			servicioAPI.actualizarOrden(ordenDto.getIdOrden(), ordenDto);
 			redirectAttributes.addFlashAttribute("success", "Órden de producción actualizada con éxito.");
 		} catch (Exception e) {
@@ -244,7 +258,6 @@ public class OrdenProduccionController {
 			OrdenProduccionResponseDto orden = servicioAPI.buscarPorId(id);
 			Integer idUsuarioSession = (Integer) session.getAttribute("idUsuario");
 
-			// Validar permisos antes de eliminar
 			if (orden.getIdUsuario() != null && !orden.getIdUsuario().equals(idUsuarioSession)) {
 				redirectAttributes.addFlashAttribute("error", "No tienes permisos para eliminar esta órden de producción.");
 				return "redirect:/ordenproduccion";

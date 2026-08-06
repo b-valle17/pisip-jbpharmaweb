@@ -71,28 +71,36 @@ public class PlanProduccionController {
 	}
 
 	@GetMapping("/crearplan")
-	public String mostrarFormularioCrear(Model model, HttpSession session) {
-		PlanProduccionRequestDto dto = new PlanProduccionRequestDto();
+	public String mostrarFormularioCrear(Model model, HttpSession session, RedirectAttributes redirectAttributes) {
+	    List<PlanProduccionResponseDto> planesExistentes = servicioAPI.listarPlan();
 
-		Integer idUsuarioSession = (Integer) session.getAttribute("idUsuario");
-		String nombreUsuarioSession = (String) session.getAttribute("nombreUsuario");
+	    if (planesExistentes != null && planesExistentes.stream()
+	            .anyMatch(p -> p.getEstado() != null && p.getEstado().equalsIgnoreCase("EN PROCESO"))) {
+	        redirectAttributes.addFlashAttribute("error", "No es posible crear un nuevo plan. Existe un plan de producción actualmente 'EN PROCESO'.");
+	        return "redirect:/planproduccion";
+	    }
 
-		if (idUsuarioSession != null) {
-			dto.setIdUsuario(idUsuarioSession);
-		}
+	    PlanProduccionRequestDto dto = new PlanProduccionRequestDto();
+	    Integer idUsuarioSession = (Integer) session.getAttribute("idUsuario");
+	    String nombreUsuarioSession = (String) session.getAttribute("nombreUsuario");
 
-		dto.setEstado("EN PROCESO");
+	    if (idUsuarioSession != null) {
+	        dto.setIdUsuario(idUsuarioSession);
+	    }
 
-		model.addAttribute("plan", dto);
-		model.addAttribute("nombreUsuarioLogueado", nombreUsuarioSession);
-		model.addAttribute("listausuarios", usuarioService.listarUsuarios());
+	    dto.setEstado("EN PROCESO");
 
-		return "planproduccion/crearplan";
+	    model.addAttribute("plan", dto);
+	    model.addAttribute("nombreUsuarioLogueado", nombreUsuarioSession);
+	    model.addAttribute("listausuarios", usuarioService.listarUsuarios());
+
+	    return "planproduccion/crearplan";
 	}
 
 	@PostMapping("/guardar")
 	public String guardarPlan(@ModelAttribute("plan") PlanProduccionRequestDto requestDto, 
 	                          HttpSession session,
+	                          Model model,
 	                          RedirectAttributes redirectAttributes) {
 	    try {
 	        if (requestDto.getIdUsuario() == null) {
@@ -102,6 +110,38 @@ public class PlanProduccionController {
 
 	        if (requestDto.getEstado() == null || requestDto.getEstado().trim().isEmpty()) {
 	            requestDto.setEstado("EN PROCESO");
+	        }
+
+	        List<PlanProduccionResponseDto> planesExistentes = servicioAPI.listarPlan();
+
+	        if (planesExistentes != null) {
+	            boolean existePlanEnProceso = planesExistentes.stream()
+	                    .anyMatch(p -> p.getEstado() != null 
+	                            && p.getEstado().equalsIgnoreCase("EN PROCESO"));
+
+	            if (existePlanEnProceso) {
+	                String nombreUsuarioSession = (String) session.getAttribute("nombreUsuario");
+	                
+	                model.addAttribute("error", "No se puede crear un nuevo plan de producción mientras exista uno con estado 'EN PROCESO'. Debe editar el plan activo a 'COMPLETADO' para poder continuar.");
+	                model.addAttribute("nombreUsuarioLogueado", nombreUsuarioSession);
+	                model.addAttribute("listausuarios", usuarioService.listarUsuarios());
+	                
+	                return "planproduccion/crearplan";
+	            }
+
+	            boolean yaExisteCodigo = planesExistentes.stream()
+	                    .anyMatch(p -> p.getCodigoPlan() != null 
+	                            && p.getCodigoPlan().equalsIgnoreCase(requestDto.getCodigoPlan()));
+
+	            if (yaExisteCodigo) {
+	                String nombreUsuarioSession = (String) session.getAttribute("nombreUsuario");
+	                
+	                model.addAttribute("error", "Ya existe un plan de producción registrado para el mes y año seleccionados (" + requestDto.getCodigoPlan() + ").");
+	                model.addAttribute("nombreUsuarioLogueado", nombreUsuarioSession);
+	                model.addAttribute("listausuarios", usuarioService.listarUsuarios());
+	                
+	                return "planproduccion/crearplan";
+	            }
 	        }
 
 	        servicioAPI.guardarPlan(requestDto);
