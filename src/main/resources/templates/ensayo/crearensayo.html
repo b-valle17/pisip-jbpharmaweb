@@ -80,18 +80,9 @@
 						</div>
 
 						<div class="col-md-3">
-							<label for="estado" class="form-label">Estado</label> <select
-								id="estado" class="form-select" th:field="*{estado}" required>
-								<option value="">Seleccione</option>
-								<option value="REGISTRADO">REGISTRADO</option>
-								<option value="EN_PROCESO">EN_PROCESO</option>
-								<option value="EN_REVISION">EN_REVISION</option>
-								<option value="COMPLETADO">COMPLETADO</option>
-								<option value="FINALIZADO">FINALIZADO</option>
-								<option value="OBSERVADO">OBSERVADO</option>
-								<option value="PENDIENTE">PENDIENTE</option>
-								<option value="RECHAZADO">RECHAZADO</option>
-							</select>
+							<label class="form-label">Estado</label> <input type="text"
+								class="form-control" value="REGISTRADO" readonly> <input
+								type="hidden" th:field="*{estado}" value="REGISTRADO">
 						</div>
 
 						<div class="col-12">
