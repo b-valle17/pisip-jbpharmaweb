@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{plantilla/plantillaui}">
+
+<head>
+	<meta charset="UTF-8">
+	<title>Dashboard del Analista</title>
+
+	<style>
+		.dashboard-shell { padding-bottom: 1.25rem; }
+		.hero-card, .metric-card, .section-card, .table-card { border: none; border-radius: 1rem; box-shadow: 0 0.35rem 1.25rem rgba(33, 37, 41, 0.08); }
+		.hero-card { background: linear-gradient(135deg, #0f766e, #06b6d4); color: #fff; }
+		.metric-card { height: 100%; }
+		.metric-label { font-size: 0.78rem; font-weight: 700; letter-spacing: 0.04rem; text-transform: uppercase; color: #6c757d; }
+		.metric-value { margin: 0; font-size: 2.1rem; font-weight: 800; line-height: 1; }
+		.metric-subtitle { margin: 0; color: #6c757d; font-size: 0.9rem; }
+		.metric-icon { width: 52px; height: 52px; display: inline-flex; align-items: center; justify-content: center; border-radius: 0.9rem; font-size: 1.4rem; }
+		.icon-cyan { color: #0d9488; background: rgba(13, 148, 136, 0.12); }
+		.icon-yellow { color: #ca8a04; background: rgba(202, 138, 4, 0.12); }
+		.icon-red { color: #dc3545; background: rgba(220, 53, 69, 0.12); }
+		.icon-blue { color: #0d6efd; background: rgba(13, 110, 253, 0.12); }
+		.section-title { font-size: 1rem; font-weight: 800; margin-bottom: 0.35rem; }
+		.section-text { color: #6c757d; margin-bottom: 0; }
+		.badge-soft { display: inline-flex; align-items: center; gap: 0.35rem; padding: 0.38rem 0.65rem; border-radius: 50rem; font-size: 0.78rem; font-weight: 700; }
+		.badge-soft-success { background: rgba(25, 135, 84, 0.14); color: #146c43; }
+		.badge-soft-warning { background: rgba(255, 193, 7, 0.18); color: #8a6d00; }
+		.badge-soft-danger { background: rgba(220, 53, 69, 0.14); color: #b02a37; }
+		.table-card .table thead th { font-size: 0.76rem; text-transform: uppercase; letter-spacing: 0.03rem; background: #f8f9fa; }
+		.quick-action { display: flex; align-items: center; justify-content: space-between; padding: 0.9rem 1rem; border: 1px solid #e9ecef; border-radius: 0.85rem; text-decoration: none; color: #212529; }
+	</style>
+</head>
+
+<body>
+	<th:block layout:fragment="titulo">Dashboard del Analista</th:block>
+
+	<th:block layout:fragment="breadcrumb">
+		<li class="breadcrumb-item"><a th:href="@{/}">Inicio</a></li>
+		<li class="breadcrumb-item active">Laboratorio</li>
+	</th:block>
+
+	<th:block layout:fragment="contenidopaginas">
+		<div class="dashboard-shell">
+			<div class="card hero-card mb-4">
+				<div class="card-body p-4 p-lg-5">
+					<div class="row align-items-center g-4">
+						<div class="col-lg-8">
+							<span class="badge-soft badge-soft-success mb-3"><i class="bi bi-mortarboard"></i> Trabajo de laboratorio</span>
+							<h1 class="h3 mb-2">Seguimiento de ensayos y validaciones semafóricas</h1>
+							<p class="mb-0 opacity-75">Aquí tienes una vista clara de lo que pasa en el laboratorio: ensayos registrados, variables trabajadas, validaciones y alertas generadas.</p>
+						</div>
+						<div class="col-lg-4"><div class="bg-white bg-opacity-10 rounded-4 p-3 p-lg-4"><p class="mb-1 fw-semibold">Cómo leerlo</p><p class="mb-0 opacity-75">Si suben las alertas o los críticos, revisa primero los ensayos más recientes.</p></div></div>
+					</div>
+				</div>
+			</div>
+
+			<div class="row g-3 g-lg-4 mb-4">
+				<div class="col-md-6 col-xl-3"><div class="card metric-card"><div class="card-body d-flex gap-3 align-items-start"><div class="metric-icon icon-cyan"><i class="bi bi-flask"></i></div><div><div class="metric-label">Ensayos</div><p class="metric-value" th:text="${totalEnsayos}">0</p><p class="metric-subtitle">Registros del laboratorio.</p></div></div></div></div>
+				<div class="col-md-6 col-xl-3"><div class="card metric-card"><div class="card-body d-flex gap-3 align-items-start"><div class="metric-icon icon-blue"><i class="bi bi-diagram-3"></i></div><div><div class="metric-label">Variables</div><p class="metric-value" th:text="${totalVariables}">0</p><p class="metric-subtitle">Variables consideradas.</p></div></div></div></div>
+				<div class="col-md-6 col-xl-3"><div class="card metric-card"><div class="card-body d-flex gap-3 align-items-start"><div class="metric-icon icon-yellow"><i class="bi bi-stoplights"></i></div><div><div class="metric-label">Validaciones</div><p class="metric-value" th:text="${totalValidaciones}">0</p><p class="metric-subtitle">Resultado del semáforo.</p></div></div></div></div>
+				<div class="col-md-6 col-xl-3"><div class="card metric-card"><div class="card-body d-flex gap-3 align-items-start"><div class="metric-icon icon-red"><i class="bi bi-bell"></i></div><div><div class="metric-label">Alertas</div><p class="metric-value" th:text="${totalAlertas}">0</p><p class="metric-subtitle">Mensajes generados.</p></div></div></div></div>
+			</div>
+
+			<div class="row g-3 g-lg-4 mb-4">
+				<div class="col-lg-8"><div class="card section-card h-100"><div class="card-body p-4"><h2 class="section-title">Interpretación del semáforo</h2><p class="section-text mb-3">Usa estos resultados para decidir qué revisar primero en el laboratorio.</p><div class="row g-3"><div class="col-md-4"><div class="border rounded-3 p-3 h-100"><span class="badge-soft badge-soft-success mb-2"><i class="bi bi-check-circle"></i> Óptimo</span><p class="metric-value mb-1" style="font-size:1.8rem;" th:text="${optimos}">0</p><p class="mb-0 text-muted">Resultados conformes.</p></div></div><div class="col-md-4"><div class="border rounded-3 p-3 h-100"><span class="badge-soft badge-soft-warning mb-2"><i class="bi bi-exclamation-triangle"></i> Precaución</span><p class="metric-value mb-1" style="font-size:1.8rem;" th:text="${precauciones}">0</p><p class="mb-0 text-muted">Revisión recomendada.</p></div></div><div class="col-md-4"><div class="border rounded-3 p-3 h-100"><span class="badge-soft badge-soft-danger mb-2"><i class="bi bi-x-circle"></i> Crítico</span><p class="metric-value mb-1" style="font-size:1.8rem;" th:text="${criticos}">0</p><p class="mb-0 text-muted">Acción inmediata.</p></div></div></div></div></div></div>
+
+				<div class="col-lg-4"><div class="card section-card h-100"><div class="card-body p-4"><h2 class="section-title">Acciones rápidas</h2><p class="section-text mb-3">Atajos para el trabajo diario del analista.</p><div class="d-grid gap-3"><a class="quick-action" th:href="@{/ensayos}"><span><i class="bi bi-flask me-2 text-primary"></i> Ver ensayos</span><i class="bi bi-arrow-right"></i></a><a class="quick-action" th:href="@{/variables}"><span><i class="bi bi-diagram-3 me-2 text-primary"></i> Revisar variables</span><i class="bi bi-arrow-right"></i></a><a class="quick-action" th:href="@{/validaciones}"><span><i class="bi bi-stoplights-fill me-2 text-primary"></i> Abrir validaciones</span><i class="bi bi-arrow-right"></i></a><a class="quick-action" th:href="@{/alertas}"><span><i class="bi bi-bell me-2 text-primary"></i> Consultar alertas</span><i class="bi bi-arrow-right"></i></a></div></div></div></div>
+
+				<div class="col-lg-7"><div class="card table-card h-100"><div class="card-header bg-white"><h3 class="h6 mb-0">Ensayos recientes</h3></div><div class="card-body p-0"><div class="table-responsive"><table class="table table-hover align-middle mb-0"><thead><tr><th>Código</th><th>Estado</th><th>Responsable</th><th>Fecha</th></tr></thead><tbody><tr th:if="${#lists.isEmpty(ensayosRecientes)}"><td colspan="4" class="text-center text-muted py-4">No hay ensayos registrados todavía.</td></tr><tr th:each="ensayo : ${ensayosRecientes}"><td th:text="${ensayo.codigoEnsayo != null ? ensayo.codigoEnsayo : 'Sin código'}">ENS-001</td><td th:text="${ensayo.estado != null ? ensayo.estado : 'Sin estado'}">REGISTRADO</td><td th:text="${ensayo.responsable != null ? ensayo.responsable : 'Sin responsable'}">Usuario</td><td th:text="${ensayo.fechaEnsayo != null ? #temporals.format(ensayo.fechaEnsayo, 'dd/MM/yyyy HH:mm') : 'Sin fecha'}">01/01/2026</td></tr></tbody></table></div></div></div></div>
+
+				<div class="col-lg-5"><div class="card section-card h-100"><div class="card-body p-4"><h2 class="section-title">Qué revisar primero</h2><p class="section-text mb-3">Un orden simple para trabajar sin perder el foco.</p><div class="d-grid gap-2"><div class="border rounded-3 p-3"><strong>1. Validaciones críticas</strong><p class="mb-0 text-muted">Si hay críticos, revisa la causa y el lote afectado.</p></div><div class="border rounded-3 p-3"><strong>2. Alertas</strong><p class="mb-0 text-muted">Comprueba qué mensajes salieron con error o quedaron pendientes.</p></div><div class="border rounded-3 p-3"><strong>3. Ensayos recientes</strong><p class="mb-0 text-muted">Los últimos registros suelen explicar la variación del proceso.</p></div></div></div></div></div>
+			</div>
+		</div>
+	</th:block>
+</body>
+</html>

@@ -1,0 +1,281 @@
+<!doctype html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{plantilla/plantillaui}">
+
+<head>
+	<meta charset="UTF-8">
+	<title>Dashboard del Administrador</title>
+
+	<style>
+		.dashboard-shell { padding-bottom: 1.25rem; }
+		.hero-card, .metric-card, .section-card, .table-card {
+			border: none;
+			border-radius: 1rem;
+			box-shadow: 0 0.35rem 1.25rem rgba(33, 37, 41, 0.08);
+		}
+		.hero-card {
+			background: linear-gradient(135deg, #111827, #f59e0b);
+			color: #fff;
+		}
+		.metric-card { height: 100%; }
+		.metric-label {
+			font-size: 0.78rem;
+			font-weight: 700;
+			letter-spacing: 0.04rem;
+			text-transform: uppercase;
+			color: #6c757d;
+		}
+		.metric-value {
+			margin: 0;
+			font-size: 2.1rem;
+			font-weight: 800;
+			line-height: 1;
+		}
+		.metric-subtitle { margin: 0; color: #6c757d; font-size: 0.9rem; }
+		.metric-icon {
+			width: 52px;
+			height: 52px;
+			display: inline-flex;
+			align-items: center;
+			justify-content: center;
+			border-radius: 0.9rem;
+			font-size: 1.4rem;
+		}
+		.icon-gold { color: #d97706; background: rgba(217, 119, 6, 0.12); }
+		.icon-blue { color: #0d6efd; background: rgba(13, 110, 253, 0.12); }
+		.icon-green { color: #198754; background: rgba(25, 135, 84, 0.12); }
+		.icon-gray { color: #4b5563; background: rgba(75, 85, 99, 0.12); }
+		.section-title { font-size: 1rem; font-weight: 800; margin-bottom: 0.35rem; }
+		.section-text { color: #6c757d; margin-bottom: 0; }
+		.badge-soft {
+			display: inline-flex;
+			align-items: center;
+			gap: 0.35rem;
+			padding: 0.38rem 0.65rem;
+			border-radius: 50rem;
+			font-size: 0.78rem;
+			font-weight: 700;
+		}
+		.badge-soft-warning { background: rgba(255, 193, 7, 0.18); color: #8a6d00; }
+		.badge-soft-info { background: rgba(13, 202, 240, 0.16); color: #087990; }
+		.badge-soft-success { background: rgba(25, 135, 84, 0.14); color: #146c43; }
+		.badge-soft-danger { background: rgba(220, 53, 69, 0.14); color: #b02a37; }
+		.table-card .table thead th {
+			font-size: 0.76rem;
+			text-transform: uppercase;
+			letter-spacing: 0.03rem;
+			background: #f8f9fa;
+		}
+		.quick-action {
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			padding: 0.9rem 1rem;
+			border: 1px solid #e9ecef;
+			border-radius: 0.85rem;
+			text-decoration: none;
+			color: #212529;
+		}
+	</style>
+</head>
+
+<body>
+	<th:block layout:fragment="titulo">Dashboard del Administrador</th:block>
+
+	<th:block layout:fragment="breadcrumb">
+		<li class="breadcrumb-item"><a th:href="@{/}">Inicio</a></li>
+		<li class="breadcrumb-item active">Administración</li>
+	</th:block>
+
+	<th:block layout:fragment="contenidopaginas">
+		<div class="dashboard-shell">
+			<div class="card hero-card mb-4">
+				<div class="card-body p-4 p-lg-5">
+					<div class="row align-items-center g-4">
+						<div class="col-lg-8">
+							<span class="badge-soft badge-soft-warning mb-3"><i class="bi bi-people-fill"></i> Gestión de usuarios</span>
+							<h1 class="h3 mb-2">Panel de control del administrador</h1>
+							<p class="mb-0 opacity-75">
+								Este espacio te ayuda a entender de un vistazo cuántos usuarios hay, cuántos están activos,
+								qué roles existen y cuál es el estado general del acceso al sistema.
+							</p>
+						</div>
+						<div class="col-lg-4">
+							<div class="bg-white bg-opacity-10 rounded-4 p-3 p-lg-4">
+								<p class="mb-1 fw-semibold">Idea principal</p>
+								<p class="mb-0 opacity-75">Si los usuarios inactivos crecen, revisa permisos y cuentas sin uso antes de seguir creando nuevas.</p>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="row g-3 g-lg-4 mb-4">
+				<div class="col-md-6 col-xl-3">
+					<div class="card metric-card">
+						<div class="card-body d-flex gap-3 align-items-start">
+							<div class="metric-icon icon-gold"><i class="bi bi-people"></i></div>
+							<div>
+								<div class="metric-label">Usuarios totales</div>
+								<p class="metric-value" th:text="${totalUsuarios}">0</p>
+								<p class="metric-subtitle">Cuentas registradas en el sistema.</p>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="col-md-6 col-xl-3">
+					<div class="card metric-card">
+						<div class="card-body d-flex gap-3 align-items-start">
+							<div class="metric-icon icon-green"><i class="bi bi-person-check"></i></div>
+							<div>
+								<div class="metric-label">Usuarios activos</div>
+								<p class="metric-value" th:text="${totalUsuariosActivos}">0</p>
+								<p class="metric-subtitle">Usuarios habilitados para entrar.</p>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="col-md-6 col-xl-3">
+					<div class="card metric-card">
+						<div class="card-body d-flex gap-3 align-items-start">
+							<div class="metric-icon icon-blue"><i class="bi bi-person-x"></i></div>
+							<div>
+								<div class="metric-label">Usuarios inactivos</div>
+								<p class="metric-value" th:text="${totalUsuariosInactivos}">0</p>
+								<p class="metric-subtitle">Cuentas deshabilitadas o en pausa.</p>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="col-md-6 col-xl-3">
+					<div class="card metric-card">
+						<div class="card-body d-flex gap-3 align-items-start">
+							<div class="metric-icon icon-gray"><i class="bi bi-badge-ad"></i></div>
+							<div>
+								<div class="metric-label">Roles definidos</div>
+								<p class="metric-value" th:text="${totalRoles}">0</p>
+								<p class="metric-subtitle">Tipos de acceso disponibles.</p>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="row g-3 g-lg-4 mb-4">
+				<div class="col-lg-6">
+					<div class="card section-card h-100">
+						<div class="card-body p-4">
+							<h2 class="section-title">Qué estás viendo</h2>
+							<p class="section-text mb-3">El administrador solo necesita saber si el acceso está ordenado y si las cuentas están limpias.</p>
+							<div class="d-grid gap-2">
+								<div class="d-flex gap-3 align-items-start">
+									<span class="badge-soft badge-soft-success"><i class="bi bi-check-circle"></i> Activos</span>
+									<p class="mb-0 text-muted">Son las cuentas que pueden entrar al sistema y trabajar normalmente.</p>
+								</div>
+								<div class="d-flex gap-3 align-items-start">
+									<span class="badge-soft badge-soft-danger"><i class="bi bi-x-circle"></i> Inactivos</span>
+									<p class="mb-0 text-muted">Sirven para detectar usuarios sin uso, cuentas pausadas o accesos que conviene revisar.</p>
+								</div>
+								<div class="d-flex gap-3 align-items-start">
+									<span class="badge-soft badge-soft-info"><i class="bi bi-tags"></i> Roles</span>
+									<p class="mb-0 text-muted">Muestran cómo está distribuido el acceso entre administrador, supervisor, gerente y analista.</p>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="col-lg-6">
+					<div class="card section-card h-100">
+						<div class="card-body p-4">
+							<h2 class="section-title">Accesos rápidos</h2>
+							<p class="section-text mb-3">Las acciones más comunes para administración de usuarios.</p>
+							<div class="d-grid gap-3">
+								<a class="quick-action" th:href="@{/usuario}">
+									<span><i class="bi bi-people-fill me-2 text-primary"></i> Abrir gestión de usuarios</span>
+									<i class="bi bi-arrow-right"></i>
+								</a>
+								<a class="quick-action" th:href="@{/autenticacion/recuperacion}">
+									<span><i class="bi bi-shield-lock me-2 text-primary"></i> Recuperación de acceso</span>
+									<i class="bi bi-arrow-right"></i>
+								</a>
+								<a class="quick-action" th:href="@{/dashboard}">
+									<span><i class="bi bi-speedometer2 me-2 text-primary"></i> Volver al panel principal</span>
+									<i class="bi bi-arrow-right"></i>
+								</a>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="row g-3 g-lg-4">
+				<div class="col-lg-6">
+					<div class="card table-card h-100">
+						<div class="card-header bg-white">
+							<h3 class="h6 mb-0">Usuarios recientes</h3>
+						</div>
+						<div class="card-body p-0">
+							<div class="table-responsive">
+								<table class="table table-hover align-middle mb-0">
+									<thead>
+										<tr>
+											<th>Nombre</th>
+											<th>Correo</th>
+											<th>Estado</th>
+											<th>Fecha</th>
+										</tr>
+									</thead>
+									<tbody>
+										<tr th:if="${#lists.isEmpty(usuariosRecientes)}">
+											<td colspan="4" class="text-center text-muted py-4">No hay usuarios registrados todavía.</td>
+										</tr>
+										<tr th:each="usuario : ${usuariosRecientes}">
+											<td th:text="${usuario.nombre != null ? usuario.nombre : 'Sin nombre'}">Usuario</td>
+											<td th:text="${usuario.correo != null ? usuario.correo : 'Sin correo'}">correo@ejemplo.com</td>
+											<td>
+												<span class="badge-soft" th:classappend="${usuario.estadoUsuario} ? ' badge-soft-success' : ' badge-soft-danger'" th:text="${usuario.estadoUsuario} ? 'Activo' : 'Inactivo'">Activo</span>
+											</td>
+											<td th:text="${usuario.fechaCreacion != null ? #dates.format(usuario.fechaCreacion, 'dd/MM/yyyy') : 'Sin fecha'}">01/01/2026</td>
+										</tr>
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="col-lg-6">
+					<div class="card table-card h-100">
+						<div class="card-header bg-white">
+							<h3 class="h6 mb-0">Roles disponibles</h3>
+						</div>
+						<div class="card-body p-0">
+							<div class="table-responsive">
+								<table class="table table-hover align-middle mb-0">
+									<thead>
+										<tr>
+											<th>Rol</th>
+											<th>Descripción</th>
+										</tr>
+									</thead>
+									<tbody>
+										<tr th:if="${#lists.isEmpty(roles)}">
+											<td colspan="2" class="text-center text-muted py-4">No hay roles disponibles.</td>
+										</tr>
+										<tr th:each="rol : ${roles}">
+											<td th:text="${rol.nombreRol != null ? rol.nombreRol : 'Sin nombre'}">ROL</td>
+											<td th:text="${rol.descripcion != null ? rol.descripcion : 'Sin descripción'}">Descripción</td>
+										</tr>
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</th:block>
+</body>
+</html>

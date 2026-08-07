@@ -192,6 +192,12 @@
 						<!-- ========================================================= -->
 						<li class="nav-item"
 							th:if="${session.rolUsuario == 'ADMINISTRADOR'}"><a
+							th:href="@{/dashboard}" class="nav-link"> <i
+								class="nav-icon bi bi-speedometer2"></i>
+								<p>Dashboard</p>
+						</a></li>
+						<li class="nav-item"
+							th:if="${session.rolUsuario == 'ADMINISTRADOR'}"><a
 							th:href="@{/usuario}" class="nav-link"> <i
 								class="nav-icon bi bi-people-fill"></i>
 								<p>Usuarios</p>
@@ -201,6 +207,10 @@
 						<!-- 2. OPCIONES DE SUPERVISOR                                 -->
 						<!-- ========================================================= -->
 						<th:block th:if="${session.rolUsuario == 'SUPERVISOR'}">
+							<li class="nav-item"><a th:href="@{/dashboard}"
+								class="nav-link"> <i class="nav-icon bi bi-speedometer2"></i>
+									<p>Dashboard</p>
+							</a></li>
 							<li class="nav-item"><a th:href="@{/parametrocalidad}"
 								class="nav-link"> <i class="nav-icon bi bi-sliders2"></i>
 									<p>Parámetros Calidad</p>
@@ -239,6 +249,10 @@
 						<!-- 3. OPCIONES DE GERENTE                                    -->
 						<!-- ========================================================= -->
 						<th:block th:if="${session.rolUsuario == 'GERENTE'}">
+							<li class="nav-item"><a th:href="@{/dashboard}"
+								class="nav-link"> <i class="nav-icon bi bi-speedometer2"></i>
+									<p>Dashboard</p>
+							</a></li>
 							<li class="nav-item"><a th:href="@{/planproduccion}"
 								class="nav-link"> <i class="nav-icon bi bi-calendar3"></i>
 									<p>Planes de Producción</p>
@@ -258,7 +272,7 @@
 						<!-- ========================================================= -->
 						<th:block th:if="${session.rolUsuario == 'ANALISTA'}">
 							<li class="nav-item"><a th:href="@{/dashboard}"
-								class="nav-link"> <i class="fas fa-chart-line"></i>
+								class="nav-link"> <i class="nav-icon bi bi-speedometer2"></i>
 									<p>Dashboard</p>
 							</a></li>
 							<li class="nav-item"><a th:href="@{/ensayos}"

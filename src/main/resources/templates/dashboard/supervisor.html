@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{plantilla/plantillaui}">
+
+<head>
+	<meta charset="UTF-8">
+	<title>Dashboard del Supervisor</title>
+
+	<style>
+		.dashboard-shell { padding-bottom: 1.25rem; }
+		.hero-card, .section-card, .metric-card, .table-card, .note-card {
+			border: none; border-radius: 1rem; box-shadow: 0 0.35rem 1.25rem rgba(33, 37, 41, 0.08);
+		}
+		.hero-card { background: linear-gradient(135deg, #0f172a, #1d4ed8); color: #fff; }
+		.metric-card { height: 100%; }
+		.metric-label {
+			font-size: 0.78rem; font-weight: 700; letter-spacing: 0.04rem; text-transform: uppercase; color: #6c757d;
+		}
+		.metric-value { margin: 0; font-size: 2.1rem; font-weight: 800; line-height: 1; }
+		.metric-subtitle { margin: 0; color: #6c757d; font-size: 0.9rem; }
+		.metric-icon {
+			width: 52px; height: 52px; display: inline-flex; align-items: center; justify-content: center;
+			border-radius: 0.9rem; font-size: 1.4rem;
+		}
+		.icon-blue { color: #0d6efd; background: rgba(13, 110, 253, 0.12); }
+		.icon-amber { color: #d97706; background: rgba(217, 119, 6, 0.12); }
+		.icon-red { color: #dc3545; background: rgba(220, 53, 69, 0.12); }
+		.icon-green { color: #198754; background: rgba(25, 135, 84, 0.12); }
+		.section-title { font-size: 1rem; font-weight: 800; margin-bottom: 0.35rem; }
+		.section-text { color: #6c757d; margin-bottom: 0; }
+		.badge-soft {
+			display: inline-flex; align-items: center; gap: 0.35rem; padding: 0.38rem 0.65rem;
+			border-radius: 50rem; font-size: 0.78rem; font-weight: 700;
+		}
+		.badge-soft-warning { background: rgba(255, 193, 7, 0.18); color: #8a6d00; }
+		.badge-soft-danger { background: rgba(220, 53, 69, 0.14); color: #b02a37; }
+		.badge-soft-success { background: rgba(25, 135, 84, 0.14); color: #146c43; }
+		.table-card .table thead th { font-size: 0.76rem; text-transform: uppercase; letter-spacing: 0.03rem; background: #f8f9fa; }
+		.quick-action {
+			display: flex; align-items: center; justify-content: space-between; padding: 0.9rem 1rem;
+			border: 1px solid #e9ecef; border-radius: 0.85rem; text-decoration: none; color: #212529;
+		}
+	</style>
+</head>
+
+<body>
+	<th:block layout:fragment="titulo">Dashboard del Supervisor</th:block>
+
+	<th:block layout:fragment="breadcrumb">
+		<li class="breadcrumb-item"><a th:href="@{/}">Inicio</a></li>
+		<li class="breadcrumb-item active">Supervisor</li>
+	</th:block>
+
+	<th:block layout:fragment="contenidopaginas">
+		<div class="dashboard-shell">
+			<div class="card hero-card mb-4">
+				<div class="card-body p-4 p-lg-5">
+					<div class="row align-items-center g-4">
+						<div class="col-lg-8">
+							<span class="badge-soft badge-soft-warning mb-3"><i class="bi bi-shield-check"></i> Control de operación</span>
+							<h1 class="h3 mb-2">Supervisión de ensayos y alertas</h1>
+							<p class="mb-0 opacity-75">Este tablero resume lo que requiere revisión inmediata: ensayos, validaciones, alertas y dictámenes.</p>
+						</div>
+						<div class="col-lg-4">
+							<div class="bg-white bg-opacity-10 rounded-4 p-3 p-lg-4">
+								<p class="mb-1 fw-semibold">Lectura rápida</p>
+								<p class="mb-0 opacity-75">Más críticos o alertas con error significa mayor prioridad de revisión.</p>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="row g-3 g-lg-4 mb-4">
+				<div class="col-md-6 col-xl-3"><div class="card metric-card"><div class="card-body d-flex gap-3 align-items-start"><div class="metric-icon icon-blue"><i class="bi bi-flask"></i></div><div><div class="metric-label">Ensayos registrados</div><p class="metric-value" th:text="${totalEnsayos}">0</p><p class="metric-subtitle">Base operativa del laboratorio.</p></div></div></div></div>
+				<div class="col-md-6 col-xl-3"><div class="card metric-card"><div class="card-body d-flex gap-3 align-items-start"><div class="metric-icon icon-amber"><i class="bi bi-stoplights"></i></div><div><div class="metric-label">Validaciones críticas</div><p class="metric-value" th:text="${criticos}">0</p><p class="metric-subtitle">Requieren atención prioritaria.</p></div></div></div></div>
+				<div class="col-md-6 col-xl-3"><div class="card metric-card"><div class="card-body d-flex gap-3 align-items-start"><div class="metric-icon icon-red"><i class="bi bi-bell"></i></div><div><div class="metric-label">Alertas con error</div><p class="metric-value" th:text="${alertasError}">0</p><p class="metric-subtitle">Mensajes que no llegaron a destino.</p></div></div></div></div>
+				<div class="col-md-6 col-xl-3"><div class="card metric-card"><div class="card-body d-flex gap-3 align-items-start"><div class="metric-icon icon-green"><i class="bi bi-check2-circle"></i></div><div><div class="metric-label">Validaciones óptimas</div><p class="metric-value" th:text="${optimos}">0</p><p class="metric-subtitle">Resultado esperado o conforme.</p></div></div></div></div>
+			</div>
+
+			<div class="row g-3 g-lg-4">
+				<div class="col-lg-6"><div class="card section-card h-100"><div class="card-body p-4"><h2 class="section-title">Qué significa este tablero</h2><p class="section-text mb-3">Aquí ves si el proceso está bajo control o si hay señales que necesitan revisión.</p><div class="d-grid gap-2"><div class="d-flex gap-3 align-items-start"><span class="badge-soft badge-soft-success"><i class="bi bi-check-circle"></i> Óptimo</span><p class="mb-0 text-muted">El resultado esperado se cumplió y el lote puede continuar su flujo normal.</p></div><div class="d-flex gap-3 align-items-start"><span class="badge-soft badge-soft-warning"><i class="bi bi-exclamation-triangle"></i> Precaución</span><p class="mb-0 text-muted">Hay una desviación moderada. Conviene revisar antes de avanzar.</p></div><div class="d-flex gap-3 align-items-start"><span class="badge-soft badge-soft-danger"><i class="bi bi-x-circle"></i> Crítico</span><p class="mb-0 text-muted">El lote o ensayo necesita acción inmediata y trazabilidad clara.</p></div></div></div></div></div>
+
+				<div class="col-lg-6"><div class="card section-card h-100"><div class="card-body p-4"><h2 class="section-title">Accesos rápidos</h2><p class="section-text mb-3">Entra directo a los módulos que normalmente revisa un supervisor.</p><div class="d-grid gap-3"><a class="quick-action" th:href="@{/dictamenLote}"><span><i class="bi bi-patch-check-fill me-2 text-primary"></i> Revisar dictámenes pendientes</span><i class="bi bi-arrow-right"></i></a><a class="quick-action" th:href="@{/informeAuditoria}"><span><i class="bi bi-journal-text me-2 text-primary"></i> Abrir informes de auditoría</span><i class="bi bi-arrow-right"></i></a><a class="quick-action" th:href="@{/validaciones}"><span><i class="bi bi-stoplights-fill me-2 text-primary"></i> Ver validaciones semafóricas</span><i class="bi bi-arrow-right"></i></a></div></div></div></div>
+
+				<div class="col-lg-6"><div class="card table-card h-100"><div class="card-header bg-white"><h3 class="h6 mb-0">Dictámenes recientes</h3></div><div class="card-body p-0"><div class="table-responsive"><table class="table table-hover align-middle mb-0"><thead><tr><th>ID</th><th>Estado</th><th>Ensayo</th><th>Observaciones</th></tr></thead><tbody><tr th:if="${#lists.isEmpty(dictamenesRecientes)}"><td colspan="4" class="text-center text-muted py-4">No hay dictámenes registrados todavía.</td></tr><tr th:each="dictamen : ${dictamenesRecientes}"><td th:text="${dictamen.idDictamen}">1</td><td th:text="${dictamen.estado != null ? dictamen.estado : 'Sin estado'}">PENDIENTE</td><td th:text="${dictamen.codigoEnsayo != null ? dictamen.codigoEnsayo : 'Sin ensayo'}">ENS-001</td><td th:text="${dictamen.observaciones != null ? dictamen.observaciones : 'Sin observaciones'}">-</td></tr></tbody></table></div></div></div></div>
+
+				<div class="col-lg-6"><div class="card table-card h-100"><div class="card-header bg-white"><h3 class="h6 mb-0">Alertas recientes</h3></div><div class="card-body p-0"><div class="table-responsive"><table class="table table-hover align-middle mb-0"><thead><tr><th>Tipo</th><th>Destino</th><th>Estado</th><th>Fecha</th></tr></thead><tbody><tr th:if="${#lists.isEmpty(alertasRecientes)}"><td colspan="4" class="text-center text-muted py-4">No hay alertas registradas todavía.</td></tr><tr th:each="alerta : ${alertasRecientes}"><td th:text="${alerta.tipoAlerta != null ? alerta.tipoAlerta : 'Sin tipo'}">ALERTA</td><td th:text="${alerta.destinatario != null ? alerta.destinatario : 'Sin destino'}">Destino</td><td th:text="${alerta.estadoEnvio != null ? alerta.estadoEnvio : 'Sin estado'}">ENVIADO</td><td th:text="${alerta.fechaGeneracion != null ? #temporals.format(alerta.fechaGeneracion, 'dd/MM/yyyy HH:mm') : 'Sin fecha'}">01/01/2026</td></tr></tbody></table></div></div></div></div>
+			</div>
+		</div>
+	</th:block>
+</body>
+</html>
