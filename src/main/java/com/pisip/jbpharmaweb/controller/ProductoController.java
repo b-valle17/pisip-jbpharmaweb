@@ -15,9 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.pisip.jbpharmaweb.model.dto.request.ProductoRequestDto;
-import com.pisip.jbpharmaweb.model.dto.request.UsuarioRequestDTO;
 import com.pisip.jbpharmaweb.model.dto.response.ProductoResponseDto;
-import com.pisip.jbpharmaweb.model.dto.response.UsuarioResponseDTO;
 import com.pisip.jbpharmaweb.service.IProductoService;
 
 @Controller
@@ -41,8 +39,23 @@ public class ProductoController {
 	}
 
 	@PostMapping("/guardar")
-	public String guardarProducto(@ModelAttribute ProductoRequestDto producto) {
+	public String guardarProducto(@ModelAttribute ProductoRequestDto producto, RedirectAttributes redirectAttributes,
+			Model model) {
+		List<ProductoResponseDto> productosExistentes = servicioAPI.listarProductos();
+
+		// Validar duplicidad ignorando mayúsculas y minúsculas
+		boolean existeNombre = productosExistentes.stream()
+				.anyMatch(p -> p.getNombreProducto().trim().equalsIgnoreCase(producto.getNombreProducto().trim()));
+
+		if (existeNombre) {
+			model.addAttribute("error",
+					"Ya existe un producto registrado con el nombre '" + producto.getNombreProducto() + "'.");
+			model.addAttribute("producto", producto);
+			return "/producto/crearproducto";
+		}
+
 		servicioAPI.guardarProducto(producto);
+		redirectAttributes.addFlashAttribute("success", "Producto guardado correctamente.");
 		return "redirect:/producto";
 	}
 
@@ -56,7 +69,6 @@ public class ProductoController {
 
 		ProductoResponseDto res = productoOpt.get();
 
-		// Mapeamos los datos de la respuesta al DTO del formulario
 		ProductoRequestDto formDto = new ProductoRequestDto();
 		formDto.setIdProducto(res.getIdProducto());
 		formDto.setNombreProducto(res.getNombreProducto());
@@ -66,22 +78,37 @@ public class ProductoController {
 
 		return "/producto/editarproducto";
 	}
-	
+
 	@PostMapping("/actualizar")
-	public String actualizarProducto(@ModelAttribute ProductoRequestDto producto) {
-	    servicioAPI.actualizarProducto(producto.getIdProducto(), producto);
-	    return "redirect:/producto";
-	}
-	
-	@PostMapping("/eliminar/{idProducto}")
-	public String eliminarProducto(@PathVariable int idProducto, RedirectAttributes redirectAttributes) {
-	    try {
-	        servicioAPI.eliminarProducto(idProducto);
-	        redirectAttributes.addFlashAttribute("success", "Producto eliminado correctamente.");
-	    } catch (Exception e) {
-	        redirectAttributes.addFlashAttribute("error", "No se pudo eliminar el producto.");
-	    }
-	    return "redirect:/producto"; // Redirige de vuelta al listado
+	public String actualizarProducto(@ModelAttribute ProductoRequestDto producto, RedirectAttributes redirectAttributes,
+			Model model) {
+		List<ProductoResponseDto> productosExistentes = servicioAPI.listarProductos();
+
+		// Validar duplicidad ignorando mayúsculas y minúsculas (excluyendo el mismo ID
+		// que se está editando)
+		boolean existeNombre = productosExistentes.stream().anyMatch(p -> p.getIdProducto() != producto.getIdProducto()
+				&& p.getNombreProducto().trim().equalsIgnoreCase(producto.getNombreProducto().trim()));
+
+		if (existeNombre) {
+			model.addAttribute("error",
+					"Ya existe otro producto registrado con el nombre '" + producto.getNombreProducto() + "'.");
+			model.addAttribute("producto", producto);
+			return "/producto/editarproducto";
+		}
+
+		servicioAPI.actualizarProducto(producto.getIdProducto(), producto);
+		redirectAttributes.addFlashAttribute("success", "Producto actualizado correctamente.");
+		return "redirect:/producto";
 	}
 
+	@PostMapping("/eliminar/{idProducto}")
+	public String eliminarProducto(@PathVariable int idProducto, RedirectAttributes redirectAttributes) {
+		try {
+			servicioAPI.eliminarProducto(idProducto);
+			redirectAttributes.addFlashAttribute("success", "Producto eliminado correctamente.");
+		} catch (Exception e) {
+			redirectAttributes.addFlashAttribute("error", "No se pudo eliminar el producto.");
+		}
+		return "redirect:/producto";
+	}
 }

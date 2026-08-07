@@ -214,7 +214,7 @@
 								class="nav-link"> <i class="nav-icon bi bi-patch-check-fill"></i>
 									<p>Dictamen Lote</p>
 							</a></li>
-							
+
 							<li class="nav-item"><a th:href="@{/indicadorKpi}"
 								class="nav-link"> <i class="nav-icon bi bi-graph-up-arrow"></i>
 									<p>Indicadores KPI</p>
@@ -226,13 +226,13 @@
 
 							<li class="nav-item"><a th:href="@{/validaciones}"
 								class="nav-link"> <i class="nav-icon bi bi-stoplights-fill"></i>
-									<p>Parámetros de Validación</p>
+									<p>Parámetros de Validación</p></a></li>
 
-									<li class="nav-item"><a th:href="@{/producto}"
-										class="nav-link"> <i class="nav-icon bi bi-capsule"></i>
-											<p>Producto</p>
+							<li class="nav-item"><a th:href="@{/producto}"
+								class="nav-link"> <i class="nav-icon bi bi-capsule"></i>
+									<p>Producto</p>
 
-									</a></li>
+							</a></li>
 						</th:block>
 
 						<!-- ========================================================= -->
@@ -261,7 +261,6 @@
 								class="nav-link"> <i class="fas fa-chart-line"></i>
 									<p>Dashboard</p>
 							</a></li>
-						<th:block th:if="${session.rolUsuario == 'ANALISTA'}">
 							<li class="nav-item"><a th:href="@{/ensayos}"
 								class="nav-link"> <i class="nav-icon bi bi-flask-fill"></i>
 									<p>Ensayos</p>
@@ -287,7 +286,6 @@
 								<i class="nav-icon bi bi-box-arrow-right"></i>
 								<p>Cerrar Sesión</p>
 						</a></li>
-
 					</ul>
 				</nav>
 			</div>
@@ -390,5 +388,23 @@
 		crossorigin="anonymous"></script>
 
 	<th:block layout:fragment="scripts"></th:block>
+	<script>
+		window.addEventListener("pageshow", function (event) {
+		    const navigation = performance.getEntriesByType("navigation");
+		
+		    if (event.persisted ||
+		        (navigation.length > 0 && navigation[0].type === "back_forward")) {
+		        window.location.reload();
+		    }
+		});
+	</script>
+	<script>
+		window.addEventListener("popstate", function () {
+		    window.location.href = "/autenticacion/logout";
+		});
+		
+		// Agrega un estado al historial
+		history.pushState(null, null, location.href);
+	</script>
 </body>
 </html>

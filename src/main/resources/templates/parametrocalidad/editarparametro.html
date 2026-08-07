@@ -140,15 +140,6 @@
 											<div class="form-text">En este campo debe escoger el
 												producto a parametrizar</div>
 										</div>
-										<div class="mb-3">
-											<label for="inputFecha" class="form-label">Fecha
-												configuración</label> <input type="date" class="form-control"
-												id="inputFecha" th:field="*{fechaConfiguracion}"
-												th:attr="min=${#temporals.format(#temporals.createNow(),'yyyy-MM-dd')}"
-												required />
-											<div class="form-text">En este campo debe establecer la
-												fecha de configuración</div>
-										</div>
 									</div>
 									<div class="card-footer">
 										<button type="submit" class="btn btn-primary">Actualizar</button>
