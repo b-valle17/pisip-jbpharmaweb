@@ -1,271 +1,161 @@
 <!doctype html>
-<html lang="es"
-	xmlns:th="http://www.thymeleaf.org"
+<html lang="es" xmlns:th="http://www.thymeleaf.org"
 	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 	layout:decorate="~{plantilla/plantillaui}">
 
 <head>
-	<meta charset="UTF-8">
-	<title>Crear parámetro</title>
+<meta charset="UTF-8">
+<title>Crear parámetro</title>
 </head>
 
 <body>
 
-	<h3 layout:fragment="titulo">
-		Crear parámetro
-	</h3>
+	<h3 layout:fragment="titulo">Crear parámetro</h3>
 
-	<ol layout:fragment="breadcrumb"
-		class="breadcrumb float-sm-end">
+	<ol layout:fragment="breadcrumb" class="breadcrumb float-sm-end">
 
-		<li class="breadcrumb-item">
-			<a th:href="@{/dashboard}">Inicio</a>
+		<li class="breadcrumb-item"><a th:href="@{/dashboard}">Inicio</a>
 		</li>
 
-		<li class="breadcrumb-item">
-			<a th:href="@{/parametrocalidad}">
-				Parámetros de calidad
-			</a>
-		</li>
+		<li class="breadcrumb-item"><a th:href="@{/parametrocalidad}">
+				Parámetros de calidad </a></li>
 
-		<li class="breadcrumb-item active">
-			Nuevo
-		</li>
+		<li class="breadcrumb-item active">Nuevo</li>
 	</ol>
 
 	<div layout:fragment="contenidopaginas">
 
-		<div class="callout callout-info">
-			En este formulario podrá definir los parámetros de calidad.
-		</div>
+		<div class="callout callout-info">En este formulario podrá
+			definir los parámetros de calidad.</div>
 
 		<div th:if="${error}"
-			class="alert alert-danger alert-dismissible fade show"
-			role="alert">
+			class="alert alert-danger alert-dismissible fade show" role="alert">
 
-			<i class="bi bi-exclamation-triangle-fill me-2"></i>
+			<i class="bi bi-exclamation-triangle-fill me-2"></i> <span
+				th:text="${error}"></span>
 
-			<span th:text="${error}"></span>
-
-			<button type="button"
-				class="btn-close"
-				data-bs-dismiss="alert"
-				aria-label="Cerrar">
-			</button>
+			<button type="button" class="btn-close" data-bs-dismiss="alert"
+				aria-label="Cerrar"></button>
 		</div>
 
 		<div class="card content-card">
 
 			<div class="card-header">
-				<h5 class="card-title mb-0">
-					Registrar parámetro de calidad
-				</h5>
+				<h5 class="card-title mb-0">Registrar parámetro de calidad</h5>
 			</div>
 
-			<form id="formParametro"
-				th:action="@{/parametrocalidad/guardar}"
-				th:object="${parametro}"
-				method="post">
+			<form id="formParametro" th:action="@{/parametrocalidad/guardar}"
+				th:object="${parametro}" method="post">
 
 				<div class="card-body">
 
-					<div id="alertaLimites"
-						class="alert alert-warning d-none"
+					<div id="alertaLimites" class="alert alert-warning d-none"
 						role="alert">
 
-						El <strong>límite mínimo</strong>
-						no puede ser mayor que el
-						<strong>límite máximo</strong>.
+						El <strong>límite mínimo</strong> no puede ser mayor que el <strong>límite
+							máximo</strong>.
 					</div>
 
 					<div class="row g-3">
 
 						<div class="col-md-6">
 
-							<label for="nombreParametro"
-								class="form-label">
-								Nombre del parámetro
-							</label>
+							<label for="nombreParametro" class="form-label"> Nombre
+								del parámetro </label> <select id="nombreParametro" class="form-select"
+								th:field="*{nombreParametro}" required>
 
-							<select id="nombreParametro"
-								class="form-select"
-								th:field="*{nombreParametro}"
-								required>
+								<option value="">Seleccione un parámetro</option>
 
-								<option value="">
-									Seleccione un parámetro
-								</option>
+								<option value="Pureza">Pureza</option>
 
-								<option value="Pureza">
-									Pureza
-								</option>
-
-								<option value="Porcentaje de disolución">
-									Porcentaje de disolución
-								</option>
+								<option value="Porcentaje de disolución">Porcentaje de
+									disolución</option>
 
 								<option value="Contenido del principio activo">
-									Contenido del principio activo
-								</option>
+									Contenido del principio activo</option>
 
-								<option value="pH">
-									pH
-								</option>
+								<option value="pH">pH</option>
 
-								<option value="Viscosidad">
-									Viscosidad
-								</option>
+								<option value="Viscosidad">Viscosidad</option>
 
-								<option value="Densidad">
-									Densidad
-								</option>
+								<option value="Densidad">Densidad</option>
 
-								<option value="Humedad">
-									Humedad
-								</option>
+								<option value="Humedad">Humedad</option>
 
-								<option value="Peso promedio">
-									Peso promedio
-								</option>
+								<option value="Peso promedio">Peso promedio</option>
 
-								<option value="Temperatura">
-									Temperatura
-								</option>
+								<option value="Temperatura">Temperatura</option>
 
-								<option value="Nivel de color">
-									Nivel de color
-								</option>
+								<option value="Nivel de color">Nivel de color</option>
 
 							</select>
 
-							<div class="form-text">
-								Seleccione un parámetro del catálogo autorizado.
-							</div>
+							<div class="form-text">Seleccione un parámetro del catálogo
+								autorizado.</div>
 						</div>
 
 						<div class="col-md-6">
 
-							<label for="unidadMedidaVisible"
-								class="form-label">
-								Unidad de medida
-							</label>
-
-							<input type="text"
-								id="unidadMedidaVisible"
-								class="form-control"
-								placeholder="Se asignará automáticamente"
-								readonly>
-
-							<input type="hidden"
-								id="unidadMedida"
+							<label for="unidadMedidaVisible" class="form-label">
+								Unidad de medida </label> <input type="text" id="unidadMedidaVisible"
+								class="form-control" placeholder="Se asignará automáticamente"
+								readonly> <input type="hidden" id="unidadMedida"
 								th:field="*{unidadMedida}">
 
-							<div class="form-text">
-								La unidad se asigna automáticamente.
+							<div class="form-text">La unidad se asigna automáticamente.
 							</div>
 						</div>
 
 						<div class="col-md-6">
 
-							<label for="inputMinimo"
-								class="form-label">
-								Límite mínimo
-							</label>
+							<label for="inputMinimo" class="form-label"> Límite
+								mínimo </label> <input type="number" step="any" class="form-control"
+								id="inputMinimo" th:field="*{limiteMinimo}" required>
 
-							<input type="number"
-								step="any"
-								class="form-control"
-								id="inputMinimo"
-								th:field="*{limiteMinimo}"
-								required>
-
-							<div class="form-text">
-								Ingrese el límite mínimo permitido.
+							<div class="form-text">Ingrese el límite mínimo permitido.
 							</div>
 						</div>
 
 						<div class="col-md-6">
 
-							<label for="inputMaximo"
-								class="form-label">
-								Límite máximo
-							</label>
+							<label for="inputMaximo" class="form-label"> Límite
+								máximo </label> <input type="number" step="any" class="form-control"
+								id="inputMaximo" th:field="*{limiteMaximo}" required>
 
-							<input type="number"
-								step="any"
-								class="form-control"
-								id="inputMaximo"
-								th:field="*{limiteMaximo}"
-								required>
-
-							<div class="form-text">
-								Ingrese el límite máximo permitido.
+							<div class="form-text">Ingrese el límite máximo permitido.
 							</div>
 						</div>
 
 						<div class="col-md-6">
 
-							<label for="idProducto"
-								class="form-label">
-								Producto
-							</label>
-
-							<select class="form-select"
-								id="idProducto"
-								th:field="*{idProducto}"
+							<label for="idProducto" class="form-label"> Producto </label> <select
+								class="form-select" id="idProducto" th:field="*{idProducto}"
 								required>
 
-								<option value="">
-									Seleccione un producto
-								</option>
+								<option value="">Seleccione un producto</option>
 
 								<option th:each="producto : ${productos}"
 									th:value="${producto.idProducto}"
-									th:text="${producto.nombreProducto}">
-								</option>
+									th:text="${producto.nombreProducto}"></option>
 
 							</select>
 
-							<div class="form-text">
-								Seleccione el producto que utilizará el parámetro.
-							</div>
+							<div class="form-text">Seleccione el producto que utilizará
+								el parámetro.</div>
 						</div>
-
-						<div class="col-md-6">
-
-							<label for="inputFecha"
-								class="form-label">
-								Fecha de configuración
-							</label>
-
-							<input type="date"
-								class="form-control"
-								id="inputFecha"
-								th:field="*{fechaConfiguracion}"
-								required>
-
-							<div class="form-text">
-								Seleccione la fecha de configuración.
-							</div>
-						</div>
-
 					</div>
 				</div>
 
 				<div class="card-footer d-flex justify-content-end gap-2">
 
-					<a th:href="@{/parametrocalidad}"
-						class="btn btn-outline-secondary">
+					<a th:href="@{/parametrocalidad}" class="btn btn-outline-secondary">
 
-						<i class="bi bi-x-circle me-1"></i>
-						Cancelar
+						<i class="bi bi-x-circle me-1"></i> Cancelar
 					</a>
 
-					<button type="submit"
-						class="btn btn-primary">
+					<button type="submit" class="btn btn-primary">
 
-						<i class="bi bi-save me-1"></i>
-						Guardar parámetro
+						<i class="bi bi-save me-1"></i> Guardar parámetro
 					</button>
 
 				</div>
@@ -276,125 +166,84 @@
 	<th:block layout:fragment="scripts">
 
 		<script>
-			document.addEventListener(
-				"DOMContentLoaded",
-				function () {
+			document.addEventListener("DOMContentLoaded", function() {
 
-					const form =
-						document.getElementById("formParametro");
+				const form = document.getElementById("formParametro");
 
-					const nombreParametro =
-						document.getElementById("nombreParametro");
+				const nombreParametro = document
+						.getElementById("nombreParametro");
 
-					const unidadVisible =
-						document.getElementById(
-							"unidadMedidaVisible"
-						);
+				const unidadVisible = document
+						.getElementById("unidadMedidaVisible");
 
-					const unidadOculta =
-						document.getElementById(
-							"unidadMedida"
-						);
+				const unidadOculta = document.getElementById("unidadMedida");
 
-					const inputMin =
-						document.getElementById("inputMinimo");
+				const inputMin = document.getElementById("inputMinimo");
 
-					const inputMax =
-						document.getElementById("inputMaximo");
+				const inputMax = document.getElementById("inputMaximo");
 
-					const alerta =
-						document.getElementById("alertaLimites");
+				const alerta = document.getElementById("alertaLimites");
 
-					const unidadesPorParametro = {
-						"Pureza": "%",
-						"Porcentaje de disolución": "%",
-						"Contenido del principio activo": "mg",
-						"pH": "pH",
-						"Viscosidad": "cP",
-						"Densidad": "g/cm³",
-						"Humedad": "%",
-						"Peso promedio": "mg",
-						"Temperatura": "°C",
-						"Nivel de color": "Nivel"
-					};
+				const unidadesPorParametro = {
+					"Pureza" : "%",
+					"Porcentaje de disolución" : "%",
+					"Contenido del principio activo" : "mg",
+					"pH" : "pH",
+					"Viscosidad" : "cP",
+					"Densidad" : "g/cm³",
+					"Humedad" : "%",
+					"Peso promedio" : "mg",
+					"Temperatura" : "°C",
+					"Nivel de color" : "Nivel"
+				};
 
-					function actualizarUnidad() {
+				function actualizarUnidad() {
 
-						const nombreSeleccionado =
-							nombreParametro.value;
+					const nombreSeleccionado = nombreParametro.value;
 
-						const unidad =
-							unidadesPorParametro[
-								nombreSeleccionado
-							] || "";
+					const unidad = unidadesPorParametro[nombreSeleccionado]
+							|| "";
 
-						unidadVisible.value = unidad;
-						unidadOculta.value = unidad;
-					}
+					unidadVisible.value = unidad;
+					unidadOculta.value = unidad;
+				}
 
-					function validarLimites() {
+				function validarLimites() {
 
-						const minVal =
-							parseFloat(inputMin.value);
+					const minVal = parseFloat(inputMin.value);
 
-						const maxVal =
-							parseFloat(inputMax.value);
+					const maxVal = parseFloat(inputMax.value);
 
-						const invalido =
-							!isNaN(minVal)
-							&& !isNaN(maxVal)
+					const invalido = !isNaN(minVal) && !isNaN(maxVal)
 							&& minVal > maxVal;
 
-						alerta.classList.toggle(
-							"d-none",
-							!invalido
-						);
+					alerta.classList.toggle("d-none", !invalido);
 
-						inputMin.classList.toggle(
-							"is-invalid",
-							invalido
-						);
+					inputMin.classList.toggle("is-invalid", invalido);
 
-						inputMax.classList.toggle(
-							"is-invalid",
-							invalido
-						);
+					inputMax.classList.toggle("is-invalid", invalido);
 
-						return !invalido;
-					}
+					return !invalido;
+				}
 
-					nombreParametro.addEventListener(
-						"change",
-						actualizarUnidad
-					);
+				nombreParametro.addEventListener("change", actualizarUnidad);
 
-					inputMin.addEventListener(
-						"input",
-						validarLimites
-					);
+				inputMin.addEventListener("input", validarLimites);
 
-					inputMax.addEventListener(
-						"input",
-						validarLimites
-					);
+				inputMax.addEventListener("input", validarLimites);
 
-					form.addEventListener(
-						"submit",
-						function (event) {
-
-							actualizarUnidad();
-
-							if (!unidadOculta.value
-									|| !validarLimites()) {
-								event.preventDefault();
-							}
-						}
-					);
+				form.addEventListener("submit", function(event) {
 
 					actualizarUnidad();
-					validarLimites();
-				}
-			);
+
+					if (!unidadOculta.value || !validarLimites()) {
+						event.preventDefault();
+					}
+				});
+
+				actualizarUnidad();
+				validarLimites();
+			});
 		</script>
 
 	</th:block>
