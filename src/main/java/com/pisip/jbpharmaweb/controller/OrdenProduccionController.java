@@ -266,7 +266,7 @@ public class OrdenProduccionController {
 			servicioAPI.eliminarOrden(id);
 			redirectAttributes.addFlashAttribute("success", "Órden de fabricación eliminada correctamente.");
 		} catch (Exception e) {
-			redirectAttributes.addFlashAttribute("error", "No se pudo eliminar la órden de fabricación.");
+			redirectAttributes.addFlashAttribute("error", "No se pudo eliminar la órden de fabricación, existe un ensayo y dictamen asignados a esta órden.");
 		}
 		return "redirect:/ordenproduccion";
 	}

@@ -195,7 +195,7 @@ public class PlanProduccionController {
 			servicioAPI.eliminarPlan(id);
 			redirectAttributes.addFlashAttribute("success", "Plan de producción eliminado correctamente.");
 		} catch (Exception e) {
-			redirectAttributes.addFlashAttribute("error", "No se pudo eliminar el plan de producción.");
+			redirectAttributes.addFlashAttribute("error", "No se pudo eliminar el plan de producción, existe una o más órdenes asociadas a este Plan.");
 		}
 		return "redirect:/planproduccion";
 	}
