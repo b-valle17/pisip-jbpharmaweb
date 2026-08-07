@@ -31,8 +31,10 @@ public class HistorialLoteController {
 
 	@GetMapping
 	public String leerpagina(@RequestParam(required = false) String estado, Model model) {
-		List<HistorialLoteResponseDto> datosAPI = servicioAPI.listarFinalizados(estado);
-		
+		List<HistorialLoteResponseDto> datosAPI = (estado == null || estado.isBlank())
+				? servicioAPI.listarHistorialLote()
+				: servicioAPI.listarFinalizados(estado);
+
 		// 1. Obtener lista de órdenes de producción
 		List<OrdenProduccionResponseDto> listaOrdenes = ordenProduccionService.listarOrden();
 
